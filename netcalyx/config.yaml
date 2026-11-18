@@ -1,0 +1,63 @@
+# Copyright 2026 Ronny Trommer <ronny@no42.org>
+# SPDX-License-Identifier: MIT
+
+# NetCalyx collector config. Adapted from the IETF 127 hackathon
+# mb-test-setup and from nl6's examples/netcalyx/config.yaml.
+#
+# Difference to the hackathon: no pre-seeded YANG cache and no dummy NETCONF
+# block. NetCalyx fetches the YANG library and the subscriptions from the
+# nl6 devices over NETCONF.
+runtime:
+  threads: 4
+
+logging:
+  level: netcalyx_collector=info,netcalyx_yang_push=info,info
+  ansi: false
+
+telemetry:
+  url: http://otel:4317
+  service_name: netcalyx
+  exporter_timeout: 3000
+  reader_interval: 10000
+  reader_timeout: 3000
+
+udp_notif:
+  subscriber_timeout: 100
+  listeners:
+    - address: "[::]:10000"
+      workers: 2
+
+  cache_location: /var/cache/netcalyx/yang_schemas
+
+  # Off, as in nl6's interop gate. With it on, NetCalyx v0.4.0 drops two
+  # message shapes a real NE8000 sends. See labmonkeys-space/nl6#1017.
+  anydata_strict_validation: false
+
+  netconf:
+    username: simadmin
+    private_key_path: /keys/id_ed25519
+    port: 830
+
+  publishers:
+    yang:
+      buffer_size: 1000
+      endpoints:
+        yang-endpoint: !TelemetryKafkaYang
+          topic: telemetry-message-yang
+          schema_registry_url: http://schema-registry:8081
+          producer_config:
+            bootstrap.servers: kafka:9092
+            message.timeout.ms: "60000"
+            queue.buffering.max.messages: "1000"
+          writer_id: netcalyx-yang
+          yang_converter:
+            subject_prefix: nl6.
+            root_schema_name: ietf-telemetry-message
+            default_yang_lib_ref:
+              content_id: ietf-telemetry-message-full
+              yang_library_path: assets/yang/ietf-telemetry-message/yang-lib-full.xml
+              yang_lib_ref_path: assets/yang/ietf-telemetry-message/
+            extension_yang_lib_ref:
+              content_id: ietf-telemetry-message-min
+              yang_library_path: assets/yang/ietf-telemetry-message/yang-lib-min.xml
+              yang_lib_ref_path: assets/yang/ietf-telemetry-message/

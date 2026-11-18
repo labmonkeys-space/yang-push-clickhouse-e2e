@@ -1,0 +1,166 @@
+# Copyright 2026 Ronny Trommer <ronny@no42.org>
+# SPDX-License-Identifier: MIT
+
+# End-to-end chain: nl6 (YANG-Push publisher) -> NetCalyx (receiver and
+# producer) -> Kafka with a YANG schema registry -> consumer -> ClickHouse.
+name: ypch
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:8.3.3
+    environment:
+      CLUSTER_ID: bmwtY2xpY2tob3VzZS1lMmUtMQ
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+
+  schema-registry:
+    build: schema-registry
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_SCHEMA_PROVIDERS: ch.swisscom.kafka.schemaregistry.yang.YangSchemaProvider
+      # NetCalyx registers its bundled default library first. With the default
+      # BACKWARD the registry then answers 409 for most modules of the device
+      # library. NetCalyx reacts by setting those subjects to NONE and
+      # registering again, with one warning per module. NONE here only avoids
+      # those warnings.
+      SCHEMA_REGISTRY_SCHEMA_COMPATIBILITY_LEVEL: none
+      SCHEMA_REGISTRY_HEAP_OPTS: -Xmx2g
+    ports:
+      - "127.0.0.1:8081:8081"
+    healthcheck:
+      # The 8.x image has no curl.
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/localhost/8081 && printf 'GET /subjects HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q ' 200 ' <&3"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  otel:
+    image: otel/opentelemetry-collector-contrib:0.165.0
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./otel.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "127.0.0.1:8889:8889"
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.10
+    environment:
+      CLICKHOUSE_DB: yang
+      CLICKHOUSE_USER: yang
+      CLICKHOUSE_PASSWORD: yang
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    ulimits:
+      nofile: 262144
+    ports:
+      - "127.0.0.1:8123:8123"
+    healthcheck:
+      test: ["CMD-SHELL", "clickhouse-client --user yang --password yang -q 'SELECT 1' >/dev/null"]
+      interval: 3s
+      timeout: 5s
+      retries: 30
+
+  # The simulated HUAWEI NE 8000 devices. They live in a network namespace
+  # inside this container. 10.254.0.1 is the container end of nl6's veth.
+  nl6:
+    # NL6_IMAGE runs the chain against another nl6 build, for example one
+    # built from a branch.
+    image: ${NL6_IMAGE:-ghcr.io/labmonkeys-space/nl6:v0.40.2}
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    devices:
+      - /dev/net/tun
+    command: ["-netconf-enable", "-netconf-authorized-keys", "/keys/authorized_keys"]
+    volumes:
+      - ./keys/authorized_keys:/keys/authorized_keys:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8080/api/v1/status"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  # NetCalyx shares the nl6 network namespace. It receives UDP-Notif on
+  # 10.254.0.1:10000 and reaches every device on NETCONF port 830.
+  netcalyx:
+    build: netcalyx
+    platform: linux/amd64
+    network_mode: service:nl6
+    depends_on:
+      nl6:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+      otel:
+        condition: service_started
+    volumes:
+      - ./keys/id_ed25519:/keys/id_ed25519:ro
+
+  consumer:
+    build: consumer
+    depends_on:
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+    restart: on-failure
+
+  mongo:
+    image: mongo:9.0.8
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 3s
+      timeout: 5s
+      retries: 30
+
+  # ClickStack UI (HyperDX). It reads the same ClickHouse the consumer writes.
+  clickstack:
+    image: clickhouse/clickstack:2.45.0
+    depends_on:
+      mongo:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+    environment:
+      MONGO_URI: mongodb://mongo:27017/hyperdx
+      HYPERDX_APP_PORT: 8090
+      HYPERDX_API_PORT: 8000
+      FRONTEND_URL: http://localhost:8090
+      HYPERDX_LOG_LEVEL: info
+      USAGE_STATS_ENABLED: "false"
+      DEFAULT_CONNECTIONS: '[{"name":"ClickHouse","host":"http://clickhouse:8123","username":"yang","password":"yang"}]'
+      DEFAULT_SOURCES: '[{"name":"YANG messages","kind":"log","connection":"ClickHouse","from":{"databaseName":"yang","tableName":"yang_messages"},"timestampValueExpression":"kafka_timestamp","displayedTimestampValueExpression":"kafka_timestamp","implicitColumnExpression":"notification","bodyExpression":"notification","serviceNameExpression":"hostname","severityTextExpression":"if(valid, ''info'', ''error'')","defaultTableSelectExpression":"kafka_timestamp,hostname,subscription_id,notification_type,valid,failed_stage,error"}]'
+    ports:
+      - "127.0.0.1:8090:8090"
+
+  # One shot: registers the demo user and loads the dashboard.
+  clickstack-setup:
+    image: python:3.14-slim-trixie
+    depends_on:
+      - clickstack
+    volumes:
+      - ./clickstack:/setup:ro
+    command: ["python", "-u", "/setup/setup.py"]
+    restart: "no"

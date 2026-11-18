@@ -1,0 +1,148 @@
+{
+  "name": "YANG-Push overview",
+  "tags": [
+    "yang-push"
+  ],
+  "tiles": [
+    {
+      "id": "t1",
+      "x": 0,
+      "y": 0,
+      "w": 6,
+      "h": 4,
+      "config": {
+        "name": "Messages consumed",
+        "configType": "sql",
+        "displayType": "number",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT count() FROM yang.yang_messages WHERE kafka_timestamp >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64}) AND kafka_timestamp < fromUnixTimestamp64Milli({endDateMilliseconds:Int64})"
+      }
+    },
+    {
+      "id": "t2",
+      "x": 6,
+      "y": 0,
+      "w": 6,
+      "h": 4,
+      "config": {
+        "name": "Messages valid",
+        "configType": "sql",
+        "displayType": "number",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT countIf(valid) FROM yang.yang_messages WHERE kafka_timestamp >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64}) AND kafka_timestamp < fromUnixTimestamp64Milli({endDateMilliseconds:Int64})"
+      }
+    },
+    {
+      "id": "t3",
+      "x": 12,
+      "y": 0,
+      "w": 6,
+      "h": 4,
+      "config": {
+        "name": "Messages invalid",
+        "configType": "sql",
+        "displayType": "number",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT countIf(NOT valid) FROM yang.yang_messages WHERE kafka_timestamp >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64}) AND kafka_timestamp < fromUnixTimestamp64Milli({endDateMilliseconds:Int64})"
+      }
+    },
+    {
+      "id": "t4",
+      "x": 18,
+      "y": 0,
+      "w": 6,
+      "h": 4,
+      "config": {
+        "name": "Routers publishing",
+        "configType": "sql",
+        "displayType": "number",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT uniqExact(export_address) FROM yang.yang_messages WHERE kafka_timestamp >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64}) AND kafka_timestamp < fromUnixTimestamp64Milli({endDateMilliseconds:Int64})"
+      }
+    },
+    {
+      "id": "t5",
+      "x": 0,
+      "y": 4,
+      "w": 12,
+      "h": 7,
+      "config": {
+        "name": "Traffic in per router (bit/s)",
+        "configType": "sql",
+        "displayType": "line",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT ts, hostname, sum(r) AS bits_per_second\nFROM (\n  SELECT toStartOfInterval(t, INTERVAL {intervalSeconds:Int64} SECOND) AS ts, hostname, name, avg(rate) AS r\n  FROM (\n    SELECT assumeNotNull(observation_time) AS t, hostname, name,\n      (in_octets - lagInFrame(in_octets) OVER w) * 8 / nullIf(dateDiff('second', lagInFrame(t) OVER w, t), 0) AS rate,\n      row_number() OVER w0 AS n\n    FROM yang.yang_interfaces_interface_statistics\n    WHERE kafka_timestamp >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64}) - INTERVAL 5 MINUTE\n      AND kafka_timestamp < fromUnixTimestamp64Milli({endDateMilliseconds:Int64})\n    WINDOW w AS (PARTITION BY export_address, name ORDER BY t ROWS BETWEEN 1 PRECEDING AND CURRENT ROW),\n           w0 AS (PARTITION BY export_address, name ORDER BY t)\n  )\n  WHERE n > 1 AND rate >= 0 AND t >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64})\n  GROUP BY ts, hostname, name\n)\nGROUP BY ts, hostname\nORDER BY ts ASC"
+      }
+    },
+    {
+      "id": "t6",
+      "x": 12,
+      "y": 4,
+      "w": 12,
+      "h": 7,
+      "config": {
+        "name": "Traffic out per router (bit/s)",
+        "configType": "sql",
+        "displayType": "line",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT ts, hostname, sum(r) AS bits_per_second\nFROM (\n  SELECT toStartOfInterval(t, INTERVAL {intervalSeconds:Int64} SECOND) AS ts, hostname, name, avg(rate) AS r\n  FROM (\n    SELECT assumeNotNull(observation_time) AS t, hostname, name,\n      (out_octets - lagInFrame(out_octets) OVER w) * 8 / nullIf(dateDiff('second', lagInFrame(t) OVER w, t), 0) AS rate,\n      row_number() OVER w0 AS n\n    FROM yang.yang_interfaces_interface_statistics\n    WHERE kafka_timestamp >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64}) - INTERVAL 5 MINUTE\n      AND kafka_timestamp < fromUnixTimestamp64Milli({endDateMilliseconds:Int64})\n    WINDOW w AS (PARTITION BY export_address, name ORDER BY t ROWS BETWEEN 1 PRECEDING AND CURRENT ROW),\n           w0 AS (PARTITION BY export_address, name ORDER BY t)\n  )\n  WHERE n > 1 AND rate >= 0 AND t >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64})\n  GROUP BY ts, hostname, name\n)\nGROUP BY ts, hostname\nORDER BY ts ASC"
+      }
+    },
+    {
+      "id": "t7",
+      "x": 0,
+      "y": 11,
+      "w": 12,
+      "h": 7,
+      "config": {
+        "name": "Messages per subscription",
+        "configType": "sql",
+        "displayType": "stacked_bar",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT toStartOfInterval(kafka_timestamp, INTERVAL {intervalSeconds:Int64} SECOND) AS ts, concat('subscription ', toString(subscription_id), if(valid, ' valid', ' invalid')) AS series, count() AS messages FROM yang.yang_messages WHERE kafka_timestamp >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64}) AND kafka_timestamp < fromUnixTimestamp64Milli({endDateMilliseconds:Int64}) GROUP BY ts, series ORDER BY ts ASC"
+      }
+    },
+    {
+      "id": "t8",
+      "x": 12,
+      "y": 11,
+      "w": 12,
+      "h": 7,
+      "config": {
+        "name": "Invalid messages by cause",
+        "configType": "sql",
+        "displayType": "table",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT subscription_id, notification_type, failed_stage, substring(error, 1, 160) AS error, count() AS messages FROM yang.yang_messages WHERE NOT valid AND kafka_timestamp >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64}) AND kafka_timestamp < fromUnixTimestamp64Milli({endDateMilliseconds:Int64}) GROUP BY 1, 2, 3, 4 ORDER BY messages DESC LIMIT 50"
+      }
+    },
+    {
+      "id": "t9",
+      "x": 0,
+      "y": 18,
+      "w": 12,
+      "h": 8,
+      "config": {
+        "name": "Interfaces not up, latest state",
+        "configType": "sql",
+        "displayType": "table",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT hostname, name AS interface, argMax(admin_status, kafka_timestamp) AS admin, argMax(oper_status, kafka_timestamp) AS oper, max(kafka_timestamp) AS last_seen FROM yang.yang_interfaces_interface_oper_status__interfaces_interface_admin_status GROUP BY hostname, name HAVING oper != 'up' ORDER BY hostname, interface LIMIT 200"
+      }
+    },
+    {
+      "id": "t10",
+      "x": 12,
+      "y": 18,
+      "w": 12,
+      "h": 8,
+      "config": {
+        "name": "Busiest interfaces, latest octet counters",
+        "configType": "sql",
+        "displayType": "table",
+        "connection": "__CONNECTION__",
+        "sqlTemplate": "SELECT hostname, name AS interface, argMax(in_octets, kafka_timestamp) AS in_octets, argMax(out_octets, kafka_timestamp) AS out_octets, argMax(in_errors, kafka_timestamp) AS in_errors, argMax(out_discards, kafka_timestamp) AS out_discards FROM yang.yang_interfaces_interface_statistics WHERE kafka_timestamp >= fromUnixTimestamp64Milli({startDateMilliseconds:Int64}) AND kafka_timestamp < fromUnixTimestamp64Milli({endDateMilliseconds:Int64}) GROUP BY hostname, name ORDER BY in_octets DESC LIMIT 20"
+      }
+    }
+  ]
+}

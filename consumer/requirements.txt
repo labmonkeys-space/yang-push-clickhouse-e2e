@@ -1,0 +1,4 @@
+libyang==5.1.0
+confluent-kafka==2.16.2
+clickhouse-connect==1.13.0
+requests==2.34.2
