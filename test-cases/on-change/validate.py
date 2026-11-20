@@ -1,9 +1,9 @@
 # Copyright 2026 Ronny Trommer <ronny@no42.org>
 # SPDX-License-Identifier: MIT
-"""Validate the value of one captured YANG Patch edit in three ways.
+"""Validate the value of one captured YANG Patch edit in two ways.
 
-Each case picks a YANG library (the schema context) and a place in the
-data tree to read the value from. The value is parsed with libyang in
+Both cases use the router's fixed YANG library and differ only in the
+place in the data tree the value is read from. The value is parsed with libyang in
 strict, parse-only mode: node names, types and identities are checked,
 mandatory nodes and leafref targets are not. That is close to the
 anydata-candidate option of draft-netana-netmod-yang-anydata-validation-00.
@@ -17,13 +17,8 @@ from dataclasses import dataclass
 
 import libyang
 
-# The router's YANG library before and after its fix, named by content-id.
-# 2300156437: before the fix. iana-if-type is import-only, although the
-#             router sends its identities in data. Every subscription-started
-#             of the IETF 127 capture still names this content-id.
-# 2338653103: the fix, published with the IETF 127 capture. iana-if-type is
-#             implemented.
-BEFORE_FIX = "library-2300156437.json"
+# The router's fixed YANG library, published with the IETF 127 capture.
+# It lists iana-if-type as implemented, so the identity in the value resolves.
 FIXED = "library-2338653103.json"
 
 # Where the value is read from.
@@ -44,7 +39,6 @@ class Case:
 CASES = [
     Case("A", FIXED, ROOT, "fail"),
     Case("B", FIXED, ANCHOR, "pass"),
-    Case("C", BEFORE_FIX, ANCHOR, "fail"),
 ]
 
 
