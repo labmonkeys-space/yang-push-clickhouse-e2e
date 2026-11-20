@@ -17,13 +17,14 @@ from dataclasses import dataclass
 
 import libyang
 
-# The router's two published YANG libraries, named by content-id.
-# 2300156437: the one all subscription-started messages of the IETF 127 capture
-#             point to. iana-if-type is import-only.
-# 2338653103: the one published with the IETF 127 capture. iana-if-type is
+# The router's YANG library before and after its fix, named by content-id.
+# 2300156437: before the fix. iana-if-type is import-only, although the
+#             router sends its identities in data. Every subscription-started
+#             of the IETF 127 capture still names this content-id.
+# 2338653103: the fix, published with the IETF 127 capture. iana-if-type is
 #             implemented.
-REFERENCED = "library-2300156437.json"
-PUBLISHED = "library-2338653103.json"
+BEFORE_FIX = "library-2300156437.json"
+FIXED = "library-2338653103.json"
 
 # Where the value is read from.
 # ROOT is how collectors and consumers read it today.
@@ -41,9 +42,9 @@ class Case:
 
 
 CASES = [
-    Case("A", PUBLISHED, ROOT, "fail"),
-    Case("B", PUBLISHED, ANCHOR, "pass"),
-    Case("C", REFERENCED, ANCHOR, "fail"),
+    Case("A", FIXED, ROOT, "fail"),
+    Case("B", FIXED, ANCHOR, "pass"),
+    Case("C", BEFORE_FIX, ANCHOR, "fail"),
 ]
 
 

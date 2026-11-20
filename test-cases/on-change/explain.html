@@ -145,7 +145,7 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
 <header style="display:grid;gap:14px">
   <span class="eyebrow">YANG-Push on-change test case · IETF 127 capture</span>
   <h1>Where the edit value starts</h1>
-  <p class="lede">A router sends a YANG Patch edit with a target and a value. Two things decide whether the value validates: where in the data tree you read it from, and which YANG library builds the schema. The captured value passes only when both are right.</p>
+  <p class="lede">A router sends a YANG Patch edit with a target and a value. Two things decide whether the value validates: where in the data tree you read it from, and which YANG library builds the schema. The captured value passes only when both are right. The router has since fixed its library, and the fixed one is used here.</p>
 </header>
 
 <section>
@@ -192,10 +192,10 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
 <section>
   <span class="eyebrow">Question 2</span>
   <h2>Which YANG library builds the schema?</h2>
-  <p>The value uses the identity <code>iana-if-type:ethernetCsmacd</code>. The router published two libraries, and they disagree about <code>iana-if-type</code>. libyang does not resolve an identity from a module that is only imported.</p>
+  <p>The value uses the identity <code>iana-if-type:ethernetCsmacd</code>. The router used to list <code>iana-if-type</code> as import-only, and libyang does not resolve an identity from a module that is only imported. Library 2338653103, published with the IETF 127 capture, fixes that.</p>
   <div class="libs">
     <div class="lib">
-      <h3>2300156437, the one the message names</h3>
+      <h3>2300156437, before the fix</h3>
       <ul>
         <li><span>ietf-interfaces</span><span class="chip impl">implemented</span></li>
         <li><span>ietf-yang-types</span><span class="chip imp">import-only</span></li>
@@ -204,7 +204,7 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
       <p class="verdict"><b class="fail" style="color:var(--fail)">Identity not found.</b></p>
     </div>
     <div class="lib">
-      <h3>2338653103, published with the capture</h3>
+      <h3>2338653103, fixed</h3>
       <ul>
         <li><span>ietf-interfaces</span><span class="chip impl">implemented</span></li>
         <li><span>ietf-yang-types</span><span class="chip imp">import-only</span></li>
@@ -234,9 +234,9 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
         <legend>YANG library</legend>
         <div class="seg">
           <input type="radio" name="lib" id="lib-adv" value="adv">
-          <label for="lib-adv">2300156437</label>
+          <label for="lib-adv">before the fix</label>
           <input type="radio" name="lib" id="lib-impl" value="impl" checked>
-          <label for="lib-impl">2338653103</label>
+          <label for="lib-impl">fixed</label>
         </div>
       </fieldset>
     </div>
@@ -248,7 +248,7 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
     <div class="matrix-wrap">
       <table>
         <thead>
-          <tr><th>Read from</th><th>2338653103, iana-if-type implemented</th><th>2300156437, iana-if-type import-only</th></tr>
+          <tr><th>Read from</th><th>fixed library 2338653103</th><th>before the fix, 2300156437</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -271,8 +271,8 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
   <span class="eyebrow">Answer</span>
   <h2>The payload we propose should pass</h2>
   <div class="answer">
-    <p>The captured value, unchanged, read from <code>/ietf-interfaces:interfaces</code>. That is check B.</p>
-    <p>A against B answers the on-change question: read the value from the parent of the target. B against C is the periodic-update problem in the same message. The two problems are separate, but this one payload needs both solved.</p>
+    <p>The captured value, unchanged, read from <code>/ietf-interfaces:interfaces</code>, with the router's fixed library. That is check B.</p>
+    <p>A against B answers the on-change question: read the value from the parent of the target. B against C shows what the router's fix changed: before it, even the correct reading failed on the identity.</p>
   </div>
 </section>
 
@@ -292,7 +292,7 @@ docker run --rm -v "$PWD":/case:ro on-change-case</pre>
 </section>
 
 <footer>
-  <p>Rule: draft-netana-netmod-yang-anydata-validation-00, sections 3.3 and 4.3.2. Libraries: the router's two published libraries, 2300156437 (named by the message, IETF 126 folder) and 2338653103 (IETF 127 folder), cut to the four modules this value needs. Hostnames in the capture are replaced.</p>
+  <p>Rule: draft-netana-netmod-yang-anydata-validation-00, sections 3.3 and 4.3.2. Libraries: the router's fixed library 2338653103 (IETF 127 folder) and the one before the fix, 2300156437 (IETF 126 folder, still named by the 127 messages), cut to the four modules this value needs. Hostnames in the capture are replaced.</p>
 </footer>
 
 </main>
@@ -305,7 +305,7 @@ const CASES = {
     text: "The value is valid exactly as the router sent it. This is the payload we propose should pass.",
     err: "" },
   "anchor|adv": { check: "C", state: "fail",
-    text: "Read from the right place, the library the message names still breaks it.",
+    text: "Read from the right place, the library before the fix still breaks it.",
     err: 'Invalid identityref "iana-if-type:ethernetCsmacd" value - unable to map prefix to YANG schema.' },
   "root|adv": { check: "–", state: "idle",
     text: "Not run. Both problems apply here, so it cannot pass.",

@@ -3,6 +3,10 @@
 One edit from the IETF 127 capture, validated three ways with libyang 6.4.13.
 It shows what the edit value should be validated against, and which payload should pass.
 
+The router's YANG library used to list `iana-if-type` as import-only, although the router sends its identities in data.
+Library 2338653103, published with the IETF 127 capture, fixes that: it lists `iana-if-type` as implemented.
+The test uses the fixed library, and the one before the fix to show what the fix changed.
+
 ## Run it
 
 With mise on macOS:
@@ -35,12 +39,12 @@ An indented line is libyang's error.
 
 | Check | Library | `iana-if-type` | Read from | Result | Meaning |
 | --- | --- | --- | --- | --- | --- |
-| A | 2338653103 | implemented | `/` | fail | How collectors and consumers read it today. At the root, `interface` needs the prefix `ietf-interfaces:`. |
-| B | 2338653103 | implemented | the anchor | **pass** | The value is valid exactly as sent. This is the payload we propose should pass. |
-| C | 2300156437 | import-only | the anchor | fail | The library the message points to cannot resolve the identity. |
+| A | 2338653103, fixed | implemented | `/` | fail | How collectors and consumers read it today. At the root, `interface` needs the prefix `ietf-interfaces:`. |
+| B | 2338653103, fixed | implemented | the anchor | **pass** | The value is valid exactly as sent. This is the payload we propose should pass. |
+| C | 2300156437, before the fix | import-only | the anchor | fail | The identity does not resolve from an import-only module. |
 
 - **A against B** answers the on-change question: read the value from the parent of the target.
-- **B against C** is the periodic-update problem. The message names library 2300156437, where `iana-if-type` is import-only. The library published with the same capture marks it implemented.
+- **B against C** shows what the router's fix changed. Before it, even the correct reading fails on the identity.
 
 Exit code 0 means every check matched its prediction.
 
@@ -60,13 +64,14 @@ That is close to the draft's anydata-candidate option.
 | --- | --- |
 | `edit.json` | the target and value of the edit |
 | `captured-push-change-update.json` | the whole message, hostnames replaced by `router-a` and `router-b` |
-| `library-2300156437.json` | the router's library that every `subscription-started` of the IETF 127 capture names in `yang-library-content-id`; published in the IETF 126 folder |
-| `library-2338653103.json` | the router's library published in the IETF 127 folder |
+| `library-2338653103.json` | the router's fixed library, published in the IETF 127 folder |
+| `library-2300156437.json` | the router's library before the fix, published in the IETF 126 folder |
 | `extract-library.py` | copies the entries of the four modules this value needs from a library reply |
 | `yang/` | the module files, at the revisions both libraries list |
 
 Both libraries are the router's `nc-get-reply/get-yang-library.xml` from the [capture repository](https://github.com/network-analytics/ietf-network-analytics-document-status), under `126/` and `127/Hackathon/yangpush-publisher/huawei-vrp-ip/`.
 They hold 962 and 978 modules.
+Every `subscription-started` of the IETF 127 capture still names 2300156437 in `yang-library-content-id`, so a collector that fetches the library the message names gets the one before the fix.
 `extract-library.py` keeps the entries of the four modules this value needs, unchanged, with the router's module set, schema and datastore names:
 
 ```bash
