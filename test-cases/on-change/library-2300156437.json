@@ -2,7 +2,7 @@
   "ietf-yang-library:yang-library": {
     "module-set": [
       {
-        "name": "state-module",
+        "name": "config-module",
         "module": [
           {
             "name": "ietf-interfaces",
@@ -27,6 +27,16 @@
             "name": "ietf-yang-types",
             "revision": "2013-07-15",
             "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"
+          }
+        ]
+      },
+      {
+        "name": "state-module",
+        "import-only-module": [
+          {
+            "name": "ietf-yang-types",
+            "revision": "2013-07-15",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"
           },
           {
             "name": "iana-if-type",
@@ -40,6 +50,7 @@
       {
         "name": "state-schema",
         "module-set": [
+          "config-module",
           "state-module"
         ]
       }

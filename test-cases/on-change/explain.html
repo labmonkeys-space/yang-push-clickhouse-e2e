@@ -192,22 +192,22 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
 <section>
   <span class="eyebrow">Question 2</span>
   <h2>Which YANG library builds the schema?</h2>
-  <p>The value uses the identity <code>iana-if-type:ethernetCsmacd</code>. The router's own library lists <code>iana-if-type</code> as import-only, and libyang does not resolve an identity from a module that is only imported.</p>
+  <p>The value uses the identity <code>iana-if-type:ethernetCsmacd</code>. The router published two libraries, and they disagree about <code>iana-if-type</code>. libyang does not resolve an identity from a module that is only imported.</p>
   <div class="libs">
     <div class="lib">
-      <h3>As the router advertises it</h3>
+      <h3>2300156437, the one the message names</h3>
       <ul>
         <li><span>ietf-interfaces</span><span class="chip impl">implemented</span></li>
-        <li><span>ietf-yang-types</span><span class="chip impl">implemented</span></li>
+        <li><span>ietf-yang-types</span><span class="chip imp">import-only</span></li>
         <li><span>iana-if-type</span><span class="chip imp">import-only</span></li>
       </ul>
       <p class="verdict"><b class="fail" style="color:var(--fail)">Identity not found.</b></p>
     </div>
     <div class="lib">
-      <h3>With one change</h3>
+      <h3>2338653103, published with the capture</h3>
       <ul>
         <li><span>ietf-interfaces</span><span class="chip impl">implemented</span></li>
-        <li><span>ietf-yang-types</span><span class="chip impl">implemented</span></li>
+        <li><span>ietf-yang-types</span><span class="chip imp">import-only</span></li>
         <li><span>iana-if-type</span><span class="chip impl">implemented</span></li>
       </ul>
       <p class="verdict"><b class="pass" style="color:var(--pass)">Identity resolves.</b></p>
@@ -231,12 +231,12 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
         </div>
       </fieldset>
       <fieldset>
-        <legend>iana-if-type in the library</legend>
+        <legend>YANG library</legend>
         <div class="seg">
           <input type="radio" name="lib" id="lib-adv" value="adv">
-          <label for="lib-adv">import-only</label>
+          <label for="lib-adv">2300156437</label>
           <input type="radio" name="lib" id="lib-impl" value="impl" checked>
-          <label for="lib-impl">implemented</label>
+          <label for="lib-impl">2338653103</label>
         </div>
       </fieldset>
     </div>
@@ -248,7 +248,7 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
     <div class="matrix-wrap">
       <table>
         <thead>
-          <tr><th>Read from</th><th>iana-if-type implemented</th><th>iana-if-type import-only, as advertised</th></tr>
+          <tr><th>Read from</th><th>2338653103, iana-if-type implemented</th><th>2300156437, iana-if-type import-only</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -292,7 +292,7 @@ docker run --rm -v "$PWD":/case:ro on-change-case</pre>
 </section>
 
 <footer>
-  <p>Rule: draft-netana-netmod-yang-anydata-validation-00, sections 3.3 and 4.3.2. Libraries: the router's advertised entries for the four modules this value needs. Hostnames in the capture are replaced.</p>
+  <p>Rule: draft-netana-netmod-yang-anydata-validation-00, sections 3.3 and 4.3.2. Libraries: the router's two published libraries, 2300156437 (named by the message, IETF 126 folder) and 2338653103 (IETF 127 folder), cut to the four modules this value needs. Hostnames in the capture are replaced.</p>
 </footer>
 
 </main>
@@ -305,7 +305,7 @@ const CASES = {
     text: "The value is valid exactly as the router sent it. This is the payload we propose should pass.",
     err: "" },
   "anchor|adv": { check: "C", state: "fail",
-    text: "Read from the right place, the router's own library still breaks it.",
+    text: "Read from the right place, the library the message names still breaks it.",
     err: 'Invalid identityref "iana-if-type:ethernetCsmacd" value - unable to map prefix to YANG schema.' },
   "root|adv": { check: "–", state: "idle",
     text: "Not run. Both problems apply here, so it cannot pass.",

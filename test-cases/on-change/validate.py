@@ -12,14 +12,18 @@ Exit code 0 means every case gave the expected result.
 """
 import json
 import sys
+import tempfile
 from dataclasses import dataclass
 
 import libyang
 
-# The router's library with iana-if-type marked import-only, as advertised,
-# and the same library with only that module marked implemented.
-AS_ADVERTISED = "library-as-advertised.json"
-IANA_IMPLEMENTED = "library-iana-implemented.json"
+# The router's two published YANG libraries, named by content-id.
+# 2300156437: the one all subscription-started messages of the IETF 127 capture
+#             point to. iana-if-type is import-only.
+# 2338653103: the one published with the IETF 127 capture. iana-if-type is
+#             implemented.
+REFERENCED = "library-2300156437.json"
+PUBLISHED = "library-2338653103.json"
 
 # Where the value is read from.
 # ROOT is how collectors and consumers read it today.
@@ -37,15 +41,45 @@ class Case:
 
 
 CASES = [
-    Case("A", IANA_IMPLEMENTED, ROOT, "fail"),
-    Case("B", IANA_IMPLEMENTED, ANCHOR, "pass"),
-    Case("C", AS_ADVERTISED, ANCHOR, "fail"),
+    Case("A", PUBLISHED, ROOT, "fail"),
+    Case("B", PUBLISHED, ANCHOR, "pass"),
+    Case("C", REFERENCED, ANCHOR, "fail"),
 ]
+
+
+def one_module_set(library: str) -> str:
+    """Write the library with the operational schema's module sets merged into one.
+
+    The router builds its operational schema from two module sets,
+    config-module and state-module. libyang 6.4.13 reads only the first
+    module set of a YANG library (src/context.c, "module-set[1]/module"),
+    so without this step it would miss every module of the second set.
+    A module implemented in any set stays implemented.
+    """
+    with open(library, encoding="utf-8") as f:
+        lib = json.load(f)
+    yl = lib["ietf-yang-library:yang-library"]
+    schema_name = next(d["schema"] for d in yl["datastore"] if d["name"] == "ietf-datastores:operational")
+    set_names = next(s["module-set"] for s in yl["schema"] if s["name"] == schema_name)
+    sets = [s for s in yl["module-set"] if s["name"] in set_names]
+
+    implemented = {m["name"]: m for s in sets for m in s.get("module", [])}
+    import_only = {m["name"]: m for s in sets for m in s.get("import-only-module", []) if m["name"] not in implemented}
+    merged = {"name": "operational", "module": list(implemented.values())}
+    if import_only:
+        merged["import-only-module"] = list(import_only.values())
+    yl["module-set"] = [merged]
+    yl["schema"] = [{"name": schema_name, "module-set": ["operational"]}]
+
+    out = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8")
+    with out:
+        json.dump(lib, out)
+    return out.name
 
 
 def validate(value: str, library: str, read_from: str | None) -> tuple[str, str]:
     """Parse the value and return ("pass", "") or ("fail", libyang's error)."""
-    with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
+    with libyang.Context("yang", yanglib_path=one_module_set(library), yanglib_fmt="json") as ctx:
         # The value is parsed as children of this node, or as top-level data.
         parent = ctx.create_data_path(read_from) if read_from else None
         tree = None
@@ -83,7 +117,7 @@ def main() -> int:
             unexpected += 1
 
         anchor = case.read_from or "/"
-        print(f"{case.name}  {case.library:30}  anchor {anchor:28}  {result:4}  (expected {case.expected}, {verdict})")
+        print(f"{case.name}  {case.library:24}  anchor {anchor:28}  {result:4}  (expected {case.expected}, {verdict})")
         if error:
             print(f"   {error[:150]}")
 

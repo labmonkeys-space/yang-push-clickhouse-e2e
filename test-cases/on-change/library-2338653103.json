@@ -2,7 +2,7 @@
   "ietf-yang-library:yang-library": {
     "module-set": [
       {
-        "name": "state-module",
+        "name": "config-module",
         "module": [
           {
             "name": "ietf-interfaces",
@@ -20,7 +20,19 @@
             "name": "huawei-ietf-interfaces-deviations-NE8000-F1A",
             "revision": "2026-02-24",
             "namespace": "urn:huawei:yang:huawei-ietf-interfaces-deviations-NE8000-F1A"
-          },
+          }
+        ],
+        "import-only-module": [
+          {
+            "name": "ietf-yang-types",
+            "revision": "2013-07-15",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"
+          }
+        ]
+      },
+      {
+        "name": "state-module",
+        "module": [
           {
             "name": "iana-if-type",
             "revision": "2017-01-19",
@@ -40,6 +52,7 @@
       {
         "name": "state-schema",
         "module-set": [
+          "config-module",
           "state-module"
         ]
       }
@@ -50,10 +63,10 @@
         "schema": "state-schema"
       }
     ],
-    "content-id": "2300156437"
+    "content-id": "2338653103"
   },
   "ietf-yang-library:modules-state": {
-    "module-set-id": "2300156437",
+    "module-set-id": "2338653103",
     "module": [
       {
         "name": "ietf-interfaces",
@@ -78,16 +91,16 @@
         "conformance-type": "implement"
       },
       {
-        "name": "iana-if-type",
-        "revision": "2017-01-19",
-        "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type",
-        "conformance-type": "implement"
-      },
-      {
         "name": "ietf-yang-types",
         "revision": "2013-07-15",
         "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types",
         "conformance-type": "import"
+      },
+      {
+        "name": "iana-if-type",
+        "revision": "2017-01-19",
+        "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type",
+        "conformance-type": "implement"
       }
     ]
   }
