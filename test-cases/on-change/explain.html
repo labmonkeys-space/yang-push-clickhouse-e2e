@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Where the edit value starts</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@600&display=swap">
+<style>
+/* Layout: one reading column; the tree and the switch board break out wider. */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #17202b;
+  --muted: #5a6573;
+  --line: #d8dde4;
+  --accent: #1f5fa8;
+  --accent-soft: #e3edf8;
+  --pass: #1d7a46;
+  --pass-soft: #e2f3e8;
+  --fail: #b3261e;
+  --fail-soft: #fbe5e3;
+  --idle-soft: #eef0f3;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11161d; --surface: #19202a; --ink: #e6ebf1; --muted: #9aa6b4; --line: #2c3644;
+    --accent: #7fb2ec; --accent-soft: #1d2d42;
+    --pass: #6fcf97; --pass-soft: #15301f; --fail: #f08a80; --fail-soft: #3a1d1b; --idle-soft: #222a35;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11161d; --surface: #19202a; --ink: #e6ebf1; --muted: #9aa6b4; --line: #2c3644;
+  --accent: #7fb2ec; --accent-soft: #1d2d42;
+  --pass: #6fcf97; --pass-soft: #15301f; --fail: #f08a80; --fail-soft: #3a1d1b; --idle-soft: #222a35;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 860px; margin: 0 auto; padding-block: 48px 72px; display: grid; gap: 56px; }
+section { display: grid; gap: 16px; }
+h1, h2 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+h2 { font-size: 1.5rem; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font: 600 0.75rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.lede { font-size: 1.15rem; color: var(--muted); }
+code, pre { font-family: var(--font-mono); font-size: 0.88em; }
+p code, li code, td code { background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+pre {
+  margin: 0; padding: 16px 18px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 6px; overflow-x: auto; line-height: 1.5;
+}
+.k { color: var(--muted); }
+.hl { color: var(--accent); font-weight: 600; }
+
+/* The data tree */
+.trees { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.tree { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: grid; gap: 12px; align-content: start; }
+.tree h3 { margin: 0; font: 600 1rem/1.3 var(--font-body); }
+.nodes { font-family: var(--font-mono); font-size: 0.85rem; display: grid; gap: 6px; }
+.node { padding: 6px 10px; border: 1px solid var(--line); border-radius: 4px; width: fit-content; max-width: 100%; overflow-wrap: anywhere; }
+.node.d1 { margin-left: 22px; }
+.node.d2 { margin-left: 44px; }
+.node.start { border-color: var(--accent); background: var(--accent-soft); }
+.node.value-ok { border: 2px solid var(--pass); background: var(--pass-soft); }
+.node.value-bad { border: 2px dashed var(--fail); background: var(--fail-soft); }
+.tag { font: 600 0.7rem/1 var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; margin-left: 8px; }
+.tag.start { color: var(--accent); }
+.verdict { font-size: 0.92rem; }
+.verdict b.pass { color: var(--pass); }
+.verdict b.fail { color: var(--fail); }
+
+/* Library cards */
+.libs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.lib { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+.lib h3 { margin: 0; font: 600 1rem/1.3 var(--font-body); }
+.lib ul { margin: 0; padding: 0; list-style: none; font: 0.85rem/1.5 var(--font-mono); display: grid; gap: 4px; }
+.lib li { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.chip { font: 600 0.72rem/1 var(--font-mono); padding: 4px 7px; border-radius: 3px; }
+.chip.impl { background: var(--pass-soft); color: var(--pass); }
+.chip.imp { background: var(--fail-soft); color: var(--fail); }
+
+/* Switch board */
+.board { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: grid; gap: 20px; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; }
+legend { font: 600 0.75rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg label { flex: 1; text-align: center; padding: 9px 10px; cursor: pointer; font-size: 0.9rem; border-left: 1px solid var(--line); }
+.seg label:first-of-type { border-left: 0; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg input:checked + label { background: var(--accent); color: var(--bg); font-weight: 600; }
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: -4px; }
+.result { border-radius: 6px; padding: 16px 18px; display: grid; gap: 8px; border: 1px solid var(--line); }
+.result.pass { background: var(--pass-soft); border-color: var(--pass); }
+.result.fail { background: var(--fail-soft); border-color: var(--fail); }
+.result.idle { background: var(--idle-soft); }
+.result .head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.result .check { font: 600 1.6rem/1 var(--font-display); }
+.result .word { font: 600 1rem/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; }
+.result.pass .word { color: var(--pass); }
+.result.fail .word { color: var(--fail); }
+.result.idle .word { color: var(--muted); }
+.result .err { font: 0.82rem/1.5 var(--font-mono); overflow-wrap: anywhere; }
+
+/* Matrix */
+.matrix-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.92rem; }
+th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
+th { font: 600 0.8rem/1.3 var(--font-body); color: var(--muted); background: var(--surface); }
+td.cell { cursor: pointer; }
+td.cell.pass { background: var(--pass-soft); }
+td.cell.fail { background: var(--fail-soft); }
+td.cell.idle { background: var(--idle-soft); color: var(--muted); }
+td.cell.on { outline: 3px solid var(--accent); outline-offset: -3px; }
+td.cell b { font-family: var(--font-display); font-size: 1.1rem; margin-right: 6px; }
+
+.answer { border-left: 4px solid var(--accent); padding: 4px 0 4px 18px; display: grid; gap: 10px; }
+.answer p { font-size: 1.05rem; }
+ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; max-width: 65ch; }
+footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
+@media (prefers-reduced-motion: no-preference) {
+  .result, td.cell { transition: background-color 160ms ease, border-color 160ms ease; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">YANG-Push on-change test case · IETF 127 capture</span>
+  <h1>Where the edit value starts</h1>
+  <p class="lede">A router sends a YANG Patch edit with a target and a value. Two things decide whether the value validates: where in the data tree you read it from, and which YANG library builds the schema. The captured value passes only when both are right.</p>
+</header>
+
+<section>
+  <span class="eyebrow">The edit</span>
+  <h2>One captured push-change-update</h2>
+  <p>Subscription 11, a Huawei NE8000, shortened. The <code>target</code> names one list entry. The <code>value</code> is that list entry, with no module prefix.</p>
+<pre><span class="k">"target":</span> <span class="hl">"/ietf-interfaces:interfaces/interface[name=100GE0/1/2]"</span>,
+<span class="k">"value":</span> {
+  <span class="hl">"interface"</span>: [ {
+    "name": "100GE0/1/2",
+    "type": <span class="hl">"iana-if-type:ethernetCsmacd"</span>,
+    "enabled": true,
+    "oper-status": "down",
+    ...
+  } ]
+}</pre>
+</section>
+
+<section>
+  <span class="eyebrow">Question 1</span>
+  <h2>Read the value from where?</h2>
+  <p>The value is an instance of the target node. So it belongs under the target's parent, which the anydata validation draft calls the anchor. Tools today read it from the schema root instead.</p>
+  <div class="trees">
+    <div class="tree">
+      <h3>From the schema root, as today</h3>
+      <div class="nodes">
+        <div class="node start">/<span class="tag start">start</span></div>
+        <div class="node d1 value-bad">interface ?</div>
+      </div>
+      <p class="verdict"><b class="fail">Fails.</b> At the root, a member name must carry its module: <code>ietf-interfaces:interface</code>. The draft treats this as an error too.</p>
+    </div>
+    <div class="tree">
+      <h3>From the anchor, the target's parent</h3>
+      <div class="nodes">
+        <div class="node">/</div>
+        <div class="node d1 start">ietf-interfaces:interfaces<span class="tag start">anchor</span></div>
+        <div class="node d2 value-ok">interface [name=100GE0/1/2]</div>
+      </div>
+      <p class="verdict"><b class="pass">Fits.</b> <code>interface</code> is in the anchor's module, so the plain name is the correct form (draft section 4.3.2).</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Question 2</span>
+  <h2>Which YANG library builds the schema?</h2>
+  <p>The value uses the identity <code>iana-if-type:ethernetCsmacd</code>. The router's own library lists <code>iana-if-type</code> as import-only, and libyang does not resolve an identity from a module that is only imported.</p>
+  <div class="libs">
+    <div class="lib">
+      <h3>As the router advertises it</h3>
+      <ul>
+        <li><span>ietf-interfaces</span><span class="chip impl">implemented</span></li>
+        <li><span>ietf-yang-types</span><span class="chip impl">implemented</span></li>
+        <li><span>iana-if-type</span><span class="chip imp">import-only</span></li>
+      </ul>
+      <p class="verdict"><b class="fail" style="color:var(--fail)">Identity not found.</b></p>
+    </div>
+    <div class="lib">
+      <h3>With one change</h3>
+      <ul>
+        <li><span>ietf-interfaces</span><span class="chip impl">implemented</span></li>
+        <li><span>ietf-yang-types</span><span class="chip impl">implemented</span></li>
+        <li><span>iana-if-type</span><span class="chip impl">implemented</span></li>
+      </ul>
+      <p class="verdict"><b class="pass" style="color:var(--pass)">Identity resolves.</b></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Try it</span>
+  <h2>Flip both switches</h2>
+  <p>Each setting maps to one check in <code>validate.py</code>. The messages are libyang 6.4.13's own.</p>
+  <div class="board">
+    <div class="controls">
+      <fieldset>
+        <legend>Read the value from</legend>
+        <div class="seg">
+          <input type="radio" name="from" id="from-root" value="root">
+          <label for="from-root">schema root</label>
+          <input type="radio" name="from" id="from-anchor" value="anchor" checked>
+          <label for="from-anchor">anchor</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>iana-if-type in the library</legend>
+        <div class="seg">
+          <input type="radio" name="lib" id="lib-adv" value="adv">
+          <label for="lib-adv">import-only</label>
+          <input type="radio" name="lib" id="lib-impl" value="impl" checked>
+          <label for="lib-impl">implemented</label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="result pass" id="result" aria-live="polite">
+      <div class="head"><span class="check" id="r-check">B</span><span class="word" id="r-word">pass</span></div>
+      <p id="r-text">The value is valid exactly as the router sent it. This is the payload we propose should pass.</p>
+      <div class="err" id="r-err"></div>
+    </div>
+    <div class="matrix-wrap">
+      <table>
+        <thead>
+          <tr><th>Read from</th><th>iana-if-type implemented</th><th>iana-if-type import-only, as advertised</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>schema root</th>
+            <td class="cell fail" data-from="root" data-lib="impl"><b>A</b>fail on the prefix</td>
+            <td class="cell idle" data-from="root" data-lib="adv"><b>–</b>not run</td>
+          </tr>
+          <tr>
+            <th>anchor</th>
+            <td class="cell pass" data-from="anchor" data-lib="impl"><b>B</b>pass</td>
+            <td class="cell fail" data-from="anchor" data-lib="adv"><b>C</b>fail on the identity</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Answer</span>
+  <h2>The payload we propose should pass</h2>
+  <div class="answer">
+    <p>The captured value, unchanged, read from <code>/ietf-interfaces:interfaces</code>. That is check B.</p>
+    <p>A against B answers the on-change question: read the value from the parent of the target. B against C is the periodic-update problem in the same message. The two problems are separate, but this one payload needs both solved.</p>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Run it</span>
+  <h2>Reproduce the three checks</h2>
+  <p>With mise on macOS. libyang comes from Homebrew, mise sets up Python and a virtual env.</p>
+<pre>brew install libyang
+mise trust &amp;&amp; mise install
+mise run validate</pre>
+  <p>With Docker on any system. <code>run.sh</code> builds an image that compiles libyang from its release tag, then runs <code>validate.py</code> in it. The first build takes a few minutes.</p>
+<pre>./run.sh</pre>
+  <p>Without the script, the same two steps by hand:</p>
+<pre>docker build -t on-change-case .
+docker run --rm -v "$PWD":/case:ro on-change-case</pre>
+  <p>Strict, parse-only parsing with libyang 6.4.13 and its Python binding 5.1.0. Names, types and identities are checked. Mandatory nodes and leafref targets are not.</p>
+</section>
+
+<footer>
+  <p>Rule: draft-netana-netmod-yang-anydata-validation-00, sections 3.3 and 4.3.2. Libraries: the router's advertised entries for the four modules this value needs. Hostnames in the capture are replaced.</p>
+</footer>
+
+</main>
+<script>
+const CASES = {
+  "root|impl": { check: "A", state: "fail",
+    text: "How collectors and consumers read it today. At the root, interface needs the prefix ietf-interfaces:.",
+    err: 'Top-level JSON object member "interface" must be namespace-qualified. (line 1)' },
+  "anchor|impl": { check: "B", state: "pass",
+    text: "The value is valid exactly as the router sent it. This is the payload we propose should pass.",
+    err: "" },
+  "anchor|adv": { check: "C", state: "fail",
+    text: "Read from the right place, the router's own library still breaks it.",
+    err: 'Invalid identityref "iana-if-type:ethernetCsmacd" value - unable to map prefix to YANG schema.' },
+  "root|adv": { check: "–", state: "idle",
+    text: "Not run. Both problems apply here, so it cannot pass.",
+    err: "" }
+};
+const $ = id => document.getElementById(id);
+function render() {
+  const from = document.querySelector('input[name="from"]:checked').value;
+  const lib = document.querySelector('input[name="lib"]:checked').value;
+  const c = CASES[from + "|" + lib];
+  $("result").className = "result " + c.state;
+  $("r-check").textContent = c.check;
+  $("r-word").textContent = c.state === "idle" ? "not run" : c.state;
+  $("r-text").textContent = c.text;
+  $("r-err").textContent = c.err;
+  document.querySelectorAll("td.cell").forEach(td =>
+    td.classList.toggle("on", td.dataset.from === from && td.dataset.lib === lib));
+}
+document.querySelectorAll('input[type="radio"]').forEach(i => i.addEventListener("change", render));
+document.querySelectorAll("td.cell").forEach(td => td.addEventListener("click", () => {
+  $(td.dataset.from === "root" ? "from-root" : "from-anchor").checked = true;
+  $(td.dataset.lib === "adv" ? "lib-adv" : "lib-impl").checked = true;
+  render();
+}));
+render();
+</script>
+</body>
+</html>

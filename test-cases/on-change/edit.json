@@ -1,0 +1,23 @@
+{
+  "target": "/ietf-interfaces:interfaces/interface[name=100GE0/1/2]",
+  "value": {
+    "interface": [
+      {
+        "name": "100GE0/1/2",
+        "description": "router-b:100GE0/3/0",
+        "type": "iana-if-type:ethernetCsmacd",
+        "enabled": true,
+        "link-up-down-trap-enable": "enabled",
+        "admin-status": "up",
+        "oper-status": "down",
+        "last-change": "2026-09-10T11:50:41Z",
+        "if-index": 9,
+        "phys-address": "24:46:E4:A8:4D:0D",
+        "higher-layer-if": [
+          "100GE0/1/2.23"
+        ],
+        "speed": "100000000"
+      }
+    ]
+  }
+}
