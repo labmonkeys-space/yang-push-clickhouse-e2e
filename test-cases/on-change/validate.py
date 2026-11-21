@@ -8,7 +8,7 @@ strict, parse-only mode: node names, types and identities are checked,
 mandatory nodes and leafref targets are not. That is close to the
 anydata-candidate option of draft-netana-netmod-yang-anydata-validation-00.
 
-Exit code 0 means every case gave the expected result.
+Exit code 0 means every case gave the predicted result.
 """
 import json
 import sys
@@ -31,14 +31,15 @@ ANCHOR = "/ietf-interfaces:interfaces"
 @dataclass
 class Case:
     name: str
+    description: str
     library: str
     read_from: str | None
-    expected: str  # "pass" or "fail"
+    predicted: str  # "pass" or "fail"
 
 
 CASES = [
-    Case("A", FIXED, ROOT, "fail"),
-    Case("B", FIXED, ANCHOR, "pass"),
+    Case("A", "read from the schema root, as collectors do today", FIXED, ROOT, "fail"),
+    Case("B", "read from the target's parent, the draft's anchor", FIXED, ANCHOR, "pass"),
 ]
 
 
@@ -103,19 +104,29 @@ def main() -> int:
         edit = json.load(f)
     value = json.dumps(edit["value"])
 
-    print(f"target: {edit['target']}")
+    members = ", ".join(f'"{name}"' for name in edit["value"])
+    prefixed = all(":" in name for name in edit["value"])
+    print(f"Edit target: {edit['target']}")
+    print(f"Edit value:  {{{members}: [...]}}  ({'with' if prefixed else 'no'} module prefix)")
+    print(f"Library:     {FIXED} (iana-if-type implemented)")
+    print()
+
     unexpected = 0
     for case in CASES:
         result, error = validate(value, case.library, case.read_from)
-        verdict = "ok" if result == case.expected else "UNEXPECTED"
-        if result != case.expected:
+        verdict = "ok" if result == case.predicted else "UNEXPECTED"
+        if result != case.predicted:
             unexpected += 1
 
-        anchor = case.read_from or "/"
-        print(f"{case.name}  {case.library:24}  anchor {anchor:28}  {result:4}  (expected {case.expected}, {verdict})")
+        print(f"{case.name}  {case.description:52}  {result:4}  (predicted {case.predicted}, {verdict})")
         if error:
             print(f"   {error[:150]}")
 
+    print()
+    if unexpected:
+        print("Result: at least one check did not match its prediction.")
+    else:
+        print("Result: the value is valid as sent. It fails only when read from the schema root.")
     return 1 if unexpected else 0
 
 

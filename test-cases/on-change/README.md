@@ -77,13 +77,18 @@ The IETF 127 hackathon branches, checked separately on 21 November 2026 outside 
 Read from the anchor, the value validates unchanged (check B).
 This is the payload we propose should pass.
 
-`validate.py` prints both checks, each with its prediction:
+`validate.py` prints the edit, both checks with their prediction, and the result:
 
 ```text
-target: /ietf-interfaces:interfaces/interface[name=100GE0/1/2]
-A  library-2338653103.json   anchor /                             fail  (expected fail, ok)
+Edit target: /ietf-interfaces:interfaces/interface[name=100GE0/1/2]
+Edit value:  {"interface": [...]}  (no module prefix)
+Library:     library-2338653103.json (iana-if-type implemented)
+
+A  read from the schema root, as collectors do today     fail  (predicted fail, ok)
    Top-level JSON object member "interface" must be namespace-qualified. (line 1)
-B  library-2338653103.json   anchor /ietf-interfaces:interfaces   pass  (expected pass, ok)
+B  read from the target's parent, the draft's anchor     pass  (predicted pass, ok)
+
+Result: the value is valid as sent. It fails only when read from the schema root.
 ```
 
 Exit code 0 means both checks matched their prediction.
