@@ -1,8 +1,9 @@
 # Test case: collector and consumer on captured periodic updates
 
 **Answer:** with the router's advertised library, the collector and the consumer agree: both drop the interface update of subscription 6, with the same error (P1, P3).
-With the fixed library the collector passes and the consumer still fails (P2, P3).
-That is where the chain diverges.
+With the fixed library, a collector that looks up payload prefixes in the library passes (P2).
+No collector in the IETF 127 run does that. P2 is a model of one.
+Schema 628, which a producer built by the module-version rule of section 4.3, references no `iana-if-type`, so the consumer fails (P3).
 The control, subscription 3, passes on both sides (P4, P5).
 
 ## Problem statement
@@ -78,13 +79,13 @@ How `validate.py` checks:
 
 - **From the schema root.** The `datastore-contents` of each update is parsed as top-level data, strict and parse-only. Names, types and identities are checked. Mandatory nodes and leafrefs are not.
 - **Collector schema.** libyang loads the library cut with its module sets merged, because libyang reads only the first module set (`ly_ctx_new_ylpath` in `context.h`).
-- **Consumer schema.** Every module of the closure is loaded as implemented, with the features the registry lists, and compiled once.
+- **Consumer schema.** Every module of the closure is loaded as implemented, with the features the registry lists, and compiled once. libyang uses its own revisions of four base modules (see Limits).
 - **Predictions in a file.** A predicted fail also names part of libyang's error, so a check that fails for another reason does not match.
 - **The state of `iana-if-type`.** For each check the output shows how the library or the registry closure lists it, and how the libyang context holds it.
 
 ## Actual result
 
-- **P1, collector, advertised library:** `Invalid identityref "iana-if-type:ppp" value - unable to map prefix to YANG schema.` The library lists `iana-if-type` as import-only. libyang loads no import-only module that nothing imports, so the module is not in the context at all.
+- **P1, collector, advertised library:** `Invalid identityref "iana-if-type:ppp" value - unable to map prefix to YANG schema.` The library lists `iana-if-type` as import-only, so its identities cannot be used. libyang does not load the module at all, because nothing imports it.
 - **P2, collector, fixed library:** passes.
 - **P3, consumer, schema 628:** the same error as P1. The closure does not reach `iana-if-type`.
 - **P4 and P5, subscription 3:** pass on both sides.
@@ -92,18 +93,21 @@ How `validate.py` checks:
 ## Expected result
 
 - **With the advertised library** (P1, P3): collector and consumer agree on fail. Passing at the consumer after adding `iana-if-type` locally would not show that the chain agrees, because the collector still drops the update.
-- **With the fixed library** (P2, P3): the collector passes and the consumer fails. The collector can find `iana-if-type` through the library, but the Schema ID gives the consumer no way to name it. That is the "YANG identityref schema dependency resolution" open item of the IETF 127 NMOP slides.
+- **With the fixed library** (P2, P3): a collector that finds `iana-if-type` through the library passes. A producer that follows the module-version rule of section 4.3 references no `iana-if-type`, even when the collector could validate with the fixed library, so the consumer fails. No Schema ID was ever built from the fixed library, so P3 shows the rule's outcome, not a schema that run produced. That is the "YANG identityref schema dependency resolution" open item of the IETF 127 NMOP slides.
 - **Subscription 3** (P4, P5): both pass. The two sides agree when the update needs no module outside the dependency rule.
 
 `validate.py` prints each update, the checks with their prediction, and the result:
 
 ```text
 Subscription 6, /ietf-interfaces:interfaces/interface, module-version ietf-interfaces
+    library-2300156437.json: libyang uses ietf-inet-types 2025-12-22 for 2013-07-15, ietf-yang-types 2025-12-22 for 2013-07-15
 P1  collector  advertised library 2300156437     fail  (predicted fail, ok)
     iana-if-type: import-only in the library, absent in libyang
     Invalid identityref "iana-if-type:ppp" value - unable to map prefix to YANG schema.: Data path: /ietf-interfaces:interfaces/interface[name='Virtual-Te
+    library-2338653103.json: libyang uses ietf-yang-types 2025-12-22 for 2013-07-15
 P2  collector  fixed library 2338653103          pass  (predicted pass, ok)
     iana-if-type: implemented in the library, implemented in libyang
+    registry 628: libyang uses ietf-inet-types 2025-12-22 for 2021-02-22, ietf-yang-revisions 2025-09-16 for 2024-06-04, ietf-yang-semver 2026-03-03 for 2024-07-02, ietf-yang-types 2025-12-22 for 2013-07-15
 P3  consumer   schema 628 and its references     fail  (predicted fail, ok)
     iana-if-type: not in the registry closure, absent in libyang
     Invalid identityref "iana-if-type:ppp" value - unable to map prefix to YANG schema.: Data path: /ietf-interfaces:interfaces/interface[name='Virtual-Te
@@ -117,9 +121,10 @@ P5  consumer   schema 628 and its references     pass  (predicted pass, ok)
 Result: subscription 6, the interfaces.
         With the advertised library, collector and consumer agree on fail,
         with the same error. The library lists iana-if-type as import-only,
-        and libyang loads no import-only module that nothing imports, so the
-        collector's schema lacks it just as schema 628 does.
-        With the fixed library the collector passes and the consumer still fails.
+        so its identities cannot be used, and schema 628 does not reach it.
+        With the fixed library this collector, which looks up payload prefixes
+        in the library, passes. Schema 628, built by the module-version rule,
+        still fails.
         Subscription 3, the control: collector and consumer agree on pass.
 ```
 
@@ -128,7 +133,8 @@ Exit code 0 means every check matched its prediction.
 
 ## Running with another implementation
 
-`expected-results.json` lists each check with its payload, its role, its schema (a library file, or registry schema 628) and its prediction.
+`expected-results.json` says under `inputs` what to parse and how to load each schema.
+It lists each check with its payload, its role, its schema (a library file, or registry schema 628) and its prediction.
 Load the same files into your collector or consumer, run each check, and report pass or fail per check ID.
 A result that differs from the prediction is the divergence this case looks for.
 
@@ -139,3 +145,4 @@ A result that differs from the prediction is the divergence this case looks for.
 - **Revisions limit the fixed library to subscription 6.** Library 2338653103 names `huawei-devm@2026-07-23`, and the captures hold only revision 2026-06-11. Subscription 3 is checked with the advertised library only.
 - **The collector is modelled, not run.** Today's collectors build their schema from `module-version` and its dependencies, so they do not find `iana-if-type` even with the fixed library. P2 shows what a collector that looks up payload prefixes in the library would get. Running NetCalyx and NetGauze against these inputs is left for IETF 128.
 - **Parse-only.** Leafrefs and mandatory nodes are not checked.
+- **libyang uses its own revisions of four base modules.** libyang 6.4.13 builds `ietf-yang-types`, `ietf-inet-types`, `ietf-yang-revisions` and `ietf-yang-semver` into every context. An import without `revision-date` resolves to those, not to the file at the revision the library or the registry names. `validate.py` prints each such substitution. A run with every import pinned to the named revision gave the same five verdicts (checked 21 November 2026, not part of the case).

@@ -1,20 +1,26 @@
 {
   "case": "periodic",
   "not-captured": [{"module": "iana-if-type@2017-01-19", "note": "named by the library, text not captured"}],
+  "inputs": {
+    "parse": "the datastore-contents of ietf-yang-push:push-update in each payload's envelope, as top-level JSON data from the schema root (anchor null)",
+    "library": "a library file is RFC 8525 JSON; its module texts are in collector/, at the revisions it names; merge config-module and state-module into one module set",
+    "registry": "registry schema 628 is the closure in consumer/: load every module (not submodule) as implemented, with the features in consumer/features.json, then compile",
+    "mode": "parse-only checks names, types and identities, not leafrefs or mandatory nodes; parsing is strict"
+  },
   "payloads": {
     "push-update-s06.json": "Subscription 6, /ietf-interfaces:interfaces/interface, module-version ietf-interfaces",
     "push-update-s03.json": "Subscription 3, /huawei-devm:devm/physical-entitys/physical-entity, module-version huawei-devm"
   },
   "checks": [
-    {"id": "P1", "payload": "push-update-s06.json", "role": "collector", "schema": {"library": "library-2300156437.json"},
-     "description": "advertised library 2300156437", "mode": "parse-only", "predicted": "fail", "error_contains": "iana-if-type"},
-    {"id": "P2", "payload": "push-update-s06.json", "role": "collector", "schema": {"library": "library-2338653103.json"},
+    {"id": "P1", "payload": "push-update-s06.json", "kind": "parse", "anchor": null, "role": "collector", "schema": {"library": "library-2300156437.json"},
+     "description": "advertised library 2300156437", "mode": "parse-only", "predicted": "fail", "error_contains": "unable to map prefix to YANG schema"},
+    {"id": "P2", "payload": "push-update-s06.json", "kind": "parse", "anchor": null, "role": "collector", "schema": {"library": "library-2338653103.json"},
      "description": "fixed library 2338653103", "mode": "parse-only", "predicted": "pass"},
-    {"id": "P3", "payload": "push-update-s06.json", "role": "consumer", "schema": {"registry": 628},
+    {"id": "P3", "payload": "push-update-s06.json", "kind": "parse", "anchor": null, "role": "consumer", "schema": {"registry": 628},
      "description": "schema 628 and its references", "mode": "parse-only", "predicted": "fail", "error_contains": "unable to map prefix"},
-    {"id": "P4", "payload": "push-update-s03.json", "role": "collector", "schema": {"library": "library-2300156437.json"},
+    {"id": "P4", "payload": "push-update-s03.json", "kind": "parse", "anchor": null, "role": "collector", "schema": {"library": "library-2300156437.json"},
      "description": "advertised library 2300156437", "mode": "parse-only", "predicted": "pass"},
-    {"id": "P5", "payload": "push-update-s03.json", "role": "consumer", "schema": {"registry": 628},
+    {"id": "P5", "payload": "push-update-s03.json", "kind": "parse", "anchor": null, "role": "consumer", "schema": {"registry": 628},
      "description": "schema 628 and its references", "mode": "parse-only", "predicted": "pass"}
   ]
 }

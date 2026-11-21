@@ -105,6 +105,29 @@ def consumer_context() -> libyang.Context:
     return ctx
 
 
+def named_revisions(schema: dict) -> dict:
+    """The revision the library or the registry closure names for each module."""
+    if "registry" in schema:
+        return {f[:-5].split("@")[0]: f[:-5].split("@")[1] for f in os.listdir("consumer") if "@" in f}
+    with open(schema["library"], encoding="utf-8") as f:
+        sets = json.load(f)["ietf-yang-library:yang-library"]["module-set"]
+    return {m["name"]: m["revision"] for s in sets for k in ("module", "import-only-module") for m in s.get(k, [])}
+
+
+def substituted(ctx: libyang.Context, named: dict) -> list[str]:
+    """Modules libyang uses at another revision than the one named.
+
+    libyang 6.4.13 builds some base modules into every context, at its own
+    revisions. An import without revision-date then resolves to those, not
+    to the file at the revision the library or the registry names.
+    """
+    used = {}
+    for m in ctx:
+        used.setdefault(m.name(), []).append(next((str(r.date()) for r in m.revisions()), ""))
+    return [f"{name} {'/'.join(used[name])} for {rev}" for name, rev in sorted(named.items())
+            if name in used and rev not in used[name]]
+
+
 def listed(schema: dict) -> str:
     """How the library or the registry closure lists iana-if-type."""
     if "registry" in schema:
@@ -159,6 +182,9 @@ def main() -> int:
         key = schema.get("library") or f"registry {schema['registry']}"
         if key not in contexts:
             contexts[key] = collector_context(schema["library"]) if "library" in schema else consumer_context()
+            swapped = substituted(contexts[key], named_revisions(schema))
+            if swapped:
+                print(f"    {key}: libyang uses {', '.join(swapped)}")
         result, error = validate(contexts[key], contents, check)
 
         v = verdict(check, result, error)
@@ -179,9 +205,10 @@ def main() -> int:
         print("Result: subscription 6, the interfaces.")
         print("        With the advertised library, collector and consumer agree on fail,")
         print("        with the same error. The library lists iana-if-type as import-only,")
-        print("        and libyang loads no import-only module that nothing imports, so the")
-        print("        collector's schema lacks it just as schema 628 does.")
-        print("        With the fixed library the collector passes and the consumer still fails.")
+        print("        so its identities cannot be used, and schema 628 does not reach it.")
+        print("        With the fixed library this collector, which looks up payload prefixes")
+        print("        in the library, passes. Schema 628, built by the module-version rule,")
+        print("        still fails.")
         print("        Subscription 3, the control: collector and consumer agree on pass.")
     return 1 if unexpected else 0
 

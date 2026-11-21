@@ -98,6 +98,20 @@ def one_module_set(library: str) -> tuple[str, list[str]]:
     return out.name, skipped
 
 
+def substituted(ctx: libyang.Context, named: dict) -> list[str]:
+    """Modules libyang uses at another revision than the one named.
+
+    libyang 6.4.13 builds some base modules into every context, at its own
+    revisions. An import without revision-date then resolves to those, not
+    to the file at the revision the library or the registry names.
+    """
+    used = {}
+    for m in ctx:
+        used.setdefault(m.name(), []).append(next((str(r.date()) for r in m.revisions()), ""))
+    return [f"{name} {'/'.join(used[name])} for {rev}" for name, rev in sorted(named.items())
+            if name in used and rev not in used[name]]
+
+
 def validate(ctx: libyang.Context, value: str, check: dict) -> tuple[str, str]:
     """Parse the value and return ("pass", "") or ("fail", libyang's error)."""
     if check["as_notification"]:
@@ -187,6 +201,12 @@ def main() -> int:
         if skipped:
             print(f"Not found, left out: {', '.join(skipped)}")
         with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
+            with open(library_file, encoding="utf-8") as f:
+                sets = json.load(f)["ietf-yang-library:yang-library"]["module-set"]
+            named = {m["name"]: m["revision"] for s in sets for k in ("module", "import-only-module") for m in s.get(k, [])}
+            swapped = substituted(ctx, named)
+            if swapped:
+                print(f"libyang uses {', '.join(swapped)}")
             unexpected += run_checks(ctx, expected, checks)
         print()
     if unexpected:

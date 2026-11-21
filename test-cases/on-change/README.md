@@ -113,6 +113,7 @@ The [mxyns/libyang `feature/anydata-schema-anchor`](https://github.com/mxyns/lib
 ```text
 Library: library-2300156437.json, the advertised library, named by every subscription-started; iana-if-type import-only
 Not found, left out: huawei-ietf-alarms-deviations-NE8000-F1A
+libyang uses ietf-yang-types 2025-12-22 for 2013-07-15
 
 Interface edit, subscription 11
    target: /ietf-interfaces:interfaces/interface[name=100GE0/1/2]
@@ -143,6 +144,7 @@ G1  in the RFC 8040 encoding of RFC 8072                            fail  (predi
 
 Library: library-2338653103.json, the fixed library, published with the IETF 127 capture; iana-if-type implemented
 Not found, left out: huawei-ietf-alarms-deviations-NE8000-F1A
+libyang uses ietf-yang-types 2025-12-22 for 2013-07-15
 
 Interface edit, subscription 11
    target: /ietf-interfaces:interfaces/interface[name=100GE0/1/2]
@@ -192,4 +194,5 @@ Exit code 0 means every check matched its prediction.
 - **Parse-only.** Apart from H2, leafrefs and mandatory nodes are not checked. H2 shows that full validation of a one-entry value fails on `higher-layer-if`.
 - **Where the modules come from.** `ietf-interfaces`, `ietf-yang-types` and `huawei-ietf-interfaces-deviations-NE8000-F1A@2026-02-24` are byte-identical to the files the router served to NetCalyx, in the receiver cache `127/Hackathon/mb-alive-test-result/netcalyx/netcalyx-yangpush-receiver/alive-netcalyx-receiver-cache-content.tar.gz` in the capture repository. Huawei's own [YANG repository](https://github.com/Huawei/yang) has the interface deviation only at revision 2021-05-07. No receiver cache has `iana-if-type` or `ietf-alarms`, because neither is named in `module-version` or imported: `iana-if-type@2017-01-19` is the IANA module at the revision the library lists, as nl6 ships it, and `ietf-alarms@2019-09-11` comes from [YangModels](https://github.com/YangModels/yang). Both are named by the library, but their text is not captured. `expected-results.json` lists them under `not-captured`.
 - **Missing alarm modules.** `huawei-ietf-alarms-deviations-NE8000-F1A` is not in the capture repository, its receiver and consumer caches of IETF 126 and 127, or Huawei's YANG repository (checked 21 November 2026). The module that defines `LLDP_REMTABLECHANGE` is unknown. Checks D1 and D2 can only be settled with them.
+- **libyang uses its own revision of `ietf-yang-types`.** libyang 6.4.13 builds `ietf-yang-types@2025-12-22` into every context, and the import in `ietf-interfaces` has no `revision-date`, so it resolves to that instead of the 2013-07-15 file in `yang/`. `validate.py` prints the substitution.
 - **Third edit not tested.** Subscription 17 sends an LLDP `delete` edit, which has no value to validate.
