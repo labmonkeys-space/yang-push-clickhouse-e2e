@@ -23,56 +23,31 @@ import json
 import os
 import sys
 import tempfile
-from dataclasses import dataclass
 
 import libyang
 
-# The router's YANG library, published with the IETF 127 capture.
-# It lists iana-if-type as implemented, so the interface identity resolves.
-LIBRARY = "library-2338653103.json"
+# The checks, their inputs and their predictions. Another implementation
+# can run the same checks from this file and compare per check ID.
+EXPECTED = "expected-results.json"
 
 
-@dataclass
-class Edit:
-    title: str
-    path: str
+def load_expected(path: str) -> dict:
+    """Read the checks; a predicted fail must name part of libyang's error."""
+    with open(path, encoding="utf-8") as f:
+        expected = json.load(f)
+    for check in expected["checks"]:
+        if check["predicted"] == "fail" and not check.get("error_contains"):
+            raise ValueError(f"check {check['id']}: a predicted fail needs error_contains")
+    return expected
 
 
-INTERFACE = Edit("Interface edit, subscription 11", "edit-interface.json")
-ALARM = Edit("Alarm edit, subscription 19", "edit-alarm.json")
-
-
-@dataclass
-class Case:
-    name: str
-    edit: Edit
-    description: str
-    read_from: str | None  # data node to parse under; None is the schema root
-    as_notification: bool  # parse as a YANG notification instead of datastore content
-    predicted: str  # "pass" or "fail"
-
-
-CASES = [
-    Case("A", INTERFACE, "read from the schema root, as collectors do today", None, False, "fail"),
-    Case("B", INTERFACE, "read from the target's parent, the draft's anchor", "/ietf-interfaces:interfaces", False, "pass"),
-    Case("C", ALARM, "read from the schema root, the anchor of a top-level target", None, False, "fail"),
-    Case("D", ALARM, "read as a YANG notification instead", None, True, "fail"),
-]
-
-
-@dataclass
-class Target:
-    name: str
-    description: str
-    path: str
-    predicted: str  # "pass" or "fail"
-
-
-TARGETS = [
-    Target("E", "as the router sends it", "/ietf-interfaces:interfaces/interface[name=100GE0/1/2]", "fail"),
-    Target("F", "with a quoted key", "/ietf-interfaces:interfaces/interface[name='100GE0/1/2']", "pass"),
-    Target("G", "in the RFC 8040 encoding of RFC 8072", "/ietf-interfaces:interfaces/interface=100GE0%2F1%2F2", "fail"),
-]
+def verdict(check: dict, result: str, error: str) -> str:
+    """ok when the result matches, and a fail fails for the predicted reason."""
+    if result != check["predicted"]:
+        return "UNEXPECTED"
+    if result == "fail" and check["error_contains"] not in error:
+        return "UNEXPECTED"
+    return "ok"
 
 
 def one_module_set(library: str) -> tuple[str, list[str]]:
@@ -122,9 +97,9 @@ def one_module_set(library: str) -> tuple[str, list[str]]:
     return out.name, skipped
 
 
-def validate(ctx: libyang.Context, value: str, case: Case) -> tuple[str, str]:
+def validate(ctx: libyang.Context, value: str, check: dict) -> tuple[str, str]:
     """Parse the value and return ("pass", "") or ("fail", libyang's error)."""
-    if case.as_notification:
+    if check["as_notification"]:
         try:
             ctx.parse_op("json", libyang.IOType.MEMORY, value, dtype=libyang.DataType.NOTIF_YANG)
             return "pass", ""
@@ -132,7 +107,7 @@ def validate(ctx: libyang.Context, value: str, case: Case) -> tuple[str, str]:
             return "fail", str(e).split(": ", 1)[-1]
 
     # The value is parsed as children of this node, or as top-level data.
-    parent = ctx.create_data_path(case.read_from) if case.read_from else None
+    parent = ctx.create_data_path(check["anchor"]) if check["anchor"] else None
     tree = None
     try:
         tree = ctx.parse_data("json", libyang.IOType.MEMORY, value, parent=parent, parse_only=True, strict=True)
@@ -165,43 +140,44 @@ def describe(edit: dict) -> str:
 
 
 def main() -> int:
-    library, skipped = one_module_set(LIBRARY)
-    print(f"Library: {LIBRARY} (iana-if-type implemented)")
+    expected = load_expected(EXPECTED)
+    checks = expected["checks"]
+    library_file = checks[0]["library"]
+    library, skipped = one_module_set(library_file)
+    print(f"Library: {library_file} (iana-if-type implemented)")
     if skipped:
         print(f"Not found, left out: {', '.join(skipped)}")
 
     unexpected = 0
     with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
         current = None
-        for case in CASES:
-            if case.edit is not current:
-                current = case.edit
-                with open(case.edit.path, encoding="utf-8") as f:
-                    edit = json.load(f)
-                value = json.dumps(edit["value"])
-                print()
-                print(case.edit.title)
-                print(f"   target: {edit['target']}")
-                print(f"   value:  {describe(edit)}")
+        for check in checks:
+            if check["kind"] == "parse":
+                if check["edit"] != current:
+                    current = check["edit"]
+                    with open(current, encoding="utf-8") as f:
+                        edit = json.load(f)
+                    value = json.dumps(edit["value"])
+                    print()
+                    print(expected["edits"][current])
+                    print(f"   target: {edit['target']}")
+                    print(f"   value:  {describe(edit)}")
+                result, error = validate(ctx, value, check)
+            else:
+                if current != "resolve":
+                    current = "resolve"
+                    print()
+                    print("Interface target, resolved as XPath like the NetCalyx anchor branch")
+                result, error = resolve(ctx, check["path"])
 
-            result, error = validate(ctx, value, case)
-            verdict = "ok" if result == case.predicted else "UNEXPECTED"
-            if result != case.predicted:
+            v = verdict(check, result, error)
+            if v != "ok":
                 unexpected += 1
-            print(f"{case.name}  {case.description:62}  {result:4}  (predicted {case.predicted}, {verdict})")
+            print(f"{check['id']}  {check['description']:62}  {result:4}  (predicted {check['predicted']}, {v})")
+            if check["kind"] == "resolve":
+                print(f"   {check['path']}")
             if error:
                 print(f"   {error[:150]}")
-
-        print()
-        print("Interface target, resolved as XPath like the NetCalyx anchor branch")
-        for target in TARGETS:
-            result, detail = resolve(ctx, target.path)
-            verdict = "ok" if result == target.predicted else "UNEXPECTED"
-            if result != target.predicted:
-                unexpected += 1
-            print(f"{target.name}  {target.description:62}  {result:4}  (predicted {target.predicted}, {verdict})")
-            print(f"   {target.path}")
-            print(f"   {detail[:150]}")
 
     print()
     if unexpected:
