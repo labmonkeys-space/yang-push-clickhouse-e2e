@@ -1,0 +1,15 @@
+{
+  "target": "/ietf-alarms:alarm-notification",
+  "value": {
+    "ietf-alarms:alarm-notification": {
+      "resource": "",
+      "alarm-type-id": "LLDP_REMTABLECHANGE",
+      "alt-resource": [
+        "1.0.8802.1.1.2.0.0.1"
+      ],
+      "time": "2026-09-10T11:50:42Z",
+      "perceived-severity": "warning",
+      "alarm-text": "LLDP neighbor information was changed. (Added=0, Deleted=0, Dropped=0, Aged=1)"
+    }
+  }
+}

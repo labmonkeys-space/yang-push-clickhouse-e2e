@@ -214,7 +214,7 @@ That needs YANG-Push as an nl6 load-test scenario protocol, so `nl6-reconcile` c
    Subscription 9 push-updates: the registered schema lacks `iana-if-type`, so libyang cannot resolve `iana-if-type:ethernetCsmacd`.
    NetCalyx builds a reduced library from the modules named in `module-version`, their imports and `augmented-by` entries. `iana-if-type` is none of those, so NetCalyx never fetches it from the device.
    Subscription 10 on-change updates: the YANG Patch value is rooted at the `interface` list, which is not a top-level node.
-   [test-cases/on-change](test-cases/on-change) checks that value from the IETF 127 capture with libyang: read from the parent of the edit target, it passes.
+   [test-cases/on-change](test-cases/on-change) checks the on-change values of the IETF 127 capture with libyang: the interface value passes when read from the parent of the edit target.
    `make verify` reports these messages as a known finding and does not fail on them.
 3. **The NetCalyx `.deb` ships no YANG assets.**
    The YANG producer needs `assets/yang/ietf-telemetry-message`, so the image adds it from the NetCalyx repository at the release commit.

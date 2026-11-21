@@ -1,6 +1,6 @@
 # Copyright 2026 Ronny Trommer <ronny@no42.org>
 # SPDX-License-Identifier: MIT
-"""Copy the entries of four modules from a router's YANG library reply into RFC 8525 JSON.
+"""Copy the entries of the modules the two edits need from a router's YANG library reply into RFC 8525 JSON.
 
 Usage: extract_lib.py <get-yang-library.xml> <out.json>
 Keeps the router's module-set, schema and datastore names, features and deviations.
@@ -10,7 +10,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 NS = "{urn:ietf:params:xml:ns:yang:ietf-yang-library}"
-WANT = ["ietf-interfaces", "huawei-ietf-interfaces-deviations-NE8000-F1A", "ietf-yang-types", "iana-if-type"]
+WANT = ["ietf-interfaces", "huawei-ietf-interfaces-deviations-NE8000-F1A", "ietf-yang-types", "iana-if-type", "ietf-alarms"]
 
 
 def txt(e, tag):

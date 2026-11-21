@@ -37,6 +37,14 @@
             "name": "iana-if-type",
             "revision": "2017-01-19",
             "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type"
+          },
+          {
+            "name": "ietf-alarms",
+            "revision": "2019-09-11",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-alarms",
+            "deviation": [
+              "huawei-ietf-alarms-deviations-NE8000-F1A"
+            ]
           }
         ],
         "import-only-module": [
@@ -101,6 +109,18 @@
         "revision": "2017-01-19",
         "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type",
         "conformance-type": "implement"
+      },
+      {
+        "name": "ietf-alarms",
+        "revision": "2019-09-11",
+        "namespace": "urn:ietf:params:xml:ns:yang:ietf-alarms",
+        "conformance-type": "implement",
+        "deviation": [
+          {
+            "name": "huawei-ietf-alarms-deviations-NE8000-F1A",
+            "revision": "2025-02-24"
+          }
+        ]
       }
     ]
   }
