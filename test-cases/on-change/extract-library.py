@@ -2,10 +2,12 @@
 # SPDX-License-Identifier: MIT
 """Copy the entries of the modules the two edits need from a router's YANG library reply into RFC 8525 JSON.
 
-Usage: extract_lib.py <get-yang-library.xml> <out.json>
+Usage: extract-library.py <get-yang-library.xml> <out.json>
 Keeps the router's module-set, schema and datastore names, features and deviations.
+Fails when yang/ has no file at a revision the library names.
 """
 import json
+import os
 import sys
 import xml.etree.ElementTree as ET
 
@@ -73,6 +75,14 @@ for set_name in texts(schema, "module-set"):
     implemented += [x["name"] for x in mods]
     import_only += [x["name"] for x in imps]
 assert set(implemented + import_only) == set(WANT), implemented + import_only
+
+# Every module must have its file at the revision the library names,
+# or libyang would load a module the router never advertised.
+yang_dir = os.path.join(os.path.dirname(os.path.abspath(sys.argv[2])), "yang")
+wrong = [f"{m['name']}@{m.get('revision', '')}" for s in out_sets for m in s.get("module", []) + s.get("import-only-module", [])
+         if not os.path.exists(os.path.join(yang_dir, f"{m['name']}@{m.get('revision', '')}.yang"))]
+if wrong:
+    sys.exit(f"no file in yang/ at the revision the library names: {', '.join(wrong)}")
 
 legacy = []
 for m in legacy_root.findall(NS + "module"):

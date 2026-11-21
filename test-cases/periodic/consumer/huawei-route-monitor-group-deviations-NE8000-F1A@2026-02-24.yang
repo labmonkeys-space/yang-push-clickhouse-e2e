@@ -1,0 +1,65 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-route-monitor-group-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-route-monitor-group-deviations-NE8000-F1A";
+  prefix rmg-devs-NE8000-F1A;
+
+  import huawei-route-monitor-group {
+    prefix rmg;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-route-monitor-group module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/rmg:route-monitor-group/rmg:monitor-groups/rmg:monitor-group/rmg:operator-and" {
+    deviate not-supported;
+  }
+  deviation "/rmg:route-monitor-group/rmg:monitor-groups/rmg:monitor-group/rmg:trigger-down-delay" {
+    deviate not-supported;
+  }
+  deviation "/rmg:route-monitor-group/rmg:monitor-group6s/rmg:monitor-group6/rmg:operator-and" {
+    deviate not-supported;
+  }
+  deviation "/rmg:route-monitor-group/rmg:monitor-group6s/rmg:monitor-group6/rmg:trigger-down-delay" {
+    deviate not-supported;
+  }
+  deviation "/rmg:route-monitor-group/rmg:monitor-groups/rmg:monitor-group" {
+    deviate replace {
+      max-elements 32;
+    }
+  }
+  deviation "/rmg:route-monitor-group/rmg:monitor-groups/rmg:monitor-group/rmg:track-routes/rmg:track-route" {
+    deviate replace {
+      max-elements 16;
+    }
+  }
+  deviation "/rmg:route-monitor-group/rmg:monitor-group6s/rmg:monitor-group6" {
+    deviate replace {
+      max-elements 32;
+    }
+  }
+  deviation "/rmg:route-monitor-group/rmg:monitor-group6s/rmg:monitor-group6/rmg:track-routes/rmg:track-route" {
+    deviate replace {
+      max-elements 16;
+    }
+  }
+}
+
+  

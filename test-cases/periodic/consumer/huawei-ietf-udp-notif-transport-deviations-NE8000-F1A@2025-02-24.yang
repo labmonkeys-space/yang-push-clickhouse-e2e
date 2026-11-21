@@ -1,0 +1,65 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ietf-udp-notif-transport-deviations-NE8000-F1A {
+  yang-version 1.1;
+  namespace "urn:huawei:yang:huawei-ietf-udp-notif-transport-deviations-NE8000-F1A";
+  prefix unt-devs-NE8000-F1A;
+
+  import ietf-udp-notif-transport {
+    prefix unt;
+  }
+  import ietf-subscribed-notif-receivers {
+    prefix snr;
+  }
+  import ietf-subscribed-notifications {
+    prefix sn;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for ietf-udp-notif-transport module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/sn:subscriptions/snr:receiver-instances/snr:receiver-instance/snr:transport-type/unt:udp-notif/unt:udp-notif-receiver/unt:local-address" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscriptions/snr:receiver-instances/snr:receiver-instance/snr:transport-type/unt:udp-notif/unt:udp-notif-receiver/unt:local-port" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscriptions/snr:receiver-instances/snr:receiver-instance/snr:transport-type/unt:udp-notif/unt:udp-notif-receiver/unt:dtls" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscriptions/snr:receiver-instances/snr:receiver-instance/snr:transport-type/unt:udp-notif/unt:udp-notif-receiver/unt:remote-port" {
+    deviate replace {
+      type uint16 {
+        range "1..65535";
+      }
+    }
+  }
+  deviation "/sn:subscriptions/snr:receiver-instances/snr:receiver-instance/snr:transport-type/unt:udp-notif/unt:udp-notif-receiver/unt:max-segment-size" {
+    deviate replace {
+      type uint16 {
+        range "1000..65535";
+      }
+    }
+    deviate add {
+      default "1280";
+    }
+  }
+}
+
+  

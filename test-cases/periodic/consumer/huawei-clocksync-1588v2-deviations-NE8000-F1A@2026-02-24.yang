@@ -1,0 +1,257 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-clocksync-1588v2-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-clocksync-1588v2-deviations-NE8000-F1A";
+  prefix clocksync-1588v2-devs-NE8000-F1A;
+
+  import huawei-clocksync-1588v2 {
+    prefix clocksync-1588v2;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-clocksync-1588v2 module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef ptp-primary-state-deviations {
+    type enumeration {
+      enum master {
+        value 1;
+        description
+          "Master.";
+      }
+      enum slave {
+        value 2;
+        description
+          "Slave.";
+      }
+    }
+    description
+      "Preselected state of ptp port.";
+  }
+
+  typedef ptp-bits-direction-deviations {
+    type enumeration {
+      enum in {
+        value 0;
+        description
+          "In.";
+      }
+      enum out {
+        value 1;
+        description
+          "Out.";
+      }
+    }
+    description
+      "Direction of ptp bits.";
+  }
+
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-accuracy/clocksync-1588v2:class-d" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:bmc-quality-cf-enable" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:fmea-degrade" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:ptp-role" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-bits-srcs/clocksync-1588v2:ptp-bits-src/clocksync-1588v2:standby-measure-enable" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-active-lic-slots" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-port-stats/clocksync-1588v2:ptp-port-stat/clocksync-1588v2:ptp-port-pkt-stat/clocksync-1588v2:port-tc-pkt" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-port-stats/clocksync-1588v2:ptp-port-stat/clocksync-1588v2:ptp-port-pkt-stat/clocksync-1588v2:port-hsr-pkt" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:clk-interface-capabilitys" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:device-sync-capabilities" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-hsr-port-infos" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:fmea-fault-ports" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-prp-port-infos" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/clocksync-1588v2:ptp-port-srcs/clocksync-1588v2:ptp-port-advance/clocksync-1588v2:c37-238-profile-enable" {
+    deviate not-supported;
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:profile" {
+    deviate add {
+      must "((../uhpc-enable='false' and ../profile='SMPTE2059-2') or ../profile!='SMPTE2059-2')";
+    }
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:passive-alarm-threshold" {
+    deviate delete {
+      default "600";
+    }
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:std-time-port" {
+    deviate add {
+      must "((../../ptp-bits-srcs/ptp-bits-src[clocksync-1588v2:bits-name=current()]/clocksync-1588v2:bits-direction='in') and (../../ptp-bits-srcs/ptp-bits-src[clocksync-1588v2:bits-name=current()]/clocksync-1588v2:bits-signal='1pps')) or ((../../ptp-bits-srcs/ptp-bits-src[clocksync-1588v2:bits-name=current()]/clocksync-1588v2:bits-signal='dcls') and (../../ptp-bits-srcs/ptp-bits-src[clocksync-1588v2:bits-name=current()]/clocksync-1588v2:bits-direction!='out'))";
+    }
+    deviate replace {
+      type leafref {
+        path "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-bits-srcs/clocksync-1588v2:ptp-bits-src/clocksync-1588v2:bits-name";
+      }
+    }
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:offset-sum-alm-thd" {
+    deviate delete {
+      default "2000";
+    }
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:std-offset-alm-thd" {
+    deviate delete {
+      default "1000";
+    }
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-bits-srcs/clocksync-1588v2:ptp-bits-src/clocksync-1588v2:bits-signal" {
+    deviate add {
+      must "(../bits-signal='1pps' and (../bits-direction='in' or ../bits-direction='out')) or (../bits-signal='dcls')";
+    }
+  }
+  deviation "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-bits-srcs/clocksync-1588v2:ptp-bits-src/clocksync-1588v2:bits-direction" {
+    deviate replace {
+      type clocksync-1588v2-devs-NE8000-F1A:ptp-bits-direction-deviations;
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/clocksync-1588v2:ptp-port-srcs/clocksync-1588v2:ptp-port-advance/clocksync-1588v2:delay-mechanism" {
+    deviate delete {
+      default "delay";
+    }
+    deviate delete {
+      must "((((/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='bc') or (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='oc') or (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='tcandbc')) and (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:ptp-litesync!='sub-ms') and (../delay-mechanism='pdelay')) or (../delay-mechanism='delay'))";
+    }
+    deviate add {
+      must "((((/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='bc') or (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='oc') or (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='tcandbc') or (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='p2ptc') or (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='p2ptcoc')) and (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:ptp-litesync!='sub-ms') and (../delay-mechanism='pdelay')) or ((../delay-mechanism='delay') and (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type!='p2ptc') and (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type!='p2ptcoc')))";
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/clocksync-1588v2:ptp-port-srcs/clocksync-1588v2:ptp-port-advance/clocksync-1588v2:port-pre-state" {
+    deviate replace {
+      type clocksync-1588v2-devs-NE8000-F1A:ptp-primary-state-deviations;
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/clocksync-1588v2:ptp-port-srcs/clocksync-1588v2:ptp-port-advance/clocksync-1588v2:clk-step" {
+    deviate add {
+      must "((../clocksync-1588v2:clk-step='onestep') and (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:uhpc-enable='false')) or ((../clocksync-1588v2:clk-step='twostep') and ((/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='oc') or (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='bc') or (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='t-bc') or (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='tcandbc' and ../clocksync-1588v2:port-type-set!='tc')))";
+    }
+  }
+  ext:deviation-ext "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:passive-alarm-threshold" {
+    ext:deviate-ext "add" {
+      ext:dynamic-default {
+        ext:default-value "600" {
+          when "../clocksync-1588v2:uhpc-enable='false'";
+          description
+            "The default value is 600 when uhpc is disabled.";
+        }
+        ext:default-value "200" {
+          when "../clocksync-1588v2:uhpc-enable='true'";
+          description
+            "The default value is 200 when uhpc is enabled.";
+        }
+      }
+    }
+  }
+  ext:deviation-ext "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:offset-sum-alm-thd" {
+    ext:deviate-ext "add" {
+      ext:dynamic-default {
+        ext:default-value "2000" {
+          when "../clocksync-1588v2:uhpc-enable='false'";
+          description
+            "The default value is 2000 when uhpc is disabled.";
+        }
+        ext:default-value "500" {
+          when "../clocksync-1588v2:uhpc-enable='true'";
+          description
+            "The default value is 500 when uhpc is enabled.";
+        }
+      }
+    }
+  }
+  ext:deviation-ext "/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:std-offset-alm-thd" {
+    ext:deviate-ext "add" {
+      ext:dynamic-default {
+        ext:default-value "1000" {
+          when "../clocksync-1588v2:uhpc-enable='false'";
+          description
+            "The default value is 1000 when uhpc is disabled.";
+        }
+        ext:default-value "200" {
+          when "../clocksync-1588v2:uhpc-enable='true'";
+          description
+            "The default value is 200 when uhpc is enabled.";
+        }
+      }
+    }
+  }
+  ext:deviation-ext "/ifm:ifm/ifm:interfaces/ifm:interface/clocksync-1588v2:ptp-port-srcs/clocksync-1588v2:ptp-port-advance/clocksync-1588v2:delay-mechanism" {
+    ext:deviate-ext "add" {
+      ext:dynamic-default {
+        ext:default-value "pdelay" {
+          when "(/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='p2ptc') or
+                (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type='p2ptcoc')";
+          description
+            "The default value is pdelay when the device-type is p2ptc or p2ptcoc.";
+        }
+        ext:default-value "delay" {
+          when "(/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type!='p2ptc') and
+                (/clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:device-type!='p2ptcoc')";
+          description
+            "The default value is delay when the device-type is neither p2ptc nor p2ptcoc.";
+        }
+      }
+    }
+  }
+  ext:deviation-ext "/ifm:ifm/ifm:interfaces/ifm:interface/clocksync-1588v2:ptp-port-srcs/clocksync-1588v2:ptp-port-advance/clocksync-1588v2:clk-step" {
+    ext:deviate-ext "replace" {
+      ext:dynamic-default {
+        ext:default-value "twostep" {
+          when "(/ifm:ifm/ifm:interfaces/ifm:interface/ifm:type = 'HP-GE' or /clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:uhpc-enable = 'true')";
+          description
+            "The default value is twostep when interface is hpge or uhpc is enabled.";
+        }
+        ext:default-value "onestep" {
+          when "(/ifm:ifm/ifm:interfaces/ifm:interface/ifm:type != 'HP-GE' and /clocksync-1588v2:clocksync-1588v2/clocksync-1588v2:ptp-common/clocksync-1588v2:uhpc-enable = 'false')";
+          description
+            "The default value is onestep when interface is not hpge and uhpc is disabled.";
+        }
+      }
+    }
+  }
+}
+
+  

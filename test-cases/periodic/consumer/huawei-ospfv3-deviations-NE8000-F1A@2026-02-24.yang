@@ -1,0 +1,225 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ospfv3-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ospfv3-deviations-NE8000-F1A";
+  prefix ospfv3-devs-NE8000-F1A;
+
+  import huawei-ospfv3 {
+    prefix ospfv3;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-if-ip {
+    prefix if-ip;
+  }
+  import huawei-ip {
+    prefix ip;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-ospfv3 module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef end-behavior-deviations {
+    type enumeration {
+      enum end-with-no-flavor {
+        value 1;
+        description
+          "End with NO-FLAVOR.";
+      }
+      enum end-with-psp {
+        value 2;
+        description
+          "End with PSP.";
+      }
+      enum end-with-usp {
+        value 3;
+        description
+          "End with USP.";
+      }
+      enum end-with-psp-usp {
+        value 4;
+        description
+          "End with PSP and USP.";
+      }
+      enum endx-with-no-flavor {
+        value 5;
+        description
+          "End.X with NO-FLAVOR.";
+      }
+      enum endx-with-psp {
+        value 6;
+        description
+          "End.X with PSP.";
+      }
+      enum endx-with-usp {
+        value 7;
+        description
+          "End.X with USP.";
+      }
+      enum endx-with-psp-usp {
+        value 8;
+        description
+          "End.X with PSP and USP.";
+      }
+      enum endt {
+        value 9;
+        description
+          "End.T.";
+      }
+      enum endt-with-psp {
+        value 10;
+        description
+          "End.T with PSP.";
+      }
+      enum endt-with-usp {
+        value 11;
+        description
+          "End.T with USP.";
+      }
+      enum endt-with-psp-usp {
+        value 12;
+        description
+          "End.T with PSP and USP.";
+      }
+      enum end-with-usp-usd {
+        value 30;
+        description
+          "End with USP USD.";
+      }
+      enum end-with-psp-usp-usd {
+        value 31;
+        description
+          "End with PSP USP USD.";
+      }
+      enum endx-with-usp-usd {
+        value 34;
+        description
+          "End.X with USP USD.";
+      }
+      enum endx-with-psp-usp-usd {
+        value 35;
+        description
+          "End.X with PSP USP USD.";
+      }
+      enum unknown {
+        value 0;
+        description
+          "Unknown.";
+      }
+    }
+    description
+      "End behavior type.";
+  }
+
+  deviation "/ospfv3:ospfv3/ospfv3:advertise-max-cost" {
+    deviate not-supported;
+  }
+  deviation "/ospfv3:ospfv3/ospfv3:hrp-route-tag" {
+    deviate not-supported;
+  }
+  deviation "/ospfv3:ospfv3/ospfv3:hrp-route-match-discard" {
+    deviate not-supported;
+  }
+  deviation "/ospfv3:ospfv3/ospfv3:hrp-peer-infos" {
+    deviate not-supported;
+  }
+  deviation "/ospfv3:reset-redistribution" {
+    deviate not-supported;
+  }
+  deviation "/ospfv3:reset-counter" {
+    deviate not-supported;
+  }
+  deviation "/ospfv3:reset-process" {
+    deviate not-supported;
+  }
+  deviation "/ospfv3:reset-peer" {
+    deviate not-supported;
+  }
+  deviation "/ospfv3:reset-frr" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:sham-hello" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:cost-bindings" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:areas/ospfv3:area/ospfv3:network-lsa-delete-delay" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:areas/ospfv3:area/ospfv3:interfaces/ospfv3:interface/ospfv3:bfd/ospfv3:per-link-flag" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:areas/ospfv3:area/ospfv3:interfaces/ospfv3:interface/ospfv3:bfd/ospfv3:one-arm-echo-flag" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:nexthop-weights/ospfv3:nexthop-weight/ospfv3:if-name" {
+    deviate delete {
+      must '/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ip:ipv6';
+    }
+    deviate add {
+      must '/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ip:ipv6 or /ni:network-instance/ni:instances/ni:instance/if-ip:ipv6-ifs/if-ip:ipv6-if[if-ip:name=current()/../ospfv3:if-name]';
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:silent-interfaces/ospfv3:silent-interface/ospfv3:if-name" {
+    deviate delete {
+      must '/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ip:ipv6';
+    }
+    deviate add {
+      must '/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ip:ipv6 or /ni:network-instance/ni:instances/ni:instance/if-ip:ipv6-ifs/if-ip:ipv6-if[if-ip:name=current()/../ospfv3:if-name]';
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:undo-silent-interfaces/ospfv3:undo-silent-interface/ospfv3:if-name" {
+    deviate delete {
+      must '/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ip:ipv6';
+    }
+    deviate add {
+      must '/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ip:ipv6 or /ni:network-instance/ni:instances/ni:instance/if-ip:ipv6-ifs/if-ip:ipv6-if[if-ip:name=current()/../ospfv3:if-name]';
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:areas/ospfv3:area/ospfv3:interfaces/ospfv3:interface/ospfv3:name" {
+    deviate delete {
+      must '/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ip:ipv6';
+    }
+    deviate add {
+      must '/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ip:ipv6 or /ni:network-instance/ni:instances/ni:instance/if-ip:ipv6-ifs/if-ip:ipv6-if[if-ip:name=current()/../ospfv3:name]';
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:lsdb-statistics/ospfv3:lsdb-statistic/ospfv3:locator-tlvs/ospfv3:locator-tlv/ospfv3:end-sids/ospfv3:end-sid/ospfv3:behavior" {
+    deviate replace {
+      type ospfv3-devs-NE8000-F1A:end-behavior-deviations;
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:lsdb-statistics/ospfv3:lsdb-statistic/ospfv3:router-link-tlvs/ospfv3:router-link-tlv/ospfv3:endx-sids/ospfv3:endx-sid/ospfv3:behavior" {
+    deviate replace {
+      type ospfv3-devs-NE8000-F1A:end-behavior-deviations;
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:lsdb-statistics/ospfv3:lsdb-statistic/ospfv3:router-link-tlvs/ospfv3:router-link-tlv/ospfv3:lan-endx-sids/ospfv3:lan-endx-sid/ospfv3:behavior" {
+    deviate replace {
+      type ospfv3-devs-NE8000-F1A:end-behavior-deviations;
+    }
+  }
+}
+
+  

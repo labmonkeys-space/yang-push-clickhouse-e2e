@@ -1,0 +1,70 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-vaccess-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-vaccess-deviations-NE8000-F1A";
+  prefix vaccess-devs-NE8000-F1A;
+
+  import huawei-vaccess {
+    prefix vaccess;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-vaccess module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef vaccess-va-role-deviations {
+    type enumeration {
+      enum default {
+        value 0;
+        description
+          "The default value of virtual access node type.";
+      }
+      enum ap {
+        value 2;
+        description
+          "Virtual access node type is ap.";
+      }
+    }
+    description
+      "The role of virtual access node.";
+  }
+
+  deviation "/vaccess:vaccess/vaccess:global/vaccess:port-extend-enable" {
+    deviate add {
+      must "../port-extend-enable='false'";
+    }
+  }
+  deviation "/vaccess:vaccess/vaccess:global/vaccess:port-extend-flexe-enable" {
+    deviate add {
+      must "../port-extend-flexe-enable='false'";
+    }
+  }
+  deviation "/vaccess:vaccess/vaccess:global/vaccess:role" {
+    deviate delete {
+      must "(../role='default') or (../enable='true' and ../role='ap') or (../port-extend-enable='true' and ../role='master') or (../port-extend-flexe-enable='true' and ../role='master')";
+    }
+    deviate add {
+      must "(../role='default') or (../enable='true' and ../role='ap')";
+    }
+    deviate replace {
+      type vaccess-devs-NE8000-F1A:vaccess-va-role-deviations;
+    }
+  }
+}
+
+  

@@ -1,0 +1,541 @@
+/*
+Copyright (C) 2020-2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-bgp-rpd {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-bgp-rpd";
+  prefix bgp-rpd;
+  import huawei-extension {
+    prefix ext;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import huawei-pub-type {
+    prefix pub-type;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-bgp {
+    prefix bgp;
+  }
+  import huawei-bgp-routing-table {
+    prefix bgp-rt;
+  }
+  import huawei-routing-adjust-policy {
+    prefix ra-policy;
+  }
+  import huawei-routing-adjust-topo {
+    prefix ra-topo;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+  description
+    "Inter-AS routing protocol that exchanges Network Layer Reachability Information (NLRI) with other BGP systems.";
+  revision 2025-03-06 {
+    description
+      "Add reflect-between-client leaf. Add reflect-client leaf. Added the when condition for the rpd node.";
+    reference "Huawei private.";
+  }
+  revision 2024-02-04 {
+    description
+      "Add routing-adjust container. Add routing-adjust-topology-state container.";
+    reference "Huawei private.";
+  }
+  revision 2023-11-21 {
+    description
+      "Modify the description of single-group-detection-threshold.";
+    reference "Huawei private.";
+  }
+  revision 2023-06-02 {
+    description
+      "Modify the attribute node.";
+    reference "Huawei private.";
+  }
+  revision 2022-01-25 {
+    description
+      "Add rpd routing table.";
+    reference "Huawei private.";
+  }
+  revision 2020-08-30 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  grouping routing-table-prefix {
+    description
+      "BGP routing-table attributes.";
+    leaf prefix {
+      type string {
+        length "1..100";
+      }
+      description
+        "BGP route prefix.";
+    }
+  }
+  grouping routing-table-key-type {
+    description
+      "BGP routing-table attributes.";
+    uses bgp-rt:routing-table-vpn-name;
+    uses routing-table-prefix;
+    uses bgp-rt:routing-table-im-table-id;
+    uses bgp-rt:routing-table-from;
+  }
+  grouping worse-reason {
+    description
+      "Reason why a route is not selected.";
+    leaf worse-reason {
+      type string {
+        length "1..50";
+      }
+      description
+        "Reason why a route is not selected.";
+    }
+  }
+  grouping advertise-nexthop {
+    description
+      "BGP routing-table attributes.";
+    leaf advertise-nexthop {
+      type inet:ip-address-no-zone;
+      description
+        "Advertise next hop.";
+    }
+  }
+  grouping routing-table-prefix-peer {
+    description
+      "BGP routing-table attributes.";
+    uses routing-table-key-type;
+    leaf flag-string {
+      type string {
+        length "1..100";
+      }
+      description
+        "Route flag that contains a string of characters.";
+    }
+    leaf time {
+      type pub-type:time-tick;
+      description
+        "Time stamp of a route.";
+    }
+    leaf remote-route-id {
+      type inet:ipv4-address-no-zone;
+      description
+        "Router ID of a peer.";
+    }
+  }
+  grouping routing-table-prefix-type {
+    description
+      "BGP routing-table attributes.";
+    uses routing-table-key-type;
+    leaf flag-string {
+      type string {
+        length "1..100";
+      }
+      description
+        "Route flag that contains a string of characters.";
+    }
+    leaf worse-reason {
+      type string {
+        length "1..50";
+      }
+      description
+        "Reason why a route is not selected.";
+    }
+    leaf time {
+      type pub-type:time-tick;
+      description
+        "Time stamp of a route.";
+    }
+    leaf remote-route-id {
+      type inet:ipv4-address-no-zone;
+      description
+        "Router ID of a peer.";
+    }
+  }
+  grouping attribute-index-type {
+    description
+      "The ID of attribute.";
+    leaf attribute-index {
+      type leafref {
+        path "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-rpd:rpd/bgp-rpd:attributes/bgp-rpd:attribute/bgp-rpd:index";
+      }
+      description
+        "The ID of attribute.";
+    }
+  }
+  grouping route-type {
+    description
+      "Information about routes.";
+    container routes {
+      config false;
+      description
+        "List of displayed route information in an address family.";
+      list route {
+        key "vpn-name prefix im-table-id from";
+        description
+          "Operational data of route.";
+        uses routing-table-prefix-type;
+        uses bgp-rt:routing-public-attributes;
+        uses attribute-index-type;
+      }
+    }
+  }
+  ext:task-name "bgp";
+  augment "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af" {
+    description
+      "BGP RPD address family configuration.";
+    container rpd {
+      when "../bgp:type='rpd' and ../../../../../ni:name='_public_'";
+      description
+        "Configure RPD address family.";
+      container common {
+        description
+          "Configure BGP RPD common options.";
+        leaf router-id-filter {
+          type boolean;
+          default "true";
+          description
+          "Enable/disable router ID filter.";
+        }
+        leaf reflect-between-client {
+            type boolean;
+            default "true";
+            description
+              "Enable/disable route reflection between clients. If clients of a route reflector (RR) are fully meshed, you can disable route reflection among clients to reduce the cost.";
+        }
+        uses bgp:reflector-cluster-type;
+      }
+      uses bgp:slow-peer-type;
+      uses bgp:prefer-non-graceful-restart-routes;
+      container routing-adjust {
+        description
+          "Configure BGP routing adjust policy.";
+        leaf-list export-policy {
+          type leafref {
+            path "/ra-policy:routing-adjust-policy/ra-policy:policys/ra-policy:policy/ra-policy:name";
+          }
+          must "/ra-policy:routing-adjust-policy/ra-policy:policys/ra-policy:policy[ra-policy:name=current()]/ra-policy:topology";
+          must "(/ra-policy:routing-adjust-policy/ra-policy:policys/ra-policy:policy[ra-policy:name=current()]/ra-policy:apply-rpd-policy/ra-policy:med) or (/ra-policy:routing-adjust-policy/ra-policy:policys/ra-policy:policy[ra-policy:name=current()]/ra-policy:apply-rpd-policy/ra-policy:as-path-prepend-local-as)";
+          max-elements 1;
+          description
+            "Specify routing adjust policy export.";
+        }
+      }
+      container routing-adjust-topology-state {
+        config false;
+        description
+          "Routing adjust topology state.";
+        container rib-out-traffic-statisticss {
+          description
+            "List of BGP rib out traffic statistics.";
+          list rib-out-traffic-statistics {
+            key "prefix mask-length";
+            description
+              "Statistics of BGP rib out traffic.";
+            leaf prefix {
+              type inet:ip-address-no-zone;
+              description
+                "BGP route prefix.";
+            }
+            leaf mask-length {
+              type uint8 {
+                range 0..128;
+              }
+              description
+                "Prefix mask length.";
+            }
+            leaf traffic {
+              type uint64;
+              units "Byte/s";
+              description
+                "BGP rib-out traffic.";
+            }
+          }
+        }
+        container adjacency-state {
+          description
+            "Statistics of BGP routing adjust topology adjacency.";
+          leaf topology-name {
+            type string {
+              length "1..31";
+            }
+            description
+              "Routing adjust topology name.";
+          }
+          leaf topology-type {
+            type ra-topo:topo-type;
+            description
+              "Routing adjust topology type.";
+          }
+          leaf link-satisfy-topology {
+            type string {
+              length "1..100";
+            }
+            description
+              "Is Link Satisfy Topology.";
+          }
+          container adjacencys {
+            description
+              "List of BGP routing adjust topology adjacencys.";
+            list adjacency {
+              key "local-router-id remote-router-id link-local-as-plain link-remote-as-plain";
+              description
+                "Statistics of BGP routing adjust topology adjacency.";
+              leaf local-router-id {
+                type inet:ipv4-address-no-zone;
+                description
+                  "Local router ID of the link node.";
+              }
+              leaf remote-router-id {
+                type inet:ipv4-address-no-zone;
+                description
+                  "Remote router ID of the link node.";
+              }
+              leaf link-local-as-plain {
+                type uint32;
+                description
+                  "Local AS number of the link node, the value 0 indicates that the AS number of the local link node is not configured.";
+              }
+              leaf link-remote-as-plain {
+                type uint32;
+                description
+                  "Remote AS number of the link node, the value 0 indicates that the AS number of the remote link node is not configured.";
+              }
+              leaf link-local-as {
+                type bgp:as-number-validate;
+                description
+                  "The AS number of link local node.";
+              }
+              leaf link-remote-as {
+                type bgp:as-number-validate;
+                description
+                  "The AS number of link remote node.";
+              }
+              leaf maximum-link-bandwidth {
+                type uint64;
+                units bit/s;
+                description
+                  "Maximum link bandwidth.";
+              }
+              leaf utilized-link-bandwidth {
+                type uint64;
+                units bit/s;
+                description
+                  "Utilized link bandwidth.";
+              }
+              leaf bandwidth-usage-percentage {
+                type string {
+                  length "1..31";
+                }
+                description
+                  "Bandwidth usage percentage.";
+              }
+              container peer-nodes {
+                description
+                  "List of BGP peer node.";
+                list peer-node {
+                  key "local-as remote-as local-address remote-address";
+                  description
+                    "Statistics of BGP peer node.";
+                  leaf local-as {
+                    type bgp:as-number-validate;
+                    description
+                      "Local AS number of the peer.";
+                  }
+                  leaf remote-as {
+                    type bgp:as-number-validate;
+                    description
+                      "Remote AS number of the peer.";
+                  }
+                  leaf local-address {
+                    type inet:ip-address-no-zone;
+                    description
+                      "Local address of the peer.";
+                  }
+                  leaf remote-address {
+                    type inet:ip-address-no-zone;
+                    description
+                      "Remote address of the peer.";
+                  }
+                  leaf maximum-link-bandwidth {
+                    type uint64;
+                    units bit/s;
+                    description
+                      "Maximum link bandwidth.";
+                  }
+                  leaf utilized-link-bandwidth {
+                    type uint64;
+                    units bit/s;
+                    description
+                      "Utilized link bandwidth.";
+                  }
+                  leaf bandwidth-usage-percentage {
+                    type string {
+                      length "1..31";
+                    }
+                    description
+                      "Bandwidth usage percentage.";
+                  }
+                  container interface-statisticss {
+                    description
+                      "List of the interface statistics.";
+                    list interface-statistics {
+                      key "interface-name";
+                      description
+                        "Statistics of BGP peer out interface.";
+                      leaf interface-name {
+                        type leafref {
+                          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+                        }
+                        description
+                          "Interface name.";
+                      }
+                      leaf port-bandwidth {
+                        type uint64;
+                        units bit/s;
+                        description
+                          "Port bandwidth.";
+                      }
+                      leaf utilized-bandwidth {
+                        type uint64;
+                        units bit/s;
+                        description
+                          "Utilized bandwidth.";
+                      }
+                      leaf bandwidth-usage-percentage {
+                        type string {
+                          length "1..31";
+                        }
+                        description
+                          "Bandwidth usage percentage.";
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  augment "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:peers/bgp:peer/bgp:afs/bgp:af" {
+    description
+      "BGP RPD address family configuration.";
+    container rpd {
+      when "../bgp:type = 'rpd'";
+      description
+        "Configure RPD options.";
+      leaf graceful-restart-static-timer {
+        type uint32 {
+          range "3600..2147483647";
+        }
+        units s;
+        description
+          "Specifies the maximum time during which a peer waits for a BGP session reestablishment.";
+      }
+      leaf reflect-client {
+        type boolean;
+        default "false";
+        description
+          "Enable/disable the local device as a route reflector (RR) and a peer or peer group as its client. This configuration is applicable between IBGP peers only. The configurations of RRs and its clients in an address family are valid only in this address family. Therefore, it is recommended to configure RRs and its clients in the specified address family that is required.";
+      }
+      uses bgp:path-attr-map-type;
+    }
+  }
+  augment "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route" {
+    description
+      "BGP RPD address family routes information.";
+    container rpd {
+      config false;
+      description
+        "Statistics of RPD routes.";
+      uses route-type;
+      container peer-advertise-routes {
+        description
+          "List of displayed advertised RPD route information in an address family.";
+        list peer-advertise-route {
+          key "remote-peer-address vpn-name prefix im-table-id from";
+          description
+            "Statistics of advertised RPD routes.";
+          leaf remote-peer-address {
+            type inet:ip-address-no-zone;
+            description
+              "BGP neighbor address.";
+          }
+          uses routing-table-prefix-peer;
+          uses advertise-nexthop;
+          uses bgp-rt:routing-public-attributes;
+          uses attribute-index-type;
+        }
+      }
+      container peer-receive-routes {
+        description
+          "List of displayed received RPD route information in an address family.";
+        list peer-receive-route {
+          key "remote-peer-address vpn-name prefix im-table-id from";
+          description
+            "Statistics of received RPD routes.";
+          leaf remote-peer-address {
+            type inet:ip-address-no-zone;
+            description
+              "BGP neighbor address.";
+          }
+          uses routing-table-prefix-peer;
+          uses worse-reason;
+          uses bgp-rt:routing-public-attributes;
+          uses attribute-index-type;
+        }
+      }
+      container attributes {
+        description
+          "List of attributes of BGP routes.";
+        list attribute {
+          key "vpn-name index";
+          description
+            "BGP routes attributes state.";
+          uses bgp-rt:routing-table-vpn-name;
+          leaf index {
+            type uint32;
+            description
+              "BGP route attribute id.";
+          }
+          leaf origin {
+            type bgp-rt:bgp-origin-type;
+            description
+              "The attributes of Origin.";
+          }
+          leaf med {
+            type uint32;
+            description
+              "Route MED.The attribute is only fit for the routes from EBGP peer, not suit for which of IBGP peer.";
+          }
+          leaf local-preference {
+            type uint32;
+            description
+              "Local priority. The attribute is only fit for the routes from IBGP peer, not suit for which of EBGP peer.";
+          }
+        }
+      }
+      container statistic {
+        description
+          "Statistics of BGP routes information of RPD address family.";
+        uses bgp-rt:route-total-st-type;
+      }
+    }
+  }
+}
+
+  

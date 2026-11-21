@@ -1,0 +1,323 @@
+/*
+Copyright (C) 2019-2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-loopdetect {
+  namespace "urn:huawei:yang:huawei-loopdetect";
+  prefix loopdetect;
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Loopdetect.";
+  revision 2025-08-06 {
+    description
+      "Edit block-time-value range.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-05-28 {
+    description
+      "Add new Node.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-02-05 {
+    description
+      "Edit product.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-03-06 {
+    description
+      "Change description.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-04-08 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  } 
+  ext:task-name "vlan";
+  typedef loopdetection-mode {
+    type enumeration {
+      enum "normal" {
+        value 0;
+        description
+          "Normal Mode.";
+      }
+      enum "strict-mode" {
+        value 1;
+        description
+          "Strict Mode.";
+      }
+      enum "only-alarm" {
+        value 2;
+        description
+          "Only-alarm Mode.";
+      }
+      enum "auto-mode" {
+        value 3;
+        description
+          "Auto Mode.";
+      }
+    }
+    description
+      "Loopdetection enable mode is like normal/strict-mode/only-alarm/auto-mode.";
+  }
+  container loopdetect {
+    description
+      "Loop detection.";
+    
+    container ldetect-global {
+      presence "Enable global loop-detect.";
+      description
+        "Enable/disable global loop-detect.";
+      leaf loose-identifier {
+        type string {
+          length "1..16";
+        }
+        description
+          "Global loop-detect loose identifier.";
+      }
+      leaf mode {
+        type loopdetection-mode;
+        default "normal";
+        description
+          "Loopdetection enable mode.";
+      }
+      leaf loose-mode {
+        type boolean;
+        default "false";
+        description
+          "Enable/disable global loop detection in loose mode.";
+      }
+    }
+    container trigger-detect {
+      description
+        "Configure trigger detect.";
+      container global {
+        description
+          "Configure global auto loop detection.";
+        leaf enable {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable global auto loop detection.";
+        }
+        leaf min-slot-up-time {
+          type uint32 {
+            range "1..100";
+          }
+          units min;
+          default "30";
+          description
+            "Min slot up time.";
+        }
+        leaf min-port-up-time {
+          type uint32 {
+            range "1..600";
+          }
+          units min;
+          default "10";
+          description
+            "Min port up time.";
+        }
+      }
+    }
+  } 
+  rpc reset-loop-detect-block {
+    description
+      "Reset specific interfaces loop-detect block.";
+    ext:node-ref "/loopdetect:loopdetect/loopdetect:ldetect-global";
+    input {
+      leaf interface-name {
+        type leafref {
+          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        mandatory true;
+        description
+          "Interface name.";
+      }
+    }
+  }
+  rpc reset-loop-detect-block-all {
+    description
+      "Reset all interfaces loop-detect block.";
+    ext:node-ref "/loopdetect:loopdetect/loopdetect:ldetect-global";
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface" {
+    description
+      "Interface.";
+    container loopdetect {
+      description
+        "Configure loop detection.";
+      container mac-withdraw {
+        presence "create loopdetect-mac-withdraw";
+        description
+        "Enable/disable loop-detect MAC-withdraw.";
+      }   
+      container loopback-detect {
+        presence "create loopback-detect";
+        description
+          "Enable/disable loopback detect.";
+        leaf block-time {
+          type uint32 {
+            range "5..1000";
+          }
+          units s;
+          default "10";
+          description
+            "Loopback detect block time.";
+        }
+      }
+      container loop-detect {
+        when "/loopdetect:loopdetect/loopdetect:ldetect-global";
+        presence "create loop-detect";
+        description
+        "Enable/disable loop detect instance.";
+        leaf block-time-type {
+          type enumeration {
+              enum "perp-block-time" {
+                value 1;
+                description
+                  "Perpetual block time.";
+              }
+              enum "norm-block-time" {
+                value 2;
+                description
+                  "Normal block time.";
+              }
+          }
+          description
+            "Loop detect block time type.";
+        }
+        leaf block-time-value {
+          when "../block-time-type='norm-block-time'";
+          type uint16 {
+            range "1..900";
+          }
+          units s;
+          mandatory true;
+          description
+            "Block time.";
+        }
+        leaf trigger-down {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable loop detect triggerdown.";
+        }
+        leaf packet-priority {
+          type uint32 {
+            range "0..7";
+          }
+          default "6";
+          description
+            "Loop-detect protocol packet priority.";
+        }
+        leaf only-alarm {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable only send alarm with the interface block.";
+        }
+        leaf loose-identifier {
+        type string {
+          length "1..16";
+        }
+        description
+          "Loop-detect loose identifier.";
+        }
+        leaf priority {
+          type uint8 {
+            range "1..255";
+          }
+          description
+            "Loop detect priority.";
+        }
+        leaf block-packet-number {
+          type uint8 {
+            range "1..5";
+          }
+          default "1";
+          description
+            "Loop-detect block packet number.";
+        }
+      }
+      container vlan-ranges {
+        must "(./vlan-range/vlan-id-end>=./vlan-range/vlan-id-begin)";
+        presence "create loop-detect detection vlan ranges";
+        description
+        "List of source port number range.";
+        list vlan-range {
+          key "vlan-id-begin vlan-id-end";
+          description
+            "Specify source port number range.";
+          leaf vlan-id-begin {	
+            type uint16 {
+              range "1..4094";
+            }			
+            description
+              "Start VLAN ID in the Loop-Detect.";
+          }
+          leaf vlan-id-end {
+            type uint16 {
+              range "1..4094";
+            }
+            description
+              "End VLAN ID in the Loop-Detect.";
+          }
+        }
+      }
+      container double-vlan-ranges {
+        must "(./double-vlan-range/ce-vlan-id-end>=./double-vlan-range/ce-vlan-id-begin)";
+        presence "create loop-detect detection double vlan ranges";
+        description
+        "List of source port double number range.";
+        list double-vlan-range {
+          key "pe-vlan-id ce-vlan-id-begin ce-vlan-id-end";
+          description
+            "Specify source port double number range.";
+          leaf pe-vlan-id {
+            type uint16 {
+              range "1..4094";
+            }
+            description
+              "PE VLAN ID in the Loop-Detect.";
+          }
+          leaf ce-vlan-id-begin {
+            type uint16 {
+              range "1..4094";
+            }
+            description
+              "Start CE VLAN ID in the Loop-Detect.";
+          }
+          leaf ce-vlan-id-end {
+            type uint16 {
+              range "1..4094";
+            }
+            description
+              "End CE VLAN ID in the Loop-Detect.";
+          }
+        }
+      }
+    } 
+  }
+}
+
+  

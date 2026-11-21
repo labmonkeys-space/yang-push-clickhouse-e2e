@@ -1,0 +1,160 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-isis-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-isis-deviations-NE8000-F1A";
+  prefix isis-devs-NE8000-F1A;
+
+  import huawei-isis {
+    prefix isis;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-l3vpn {
+    prefix l3vpn;
+  }
+  import huawei-mpls-te {
+    prefix mpls-te;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-tunnel-management {
+    prefix tnlm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-isis module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef import-protocol-deviations {
+    type enumeration {
+      enum direct {
+        value 1;
+        description
+          "Import direct routes.";
+      }
+      enum ospf {
+        value 2;
+        description
+          "Import OSPF routes.";
+      }
+      enum isis {
+        value 3;
+        description
+          "Import ISIS routes.";
+      }
+      enum static {
+        value 4;
+        description
+          "Import static routes.";
+      }
+      enum rip {
+        value 5;
+        description
+          "Import RIP routes.";
+      }
+      enum bgp {
+        value 6;
+        description
+          "Import BGP routes.";
+      }
+      enum ospfv3 {
+        value 7;
+        description
+          "Import OSPFv3 routes.";
+      }
+      enum ripng {
+        value 8;
+        description
+          "Import RIPng routes.";
+      }
+      enum unr {
+        value 11;
+        description
+          "Import UNR routes.";
+      }
+    }
+    description
+      "ISIS import protocol type.";
+  }
+
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:apply-link-cost" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:afs/isis:af/isis:apply-qppb" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:link-groups/isis:link-group/isis:avoid-link-congestion" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:peers/isis:peer/isis:ipv6-adj-sid" {
+    deviate not-supported;
+  }
+  deviation "/isis:isis/isis:global/isis:peer-limit/isis:limit-number" {
+    deviate replace {
+      default "1000";
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/l3vpn:afs/l3vpn:af/isis:isis-import-rts/isis:isis-import-rt/isis:src-vrf" {
+    deviate add {
+      must "(../../../l3vpn:type='ipv4-unicast' and /ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast'])";
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:circuits/isis:circuit/isis:hello-padding-mtu/isis:ipv4/isis:ipv4" {
+    deviate add {
+      must "../hello-mode!='small' and not(../../../multi-iid)";
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:circuits/isis:circuit/isis:hello-padding-mtu/isis:ipv6/isis:ipv6" {
+    deviate add {
+      must "../hello-mode!='small' and not(../../../multi-iid)";
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:circuits/isis:circuit/isis:silent-enable" {
+    deviate add {
+      must "../silent-enable='false' or not(/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()/../isis:name]/tnlm:tunnel-protocol/mpls-te:te-tunnel)";
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:afs/isis:af/isis:max-load-balancing" {
+    deviate replace {
+      type uint32 {
+        range "1..64";
+      }
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:afs/isis:af/isis:import-routes/isis:import-route/isis:protocol" {
+    deviate replace {
+      type isis-devs-NE8000-F1A:import-protocol-deviations;
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:afs/isis:af/isis:topologys/isis:topology/isis:max-load-balancing" {
+    deviate replace {
+      type uint32 {
+        range "1..64";
+      }
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/isis:isis/isis:sites/isis:site/isis:afs/isis:af/isis:topologys/isis:topology/isis:import-routes/isis:import-route/isis:protocol" {
+    deviate replace {
+      type isis-devs-NE8000-F1A:import-protocol-deviations;
+    }
+  }
+}
+
+  

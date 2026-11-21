@@ -1,0 +1,128 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ietf-yang-push-deviations-NE8000-F1A {
+  yang-version 1.1;
+  namespace "urn:huawei:yang:huawei-ietf-yang-push-deviations-NE8000-F1A";
+  prefix yp-devs-NE8000-F1A;
+
+  import ietf-yang-push {
+    prefix yp;
+  }
+  import ietf-subscribed-notifications {
+    prefix sn;
+  }
+  import ietf-datastores {
+    prefix ds;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for ietf-yang-push module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/yp:resync-subscription" {
+    deviate not-supported;
+  }
+  deviation "/sn:establish-subscription/sn:input/yp:update-trigger/yp:on-change" {
+    deviate not-supported;
+  }
+  deviation "/sn:establish-subscription/sn:input/sn:target/yp:datastore/yp:selection-filter/yp:by-reference" {
+    deviate not-supported;
+  }
+  deviation "/sn:establish-subscription/sn:input/sn:target/yp:datastore/yp:selection-filter/yp:within-subscription/yp:filter-spec/yp:datastore-subtree-filter" {
+    deviate not-supported;
+  }
+  deviation "/sn:modify-subscription/sn:input/yp:update-trigger/yp:on-change" {
+    deviate not-supported;
+  }
+  deviation "/sn:modify-subscription/sn:input/sn:target/yp:datastore/yp:datastore" {
+    deviate not-supported;
+  }
+  deviation "/sn:modify-subscription/sn:input/sn:target/yp:datastore/yp:selection-filter/yp:by-reference" {
+    deviate not-supported;
+  }
+  deviation "/sn:modify-subscription/sn:input/sn:target/yp:datastore/yp:selection-filter/yp:within-subscription/yp:filter-spec/yp:datastore-subtree-filter" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscription-started/yp:update-trigger/yp:on-change/yp:on-change/yp:sync-on-start" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscription-started/yp:update-trigger/yp:on-change/yp:on-change/yp:excluded-change" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscription-started/sn:target/yp:datastore/yp:selection-filter/yp:by-reference" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscription-started/sn:target/yp:datastore/yp:selection-filter/yp:within-subscription/yp:filter-spec/yp:datastore-subtree-filter" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscription-modified/yp:update-trigger/yp:on-change/yp:on-change/yp:sync-on-start" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscription-modified/yp:update-trigger/yp:on-change/yp:on-change/yp:excluded-change" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscription-modified/sn:target/yp:datastore/yp:selection-filter/yp:by-reference" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscription-modified/sn:target/yp:datastore/yp:selection-filter/yp:within-subscription/yp:filter-spec/yp:datastore-subtree-filter" {
+    deviate not-supported;
+  }
+  deviation "/sn:filters/yp:selection-filter/yp:filter-spec/yp:datastore-subtree-filter" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscriptions/sn:subscription/yp:update-trigger/yp:on-change/yp:on-change/yp:sync-on-start" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscriptions/sn:subscription/yp:update-trigger/yp:on-change/yp:on-change/yp:excluded-change" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscriptions/sn:subscription/sn:target/yp:datastore/yp:selection-filter/yp:within-subscription/yp:filter-spec/yp:datastore-subtree-filter" {
+    deviate not-supported;
+  }
+  deviation "/sn:subscriptions/sn:subscription/yp:update-trigger/yp:periodic/yp:periodic/yp:period" {
+    deviate replace {
+      type uint32 {
+        range "1|10|50|90|100|500|1000|3000|6000|18000|30000|90000|180000|360000";
+      }
+    }
+  }
+  deviation "/sn:subscriptions/sn:subscription/yp:update-trigger/yp:periodic/yp:periodic/yp:anchor-time" {
+    deviate add {
+      must '../period>=1000';
+    }
+  }
+  deviation "/sn:subscriptions/sn:subscription/yp:update-trigger/yp:on-change/yp:on-change/yp:dampening-period" {
+    deviate replace {
+      type uint32 {
+        range "0|10..6000";
+      }
+    }
+  }
+  deviation "/sn:subscriptions/sn:subscription/sn:target/yp:datastore/yp:datastore" {
+    deviate add {
+      must "derived-from-or-self(../yp:datastore, 'ds:operational')";
+    }
+  }
+  deviation "/sn:subscriptions/sn:subscription/sn:target/yp:datastore/yp:selection-filter/yp:within-subscription/yp:filter-spec" {
+    deviate replace {
+      config false;
+    }
+  }
+}
+
+  

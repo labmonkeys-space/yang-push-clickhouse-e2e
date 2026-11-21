@@ -1,0 +1,44 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-bgp-mdt-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-bgp-mdt-deviations-NE8000-F1A";
+  prefix bgp-mdt-devs-NE8000-F1A;
+
+  import huawei-bgp-mdt {
+    prefix bgp-mdt;
+  }
+  import huawei-bgp {
+    prefix bgp;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-bgp-mdt module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:peer-groups/bgp:peer-group/bgp:afs/bgp:af/bgp-mdt:mdt" {
+    deviate add {
+      must "../../../bgp:peer-establish-mode!='dynamic-ipv6'";
+    }
+  }
+}
+
+  

@@ -1,0 +1,903 @@
+/*
+Copyright (C) 2020-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-flexe {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-flexe";
+  prefix flexe;
+  import huawei-devm {
+    prefix devm;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-vaccess {
+    prefix vaccess;
+  }
+  import huawei-vaccess-master {
+    prefix vaccess-master;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+  description
+    "Global Configuration.";
+  revision 2026-06-06 {
+    description
+      "Add leaf nv-tag, related-physical-interface and forward-mode.
+       Remove the must condition for the phy-mode leaf.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-08-25 {
+    description
+      "Added the 100GE enum for binding-bandwidth.
+       Change the length of leaf idle-sub-timeslot and used-sub-timeslot to 1049.
+       Add a when condition to the leaf mng-channel-mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-12-15 {
+    description
+      "Add leaf mode-switch. The leaf mode-enable is deprecated. Add container bind-abilitys. The total-bandwidth and left-bandwidth leaves are obsolete.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-08-23 {
+    description
+      "Del enum of binding-bandwidth.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-06-04 {
+    description
+      "Augment groups and clients to module vaccess which work in virtual access mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-04-08 {
+    description
+      "Change the default value of sub-timeslot-granula to dynamic-default.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-06-12 {
+    description
+      "Modifying the description of enumeration 5G.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-06-02 {
+    description
+      "Adding an extended attribute of leaf padding-enable.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-01-11 {
+    description
+      "Add node to describe flexe group information.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-05-31 {
+    description
+      "Add nodes related to the FLEXE card abilitys.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-05-30 {
+    description
+      "The must conditions for creating FlexE clients are added.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-01-20 {
+    description
+      "Modifying the node-ref of the RPC nodes.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-02-18 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  typedef flexe-sub-ts-granula-type {
+    type enumeration {
+      enum "1G" {
+      value 1;
+      description
+        "Sub-timeslot granularity 1G.";
+      }
+      enum "1.25G" {
+        value 2;
+        description
+          "Sub-timeslot granularity 1.25G.";
+      }
+      enum "5G" {
+        value 0;
+        description
+          "The sub-timeslot granularity is not supported.";
+      }
+    }
+    description
+      "Sub-timeslot granularity.";
+  }
+
+  container flexe {
+    description
+      "Specify FlexE configuration information.";
+    container card-attributes {
+      description
+        "List of FlexE system configs.";
+      list card-attribute {
+        ext:generated-by "system";
+        ext:operation-exclude "create";
+        key "card-position";
+        description
+          "Configure FlexE system config.";
+        leaf card-position {
+          type string {
+            length "1..16";
+          }
+          description
+            "Card position. The position is expressed in the format of slotID/cardID. For example, 1/0. Here 1/0 is an example. The value may vary with devices.";
+        }
+        leaf config-mode {
+          type enumeration {
+            enum "bandwidth" {
+              value 0;
+              description
+                "Bandwidth mode.";
+            }
+            enum "timeslot" {
+              value 1;
+              description
+                "Timeslot mode.";
+            }
+          }
+          default "bandwidth";
+          description
+            "Config mode.";
+        }
+        leaf sub-timeslot-granula {
+          type flexe-sub-ts-granula-type;
+          ext:dynamic-default;
+          description
+            "Setting sub-timeslot granularity.";
+        }
+      }
+    }
+    container groups {
+      description
+        "List of FlexE groups.";
+      list group {
+        key "index";
+        description
+          "Configure FlexE group.";
+        leaf index {
+          type uint32 {
+            range "1..2147483647";
+          }
+          must "not(/vaccess:vaccess/vaccess-master:flexe-master/flexe:groups/flexe:group[flexe:index=current()])";
+          description
+            "FlexE group index.";
+        }
+        leaf number {
+          type uint32 {
+            range "1..1048574";
+          }
+          description
+            "FlexE group communication ID.";
+        }
+        leaf description {
+          type string {
+            length "1..242";
+          }
+          description
+            "FlexE group description.";
+        }
+        leaf padding-enable {
+          type boolean;
+          default "false";
+          status "deprecated";
+          ext:advised-node "../flexe:padding";
+          description
+            "Enable/disable automatic overhead frame padding. You are advised to use the leaf '/flexe:flexe/flexe:groups/flexe:group/flexe:padding'.";
+        }
+        leaf timeslot-negotiation-enable {
+          type boolean;
+          default "true";
+          description
+            "Enable/disable timeslot negotiation mode.";
+        }
+        leaf total-bandwidth {
+          type string {
+            length "1..9";
+          }
+          config false;
+          description
+            "FlexE group total bandwidth.";
+        }
+        leaf left-bandwidth {
+          type string {
+            length "1..9";
+          }
+          config false;
+          description
+            "FlexE group left bandwidth.";
+        }
+        leaf padding {
+          ext:dynamic-default;
+          type enumeration {
+            enum "disable" {
+              value 0;
+              description
+                "Disable.";
+            }
+            enum "enable" {
+              value 1;
+              description
+                "Enable.";
+            }
+            enum "auto" {
+              value 2;
+              description
+                "Auto.";
+            }
+          }
+            description
+              "Automatically supplements overhead frames.";
+        }
+        container physical-ports {
+          description
+            "List of physical port information in group.";
+          list physical-port {
+            key "port-position";
+            description
+              "Configure physical port information.";
+            leaf port-position {
+              type string {
+                length "1..50";
+              }
+              description
+                "Physical port location. The position is expressed in the format of slotID/cardID/portID. For example, 1/0/1. Here 1/0/1 is an example. The value may vary with devices. Note that the currently specified port-position must meet the following requirements: '/flexe:flexe/flexe:physical-ports/flexe:physical-port/flexe:mode-enable=true' or '/flexe:flexe/flexe:physical-ports/flexe:physical-port/flexe:mode-switch=flexe-mode'.";
+            }
+          }
+        }
+      }
+    }
+    container physical-ports {
+      description
+        "List of physical port information.";
+      list physical-port {
+        ext:generated-by system;
+        ext:operation-exclude "create";
+        key "position";
+        description
+          "Configure physical port information.";
+        leaf position {
+          type leafref {
+            path "/devm:devm/devm:ports/devm:port/devm:position";
+          }
+          description
+            "Port position. The position is expressed in the format of slotID/cardID/portID. For example, 1/0/1. Here 1/0/1 is an example. The value may vary with devices.";
+        }
+        leaf mode-enable {
+          type boolean;
+          default "false";
+          status "deprecated";
+          ext:advised-node "../flexe:mode-switch";
+          description
+            "Enable/disable FlexE mode. You are advised to use the leaf '/flexe:flexe/flexe:physical-ports/flexe:physical-port/flexe:mode-switch'.";
+        }
+        leaf mode-switch {
+          type enumeration {
+            enum "ethernet" {
+              value 0;
+              description
+              "Ethernet mode.";
+            }
+            enum "flexe-mode" {
+              value 1;
+              description
+              "FlexE mode.";
+            }
+            enum "port-extend-flexe-mode" {
+              value 2;
+              description
+              "Port extend FlexE mode.";
+            }
+          }
+          default "ethernet";
+          description
+            "Switch the FlexE mode. Note that direct switching between flexe-mode and port-extend-flexe-mode is not allowed. You need to switch to the ethernet mode first.";
+        }
+        container physical-attribute {
+          ext:operation-exclude "create";
+          description
+            "Configure FlexE physical interface information. When '../mode-enable=true' or '../mode-switch=flexe-mode', the leaf of the current container is available. Otherwise, the leaf is unavailable.";
+          leaf number {
+            type uint32 {
+              range "1..254";
+            }
+            description
+              "Number of a FlexE physical port. The phynumber of a 100G port is an integer ranging from 1 to 254. The phynumber of a 50G port is an integer ranging from 1 to 126. The phynumber of a 400G port is an integer ranging from 1 to 62. The phynumber of a 10G port is an integer ranging from 1 to 14.";
+          }
+          leaf dcn-auto-nego-enable {
+            ext:dynamic-default;
+            type boolean;
+            description
+              "Enable/disable DCN auto-negotiation mode.";
+          }
+          leaf mng-channel-mode {
+            when "../../mode-switch='flexe-mode'";
+            type enumeration {
+              enum "union" {
+                value 0;
+                description
+                  "Union mode.";
+              }
+              enum "section" {
+                value 1;
+                description
+                  "Section mode.";
+              }
+              enum "shim2shim" {
+                value 2;
+                description
+                  "Shim to shim mode.";
+              }
+              enum "shim2shimop2" {
+                value 3;
+                description
+                  "Shim to shim option2 mode.";
+              }
+            }
+            default "union";
+            description
+              "Management channel mode.";
+          }
+          leaf number-to-receive {
+            type uint32 {
+              range "1..254";
+            }
+            config false;
+            description
+              "Number received by a FlexE physical port.";
+          }
+          leaf padding-enable {
+            type boolean;
+            config false;
+            description
+              "Enable/disable automatic overhead frame padding.";
+          }
+          leaf idle-timeslot {
+            type string {
+              length "1..199";
+            }
+            config false;
+            description
+              "Idle timeslot.";
+          }
+          leaf idle-sub-timeslot {
+            type string {
+              length "1..1049";
+            }
+            config false;
+            description
+              "Idle sub-timeslot.";
+          }
+          leaf used-timeslot {
+            type string {
+              length "1..199";
+            }
+            config false;
+            description
+              "Big timeslots that have been used up.";
+          }
+          leaf used-sub-timeslot {
+            type string {
+              length "1..1049";
+            }
+            config false;
+            description
+              "Sub-timeslots have been used.";
+          }
+          leaf sub-timeslot-scope {
+            type string {
+              length "1..9";
+            }
+            config false;
+            description
+              "Configurable sub-timeslot range.";
+          }
+          leaf physical-mode {
+            type enumeration {
+              enum "flexe" {
+                value 0;
+                description
+                  "Flexe mode.";
+              }
+              enum "ethernet" {
+                value 1;
+                description
+                  "Ethernet mode.";
+              }
+            }
+            config false;
+            description
+              "Bottom layer working mode of a FlexE physical port.";
+          }
+          leaf card-position {
+            type string {
+                length "1..16";
+              }
+            config false;
+            description
+              "Indicates the subcard where the FlexE clients created based on the FlexE physical interface reside.";
+          }
+        }
+        container flexe-relations {
+          config false;
+          description
+            "List of timeslot information of FlexE port.";
+          list flexe-relation {
+            key "port-name";
+            config false;
+            description
+              "Statistics of timeslot information of a FlexE port.";
+            leaf port-name {
+              type string {
+                length "1..32";
+              }
+              description
+                "FlexE port name.";
+            }
+            leaf binding-timeslot {
+              type string {
+                length "1..199";
+              }
+              description
+                "Timeslot information bound to a FlexE port.";
+            }
+          }
+        }
+      }
+    }
+    container clients {
+      description
+        "List of FlexE client information.";
+      list client {
+        key "index group-index business-type port-id";
+        description
+          "Configure FlexE client information.";
+        leaf index {
+          type uint32 {
+            range "1..2147483647";
+          }
+          must "not(/vaccess:vaccess/vaccess-master:flexe-master/flexe:clients/flexe:client[flexe:index=current()])";
+          description
+            "FlexE client index.";
+        }
+        leaf group-index {
+          type leafref {
+            path "/flexe:flexe/flexe:groups/flexe:group/flexe:index";
+          }
+          must "/flexe:flexe/flexe:groups/flexe:group[flexe:index=current()]/flexe:physical-ports";
+          description
+            "FlexE group index configured for a client.";
+        }
+        leaf business-type {
+          type enumeration {
+            enum "cross" {
+              value 0;
+              description
+                "Only the fragmented Ethernet cross-connect service is supported.";
+            }
+            enum "full-function" {
+              value 1;
+              description
+                "The packet transmission and fragmented Ethernet cross-connect services are supported.";
+            }
+          }
+          description
+            "Type of services carried on a client.";
+        }
+        leaf port-id {
+          type uint32 {
+            range "0..65535";
+          }
+          description
+            "FlexE port ID.";
+        }
+        leaf id {
+          type uint32 {
+            range "1..65534";
+          }
+          description
+            "Client ID.";
+        }
+        leaf min-avail-bandwidth {
+          type uint32 {
+            range "1..100";
+          }
+          units "%";
+          description
+            "Percentage of the minimum available bandwidth of a FlexE client against the configured bandwidth.";
+        }
+        leaf port-name {
+          type string {
+            length "1..50";
+          }
+          config false;
+          description
+            "Interface name of a FlexE client.";
+        }
+        leaf bandwidth-value {
+          type string {
+            length "1..10";
+          }
+          config false;
+          description
+            "Actual bandwidth value.";
+        }
+        choice binding-type {
+          description
+            "Binding bandwidth or relation.";
+          case bandwidth {
+            description
+              "Binding bandwidth.";
+            container binding-bandwidth {
+              description
+                "Configure bandwidth configuration.";
+              leaf bandwidth {
+                type string {
+                  length "1..10";
+                }
+                description
+                  "Bandwidth.";
+              }
+            }
+          }
+          case timeslots {
+            description
+              "Binding timeslots.";
+            container binding-timeslots {
+              description
+                "List of binding timeslots.";
+              list binding-timeslot {
+                key "physical-port-name";
+                description
+                  "Configure binding timeslots.";
+                leaf physical-port-name {
+                  type string {
+                    length "1..50";
+                  }
+                  description
+                    "FlexE physical port name. The name is expressed in the format of slotID/cardID/portID. For example, 1/0/1. Here 1/0/1 is an example. The value may vary with devices.";
+                }
+                choice binding-timeslot {
+                  mandatory true;
+                  description
+                    "Binding big time slot or sub time slot.";
+                  case big-timeslot {
+                    description
+                      "Binding big-timeslot.";
+                    leaf timeslot {
+                      type string {
+                        length "1..199";
+                      }
+                      description
+                        "Set timeslot. The value is one or more numbers separated by commas (,) or hyphens (-). If the values are separated by '-', they must be in ascending order. For example, correct range values are (0-1) and incorrect range values are (1-0).";
+                    }
+                  }
+                  case sub-timeslot {
+                    description
+                      "Binding sub-timeslot.";
+                    leaf big-timeslot {
+                      type uint32 {
+                        range "0..199";
+                      }
+                      mandatory true;
+                      description
+                        "Set big timeslot.";
+                    }
+                    leaf sub-timeslot {
+                      type string {
+                        length "1..9";
+                      }
+                      mandatory true;
+                      description
+                        "Set sub-timeslot. The value is one or more numbers separated by commas (,) or hyphens (-). If the values are separated by '-', they must be in ascending order. For example, correct range values are (0-1) and incorrect range values are (1-0).";
+                    }
+                    leaf sub-timeslot-scope {
+                      type string {
+                        length "1..9";
+                      }
+                      config false;
+                      description
+                        "Configurable sub-timeslot range.";
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    container card-abilitys {
+      config false;
+      description
+        "List of FlexE card abilitys.";
+      list card-ability {
+        key "card-position";
+        description
+          "Statistics of card abilitys.";
+        leaf card-position {
+          type string {
+            length "1..16";
+          }
+          description
+            "Card position. The position is expressed in the format of slotID/cardID. For example, 1/0. Here 1/0 is an example. The value may vary with devices.";
+        }
+        leaf phy-switch-ability {
+          type string {
+            length "1..256";
+          }
+          description
+            "FlexE physical interface switch ability.";
+        }
+        leaf-list phy-binding-ability {
+          type string {
+            length "1..256";
+          }
+          description
+            "Statistics of the FlexE physical interface that can be bound to each other.";
+        }
+      }
+    }
+  }
+  rpc phy-mode-switch {
+    ext:node-ref "/flexe:flexe/flexe:physical-ports/flexe:physical-port";
+    description
+      "Physical Mode Switchover.";
+    input  {
+      leaf position {
+        type string {
+          length "1..32";
+        }
+        mandatory true;
+        description
+          "Port position. The position is expressed in the format of slotID/cardID/portID. For example, 1/0/1. Here 1/0/1 is an example. The value may vary with devices.";
+      }
+      leaf phy-mode {
+        type enumeration {
+          enum "flexe" {
+            value 0;
+            description
+            "Flexe mode.";
+          }
+          enum "ethernet" {
+            value 1;
+            description
+            "Ethernet mode.";
+          }
+        }
+        description
+        "Bottom layer working mode of a FlexE physical port.";
+      }
+    }
+  }
+  augment /vaccess:vaccess/vaccess-master:flexe-master {
+    description
+      "Flexe groups and Flexe clients which work in virtual access mode augment to module vaccess.";
+    container groups {
+      description
+        "List of FlexE groups.";
+      list group {
+        key "index";
+        description
+          "Configure FlexE group.";
+        leaf index {
+          type uint32 {
+            range "1..2147483647";
+          }
+          must "not(/flexe:flexe/flexe:groups/flexe:group[flexe:index=current()])";
+          description
+            "FlexE group index.";
+        }
+        leaf description {
+          type string {
+            length "1..242";
+          }
+          description
+            "FlexE group description.";
+        }
+        leaf total-bandwidth {
+          type string {
+            length "1..9";
+          }
+          config false;
+          status obsolete;
+          description
+            "FlexE group total bandwidth.";
+        }
+        leaf left-bandwidth {
+          type string {
+            length "1..9";
+          }
+          config false;
+          status obsolete;
+          description
+            "FlexE group left bandwidth.";
+        }
+        container physical-ports {
+          description
+            "List of physical port information in group. All these internal communication interfaces must have same ap-id.";
+          list physical-port {
+            key "port-name";
+            description
+              "Configure physical port information.";
+            leaf port-name {
+              type leafref {
+                path "/vaccess:vaccess/vaccess-master:flexe-master/vaccess-master:aps/vaccess-master:ap/vaccess-master:inner-connects/vaccess-master:inner-connect/vaccess-master:master-interface";
+              }
+              description
+                "The internal communication interface.";
+            }
+          }
+        }
+      }
+    }
+    container clients {
+      description
+        "List of FlexE client information.";
+      list client {
+        key "index group-index port-id";
+        description
+          "Configure FlexE client information.";
+        leaf index {
+          type uint32 {
+            range "1..2147483647";
+          }
+          must "not(/flexe:flexe/flexe:clients/flexe:client[flexe:index=current()])";
+          description
+            "FlexE client index.";
+        }
+        leaf group-index {
+          type leafref {
+            path "/vaccess:vaccess/vaccess-master:flexe-master/flexe:groups/flexe:group/flexe:index";
+          }
+          must "/vaccess:vaccess/vaccess-master:flexe-master/flexe:groups/flexe:group[flexe:index=current()]/flexe:physical-ports";
+          description
+            "FlexE group index configured for a client.";
+        }
+        leaf port-id {
+          type uint32 {
+            range "0..65535";
+          }
+          description
+            "FlexE port ID.";
+        }
+        leaf binding-bandwidth {
+          type enumeration {
+            enum "1GE" {
+              value 1;
+              description
+                "1GE.";
+            }
+            enum "10GE" {
+              value 10;
+              description
+                "10GE.";
+            }
+            enum "100GE" {
+              value 100;
+              description
+                "100GE.";
+            }
+          }
+          description
+            "Bandwidth.";
+        }
+        leaf port-name {
+          type string {
+            length "1..50";
+          }
+          config false;
+          description
+            "Interface name of a FlexE client.";
+        }
+        leaf bandwidth-value {
+          type string {
+            length "1..10";
+          }
+          config false;
+          description
+            "Actual bandwidth value.";
+        }
+        leaf business-type {
+          type enumeration {
+            enum "full-function" {
+              value 1;
+              description
+                "The packet transmission and fragmented Ethernet cross-connect services are supported.";
+            }
+          }
+          config false;
+          description
+            "Type of services carried on a client.";
+        }
+        leaf nv-tag {
+          type uint32 {
+            range "1..65534";
+          }
+          config false;
+          description
+            "Unique identifier of a FlexE client interface in a FlexE group.";
+        }
+        leaf related-physical-interface {
+          type string {
+            length "1..50";
+          }
+          config false;
+          description
+            "Related to the physical interface.";
+        }
+        leaf forward-mode {
+          type enumeration {
+            enum "backup" {
+              value 0;
+              description
+                "Active-Standby mode.";
+            }
+            enum "loadbalance" {
+              value 1;
+              description
+                "Load sharing mode.";
+            }
+          }
+          config false;
+          description
+            "Forwarding mode.";
+        }
+      }
+    }
+    container bind-abilitys {
+      config false;
+      description
+        "List of port-extend FlexE bind abilitys.";
+      list bind-ability {
+        key "bind-group-index";
+        description
+          "Statistics of port-extend FlexE bind abilitys.";
+        leaf bind-group-index {
+          type uint32 {
+            range "1..2147483647";
+          }
+          description
+            "Bind capability table index.";
+        }
+        leaf phy-port-list {
+          type string {
+            length "1..512";
+          }
+          description
+            "Statistics of the port-extend FlexE physical interface that can be bound to each other.";
+        }
+      }
+    }
+  }
+  ext:task-name "device-mgr";
+}
+
+  

@@ -1,0 +1,787 @@
+/*
+Copyright (C) 2023-2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+
+module huawei-xsec {
+    namespace "urn:huawei:yang:huawei-xsec";
+    prefix xsec;
+    import huawei-extension {
+        prefix ext;
+    }
+    import ietf-inet-types {
+        prefix inet;
+    }
+    import huawei-vsm {
+        prefix vsm;
+    }
+    import huawei-license {
+        prefix lcs;
+    }
+    import ietf-yang-types {
+        prefix yang;
+    }
+    organization
+      "Huawei Technologies Co., Ltd.";
+
+    contact
+      "Huawei Industrial Base
+       Bantian, Longgang
+       Shenzhen 518129
+       People's Republic of China
+       Website: http://www.huawei.com
+       Email: support@huawei.com";
+
+    description
+      "This module contains a collection of YANG definitions for
+       Xsec implementations.";
+    revision 2025-05-15 {
+        description "Delete xsec bfd-state-type, container bfds-interval, container bfds, container bfds-statistics.";
+        reference "";
+    }
+    revision 2025-02-19 {
+        description "Modify the description of router-id-action.";
+        reference "";
+    }
+    revision 2025-01-14 {
+        description "Add xsec bfd-state-type, container bfds-interval, container bfds, container bfds-statistics. Modify dh-group-type enumeration add sm2-mqv value.";
+        reference "";
+    }
+    revision 2024-12-30 {
+        description "Add nodes required for Xsec maintenance.";
+        reference "";
+    }
+    revision 2024-11-30 {
+        description
+          "Add the engine type NA and delete the dh-group-type sm2-mqv.";
+        reference
+          "";
+    }
+    revision 2024-09-18 {
+        description
+          "Modify the description of xsec to Xsec.";
+        reference
+          "";
+    }
+    revision 2024-07-26 {
+        description
+          "Modify the description of set-service-types container and list.";
+        reference
+          "";
+    }
+    revision 2024-07-05 {
+        description
+          "Modify dh-group-type enumeration add sm2-mqv value.";
+        reference
+          "";
+    }
+    revision 2024-05-27 {
+        description
+          "Modify parameter range and default values.";
+        reference
+          "";
+    }
+    revision 2024-04-08 {
+        description
+          "Add xsec-tunnels container.";
+        reference
+          "";
+    }
+    revision 2023-11-08 {
+        description
+          "Modify Xsec models.";
+        reference
+          "";
+    }
+    revision 2023-07-05 {
+        description
+          "Initial revision.";
+        reference
+          "";
+    }
+
+    typedef xsec-sa-mode {
+        type enumeration {
+            enum "service" {
+                value 0;
+                description
+                  "The service mode for service in negotiation.";
+            }
+
+            enum "comm" {
+                value 1;
+                description
+                  "The comm mode for client in negotiation.";
+            }
+
+            enum "service-comm" {
+                value 2;
+                description
+                  "The service mode for service and client.";
+            }
+        }
+        description
+          "The Xsec policy sa mode definition.";
+    }
+
+    typedef dh-group-type {
+        type enumeration {
+            enum "group15" {
+                value 15;
+                description
+                  "The 3072-bit MODP group.";
+            }
+            enum "group16" {
+                value 16;
+                description
+                  "The 4096-bit MODP group.";
+            }
+            enum "group19" {
+                value 19;
+                description
+                  "The 256-bit random ECP group.";
+            }
+            enum "group20" {
+                value 20;
+                description
+                  "The 384-bit random ECP group.";
+            }
+            enum "group21" {
+                value 21;
+                description
+                  "The 521-bit random ECP group.";
+            }
+            enum "sm2-mqv" {
+                value 249;
+                description
+                  "The sm2 key exchange algorithm evolved from the MQV algorithm.";
+            }
+        }
+        description
+          "The type of DH group definition.";
+    }
+
+    typedef auth-algorithm-type {
+        type enumeration {
+            enum "SHA2-256" {
+                value 3;
+                description
+                  "SHA2-256 Algorithm.";
+            }
+            enum "SHA2-384" {
+                value 4;
+                description
+                  "SHA2-384 Algorithm.";
+            }
+            enum "SHA2-512" {
+                value 5;
+                description
+                  "SHA2-512 Algorithm.";
+            }
+            enum "SM3" {
+                value 8;
+                description
+                  "SM3 Algorithm.";
+            }
+            enum "none" {
+                value 6;
+                description
+                  "No Algorithm be used.";
+            }
+        }
+        description
+          "The type of authentication-algorithm definition.";
+    }
+
+    typedef encryption-algorithm-type {
+        type enumeration {
+            enum "SM4-CBC" {
+                value 8;
+                description
+                  "SM4-CBC Algorithm.";
+            }
+            enum "AES-128-CBC" {
+                value 3;
+                description
+                  "AES-128-CBC Algorithm.";
+            }
+            enum "AES-192-CBC" {
+                value 4;
+                description
+                  "AES-192-CBC Algorithm.";
+            }
+            enum "AES-256-CBC" {
+                value 5;
+                description
+                  "AES-256-CBC Algorithm.";
+            }
+            enum "AES-128-GCM" {
+                value 9;
+                description
+                  "AES-128-GCM Algorithm.";
+            }
+            enum "AES-192-GCM" {
+                value 10;
+                description
+                  "AES-192-GCM Algorithm.";
+            }
+            enum "AES-256-GCM" {
+                value 11;
+                description
+                  "AES-256-GCM Algorithm.";
+            }
+            enum "none" {
+                value 6;
+                description
+                  "No Algorithm be used. The enum none is deprecated.";
+            }
+        }
+        description
+          "The type of encryption-algorithm definition.";
+    }
+    typedef anti-replay-enable-type {
+        type enumeration {
+            enum "NA" {
+                value 0;
+                description
+                  "Disable the global function.";
+            }
+            enum "true" {
+                value 1;
+                description
+                  "Enable this policy function.";
+            }
+            enum "false" {
+                value 2;
+                description
+                  "Disable this policy function.";
+            }
+        }
+        description
+          "Type of anti-replay enable.";
+    }
+    typedef engine-id {
+        type enumeration {
+            enum "engine0" {
+                value 0;
+                description
+                  "Engine ID 0.";
+            }
+            enum "engine1" {
+                value 1;
+                description
+                  "Engine ID 1.";
+            }
+            enum "engine2" {
+                value 2;
+                description
+                  "Engine ID 2.";
+            }
+            enum "engine3" {
+                value 3;
+                description
+                  "Engine ID 3.";
+            }
+            enum "engine4" {
+                value 4;
+                description
+                  "Engine ID 4.";
+            }
+            enum "engine5" {
+                value 5;
+                description
+                  "Engine ID 5.";
+            }
+            enum "engine6" {
+                value 6;
+                description
+                  "Engine ID 6.";
+            }
+            enum "engine7" {
+                value 7;
+                description
+                  "Engine ID 7.";
+            }
+            enum "NA" {
+                value 255;
+                description
+                  "None Engine.";
+            }
+        }
+        description
+          "Engine ID.";
+    }
+    typedef direction {
+        type enumeration {
+            enum "in" {
+                value 0;
+                description
+                  "Tunnel-direction in.";
+            }
+            enum "out" {
+                value 1;
+                description
+                  "Tunnel-direction out.";
+            }
+        }
+        description
+          "Tunnel-direction.";
+    }   
+    typedef router-id-action {
+        type enumeration {
+            enum "permit" {
+                value 0;
+                description
+                  "Set the specified router id to permit.";
+            }
+            enum "deny" {
+                value 1;
+                description
+                  "Set the specified router id to deny.";
+            }
+        }
+        description
+          "Set the router id.";
+    }
+    typedef router-list-action {
+        type enumeration {
+            enum "permit" {
+                value 1;
+                description
+                  "Set the default router id to permit.";
+            }
+            enum "deny" {
+                value 2;
+                description
+                  "Set the default router id to deny.";
+            }
+        }
+        description
+          "Set the router id.";
+    }
+
+    /*****************************************************************
+     * Main container
+     *****************************************************************/
+    container xsec {
+        description
+          "The container of Xsec Configure.";
+
+        container global {
+          description
+            "Configure the Xsec Global information.";
+          container verification {
+            description
+              "Configure the verification between the Xsec module and the BGP module and between the Xsec module and the forwarding plane SA.";
+            leaf bgp {
+              type boolean;
+              default "true";
+              description
+                "Enable/disable the verification between the Xsec and BGP modules.";
+            }
+ 
+            leaf fwd-sa {
+              type boolean;
+              default "true";
+              description
+                "Enable/disable the verification between the Xsec module and the forwarding-plane SA.";
+            }
+          }
+        }
+
+        container local-router-id {
+            description
+              "Configure the Xsec local-router-id information.";
+            leaf router-id {
+                type inet:ipv4-address-no-zone;
+                must "not(../router-id='255.255.255.255' or ../router-id='0.0.0.0')";
+                description
+                  "Configure the router id.";
+            }
+        }
+
+        container set-service-types {
+            description
+              "List of Xsec service type on the board of a VSU.The service-type of the engine will be set to Xsec and take effect after an automatic restart.";
+            list set-service-type {
+                key "slot engine";
+                description
+                  "Configure the Xsec service type on the board of a VSU.The service-type of the engine will be set to Xsec and take effect after an automatic restart.";
+                leaf slot {
+                    type string {
+                        length "1..15";
+                    }
+                    description
+                    "Slot ID.";
+                }
+
+                leaf engine {
+                    type engine-id;
+                    description
+                    "Engine ID.";
+                }
+            }
+        }
+
+        container xsec-proposals {
+            description
+              "List of the Xsec proposal.";
+            list xsec-proposal {
+                key "name";
+                max-elements "100";
+                description
+                  "Configure the list of Xsec proposals.";
+                leaf name {
+                    type string {
+                        length "1..15";
+                    }
+                    description
+                      "The name of Xsec proposal.";
+                }
+
+                leaf esp-auth-algorithm {
+                    type auth-algorithm-type;
+                    default "SHA2-256";
+                    description
+                      "Specify the authentication algorithm for ESP protocol.";
+                }
+
+                leaf esp-encryption-algorithm {
+                    type encryption-algorithm-type;
+                    default "AES-256-CBC";
+                    description
+                      "Specify the encryption algorithm for ESP protocol.";
+                }
+            } /*end of xsec-proposal*/
+        } /*end of xsec-proposals*/
+
+        container remote-id-lists {
+            description
+              "List of Configure the router remote id list can connect with local Xsec.";
+            list remote-id-list {
+                key "name";
+                max-elements "1000";
+                description
+                  "Configure the router remote id list can connect with local Xsec.";
+                leaf name {
+                    type string {
+                        length "1..15";
+                    }
+                    description
+                      "Name of Xsec router remote-id list.";
+                }
+                leaf-list remote-id {
+                    type inet:ipv4-address-no-zone;
+                    must "not(../remote-id='255.255.255.255' or ../remote-id='0.0.0.0')";
+                    max-elements "2000";
+                    description
+                      "Configure the router remote id. The leaf-list is deprecated.";
+                }
+                container router-ids {
+                    description
+                      "List of Xsec router id.";
+                    list router-id {
+                        key "remote-id";
+                        max-elements "2000";
+                        description
+                          "Configure the router remote id and router remote id function.";
+                        leaf remote-id{
+                            type inet:ipv4-address-no-zone;
+                            must "not(../remote-id='255.255.255.255' or ../remote-id='0.0.0.0')";
+                            description
+                              "Configure the router remote id.";
+                        }
+                        leaf action {
+                            type router-id-action;
+                            default "permit";
+                            description
+                              "Permit/deny router remote id function.";
+                        }
+                    }
+                }
+                leaf router-id-default {
+                  type router-list-action;
+                  default "permit";
+                  description
+                    "Permit/deny router remote id list function.";
+                }
+            }
+        }
+
+        container policys {
+            description
+              "List of the Xsec policy. Configuration is not allowed when the policy name and policy template name are the same.";
+            list policy {
+                key "name";
+                max-elements "512";
+                description
+                  "Configure Xsec policy.";
+                leaf name {
+                    type string {
+                        length "1..15";
+                    }
+                    description
+                      "Name of Xsec policy group.";
+                }
+                container service-instance-group {
+                  ext:operation-exclude update;
+                  description
+                    "Configure service instance group.";
+                  leaf service-group-name {
+                      type leafref {
+                          path "/vsm:vsm/vsm:service-instance-groups/vsm:service-instance-group/vsm:group-name";
+                      }
+                      description
+                        "Configure service group name.";
+                  }
+                } /* end of container service-instance-group */
+                container sa-mode {
+                  description
+                    "Configure sa mode type.";
+                  leaf mode {
+                      type xsec-sa-mode {
+                      }
+                      default "service";
+                      description
+                        "Type of sa mode.";
+                  }
+                } /* end of container sa-mode */
+                container router-id-list {
+                  ext:operation-exclude update;
+                  description
+                    "Configure Xsec router id list.";
+                  leaf name {
+                      type leafref {
+                          path "/xsec/remote-id-lists/remote-id-list/name";
+                      }
+                      description
+                        "Name of Xsec router id list.";
+                  }
+                } /* end of container router-id-list */
+                leaf-list proposal-name {
+                    type leafref {
+                        path "/xsec/xsec-proposals/xsec-proposal/name";
+                    }
+                    max-elements "6";
+                    description
+                      "Specify the Xsec proposal of Xsec policy.";
+                }
+                container lifetime-traffic-based {
+                  description
+                    "Configure volume of traffic (in kB) a SA will live before expiring.";
+                  leaf traffic {
+                      type uint32 {
+                          range "1000000..200000000";
+                      }
+                      units kB;
+                      description
+                        "Volume of traffic (in kB) a SA will live before expiring.";
+                  }
+                } /* end of container lifetime-traffic-based */
+                container lifetime-time-based {
+                  description
+                    "Configure value of time (in seconds) a SA will live before expiring.";
+                  leaf time {
+                      when "../lifetime-time-based-enable = 'true'";
+                      type uint32 {
+                          range "86400..604800";
+                      }
+                      units s;
+                      default "86400";
+                      description
+                        "Value of time (in seconds) a SA will live before expiring.";
+                  }
+                  leaf lifetime-time-based-enable {
+                    type boolean;
+                    default "true";
+                    description
+                      "Enable/disable SA duration time-based function.";
+                  }
+                } /* end of container lifetime-time-based */
+                container exchange-dh {
+                  description
+                    "Configure dh-group in Xsec negotiation.";
+                  leaf dh-group {
+                      type dh-group-type;
+                      default "group15";
+                      description
+                        "Type of dh-group.";
+                  }
+                } /* end of container exchange-dh */
+                container anti-replay {
+                  description
+                    "Configure Xsec anti-replay param.";
+                  leaf status {
+                      type anti-replay-enable-type;
+                      default "NA";
+                      description
+                        "Enable/disable the global/policy function of anti-replay.";
+                  }
+
+                  leaf window {
+                      when "../status = 'true'";
+                      type uint32 {
+                          range "32|64|128|256|512|1024";
+                      }
+                      default "1024";
+                      description
+                        "Value of Xsec anti-replay window size.";
+                  }
+                } /* end of container anti-replay */
+                container mtu {
+                  description
+                    "Configure the maximum transmission unit (MTU) for an Xsec policy.";
+                  leaf value {
+                      type uint32 {
+                          range "1361..9600";
+                      }
+                      units Byte;
+                      default "1500";
+                      description
+                        "Value of the MTU.";
+                  }
+                } /* end of container mtu */
+            }
+        } /* end of container policys */
+
+        container xsec-tunnels {
+            config false;
+            description
+              "List of the Xsec tunnels information.";
+            list xsec-tunnel {
+                key "peer-router-id spi policy-name peer-sa-id";
+                description
+                  "Statistics of the Xsec tunnels.";
+
+                leaf peer-router-id {
+                    type inet:ipv4-address-no-zone;
+                    description
+                      "Peer router.";
+                }
+
+                leaf spi {
+                    type uint32;
+                    description
+                      "The tunnel spi.";
+                }
+
+                leaf policy-name {
+                    type leafref {
+                        path "/xsec/policys/policy/name";
+                    }
+                    description
+                      "The Xsec policy name.";
+                }
+
+                leaf peer-sa-id {
+                    type uint32;
+                    description
+                      "Peer sa id.";
+                }
+
+                leaf local-router-id {
+                    type leafref {
+                        path "/xsec/local-router-id/router-id";
+                    }
+                    description
+                      "The local xsec router-id.";
+                }
+
+                leaf local-connection-id {
+                    type uint32;
+                    description
+                      "The local connection id.";
+                }
+
+                leaf tunnel-direction {
+                    type direction;
+                    description
+                      "The tunnel direction.";
+                }
+
+                leaf local-sa-id {
+                    type uint32;
+                    description
+                      "Local sa id.";
+                }
+
+                leaf establish-time {
+                    type yang:date-and-time;
+                    description
+                      "Establish time.";
+                }
+
+                leaf remain-time {
+                    type uint32;
+                    units "s";
+                    description
+                      "Hold remaining seconds.";
+                }
+
+                leaf packets-encrypted {
+                    type uint32;
+                    description
+                      "The packets numbers which was encrypted by xsec tunnel.";
+                }
+
+                leaf bytes-encrypted {
+                    type uint32;
+                    units "kB";
+                    description
+                      "The bytes numbers which was encrypted by xsec tunnel.";
+                }
+
+                leaf packets-decrypted {
+                    type uint32;
+                    description
+                      "The packets numbers which was decrypted by xsec tunnel.";
+                }
+
+                leaf bytes-decrypted {
+                    type uint32;
+                    units "kB";
+                    description
+                      "The bytes numbers which was decrypted by xsec tunnel.";
+                }
+            }
+        } /*end of container  Xsec-tunnels*/
+    } 
+    augment "/lcs:license" {
+      description
+        "Configure Xsec license for Xsec board.";
+        container active-xsec-bandwidths {
+            description
+              "List of active bandwidth for Xsec board.";
+            list active-xsec-bandwidth {
+                key "slot engine";
+                description
+                  "Configure active-bandwidth for Xsec board.";
+                leaf slot {
+                    type string {
+                        length "1..15";
+                    }
+                    description
+                      "Slot ID.";
+                }
+
+                leaf engine {
+                    type engine-id;
+                    description
+                      "Engine ID.";
+                }
+
+                leaf bandwidth-value {
+                    type uint16 {
+                        range "10|20|30|40|50|60|70|80|90|100";
+                    }
+                    units "Gbit/s";
+                    mandatory true;
+                    description
+                      "Configure the bandwidth value for Xsec.";
+                }
+            }
+        }
+      }
+    ext:task-name "ipsec";
+} /*end of module huawei-xsec*/
+
+  

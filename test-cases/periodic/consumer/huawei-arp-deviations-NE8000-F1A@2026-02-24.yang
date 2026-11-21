@@ -1,0 +1,184 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-arp-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-arp-deviations-NE8000-F1A";
+  prefix arp-devs-NE8000-F1A;
+
+  import huawei-arp {
+    prefix arp;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-bd {
+    prefix bd;
+  }
+  import huawei-vlan {
+    prefix vlan;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-arp module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/arp:arp/arp:global/arp:expire-time" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:gateway-dup-enable" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:ipconflict-detect-enable" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:probe-times" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:dfs-backup-rate" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:smart-discover-interval" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:smart-discover-count" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:gratuitous-send-enable" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:gratuitous-send-interval" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:learn-different-segment-enable" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:probe-unicast" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:learning-from-mac-enable" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:src-ip-speed-limits" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:static-arps/arp:static-arp/arp:vxlan-id" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:static-arps/arp:static-arp/arp:tunnel-vpn-name" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:static-arps/arp:static-arp/arp:tunnel-ip" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:evpn-global" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:query-entries/arp:query-entry/arp:work-dyn-if-name" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:query-entries/arp:query-entry/arp:vni" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:query-entries/arp:query-entry/arp:source-addr" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:query-entries/arp:query-entry/arp:peer-addr" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:entry-statistics/arp:entry-used-numbers/arp:entry-used-number/arp:openflow-num" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:anti-attack-rate-limits" {
+    deviate not-supported;
+  }
+  deviation "/arp:fixup-dynamic-entry" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:arp-entry/arp:smart-discover-enable" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:arp-entry/arp:link-down-delete" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:arp-entry/arp:gratuitous-send-interval" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:arp-entry/arp:anti-attack-rate-limits" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:arp-limits/arp:arp-limit/arp:threshold-value" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:evpn-property" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:packet-policys" {
+    deviate not-supported;
+  }
+  deviation "/vlan:vlan/vlan:vlans/vlan:vlan/arp:anti-attack-rate-limits" {
+    deviate not-supported;
+  }
+  deviation "/vlan:vlan/vlan:vlans/vlan:vlan/arp:arp-l2proxy" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/arp:arp-list/arp:broadcast-suppress" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/arp:arp-list/arp:l2proxy-gw-enable" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/arp:arp-list/arp:rate-limit" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/arp:arp-statistics/arp:receive-proxy-packets" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/arp:arp-statistics/arp:miss-discard" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/arp:arp-statistics/arp:l2proxy-reply" {
+    deviate not-supported;
+  }
+  deviation "/arp:arp/arp:global/arp:con-send-maxnum" {
+    deviate replace {
+      type uint16 {
+        range "1..10";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:arp-entry/arp:expire-time" {
+    deviate replace {
+      type uint32 {
+        range "60..86400";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:arp-entry/arp:gratuitous-send" {
+    deviate replace {
+      default "enable";
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/arp:arp-port-security/arp:l2-sub-interface/arp:l2proxy-max-num" {
+    deviate replace {
+      type uint32 {
+        range "0..344064";
+      }
+    }
+  }
+}
+
+  

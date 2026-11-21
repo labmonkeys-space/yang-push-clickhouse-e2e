@@ -1,0 +1,92 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-fim-ifm-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-fim-ifm-deviations-NE8000-F1A";
+  prefix fim-ifm-devs-NE8000-F1A;
+
+  import huawei-fim-ifm {
+    prefix fim-ifm;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-fim-ifm module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  typedef ve-mode-type-deviations {
+    type enumeration {
+      enum "through" {
+        value 1;
+        description
+          "Software loopback.";
+      }
+      enum "loopback" {
+        value 0;
+        description
+          "Hardware loopback.";
+      }
+      enum "half-through" {
+        value 3;
+        description
+          "Software switch hardware loopback.";
+      }
+    }
+    description
+      "VE Forward Mode Type.";
+  }
+
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/fim-ifm:fim-tcp6-mss" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/fim-ifm:fim-ifm-veint/fim-ifm:ve-slot-id" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/fim-ifm:eai-fault-detection" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:global/fim-ifm:fim-ifm-global/fim-ifm:pst-board-fast-switch" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:global/fim-ifm:fim-ifm-global/fim-ifm:gve-energy-saving" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:global/fim-ifm:fim-trunk-localfwd" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/fim-ifm:fim-ifm-mru/fim-ifm:mru" {
+    deviate delete {
+      must "(not(../../fim-ifm:fim-tcp-mss/fim-ifm:tcp-mss) and not(../../fim-ifm:fim-tcp6-mss/fim-ifm:tcp6-mss))";
+    }
+    deviate add {
+      must "not(../../fim-ifm:fim-tcp-mss/fim-ifm:tcp-mss)";
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/fim-ifm:fim-ifm-veint/fim-ifm:ve-forward-mode" {
+    deviate replace {
+      type fim-ifm-devs-NE8000-F1A:ve-mode-type-deviations;
+    }
+  }
+
+}
+  

@@ -1,0 +1,51 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ospfv2-sr-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ospfv2-sr-deviations-NE8000-F1A";
+  prefix ospfv2-sr-devs-NE8000-F1A;
+
+  import huawei-ospfv2-sr {
+    prefix ospfv2-sr;
+  }
+  import huawei-flex-algo {
+    prefix flex-algo;
+  }
+  import huawei-ospfv2 {
+    prefix ospfv2;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-ospfv2-sr module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv2:ospfv2/ospfv2:sites/ospfv2:site/ospfv2-sr:fad-bindings/ospfv2-sr:fad-binding" {
+    deviate add {
+      must "../../../../../ni:name='_public_' and not (../../../../../flex-algo:flex-algo-defines/flex-algo:flex-algo-define[flex-algo:flex-algo-id=current()/flex-algo-id]/flex-algo:extended-constraints/flex-algo:exclude-max-link-loss)";
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv2:ospfv2/ospfv2:sites/ospfv2:site/ospfv2:areas/ospfv2:area/ospfv2-sr:fad-bindings/ospfv2-sr:fad-binding" {
+    deviate add {
+      must "../../../../../../../ni:name='_public_' and not (../../../../../../../flex-algo:flex-algo-defines/flex-algo:flex-algo-define[flex-algo:flex-algo-id=current()/flex-algo-id]/flex-algo:extended-constraints/flex-algo:exclude-max-link-loss)";
+    }
+  }
+}
+
+  

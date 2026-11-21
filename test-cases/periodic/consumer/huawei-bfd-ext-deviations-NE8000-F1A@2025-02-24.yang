@@ -1,0 +1,42 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-bfd-ext-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-bfd-ext-deviations-NE8000-F1A";
+  prefix bfd-ext-devs-NE8000-F1A;
+
+  import huawei-bfd-ext {
+    prefix bfd-ext;
+  }
+
+  import huawei-bfd {
+    prefix bfd;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-bfd-ext module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/bfd:bfd/bfd-ext:bfd-ext" {
+    deviate not-supported;
+  }
+
+}
+  

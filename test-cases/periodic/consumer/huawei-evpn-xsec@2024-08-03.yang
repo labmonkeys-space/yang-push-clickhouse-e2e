@@ -1,0 +1,58 @@
+/*
+Copyright (C) 2023-2024 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+ 
+module huawei-evpn-xsec {
+  namespace "urn:huawei:yang:huawei-evpn-xsec";
+  prefix evpn-xsec;
+ 
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-xsec {
+    prefix xsec;
+  }
+  import huawei-evpn {
+    prefix evpn;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Configure then Xsec function in evpn.";
+  revision 2024-08-03 {
+    description
+      "Modify Xsec description.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-11-27 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "evpnbgp";
+  augment "/evpn:evpn/evpn:site/evpn:l3-static-esis/evpn:l3-static-esi" {
+    description "Augment for applying the Xsec policy in evpn.";
+    container xsec-policy {
+          description
+          "Configure a Xsec policy.";
+          leaf policy-name {
+          type leafref {
+            path "/xsec:xsec/xsec:policys/xsec:policy/xsec:name";
+          }
+          description
+            "Specify a Xsec policy name.";
+        }
+    }
+  }
+}
+
+  

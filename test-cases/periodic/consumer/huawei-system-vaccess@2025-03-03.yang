@@ -1,0 +1,93 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-system-vaccess {
+  namespace "urn:huawei:yang:huawei-system-vaccess";
+  prefix nvsystem;
+  import huawei-vaccess {
+    prefix vaccess;
+  }
+  import huawei-vaccess-master {
+    prefix vaccess-master;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "System.";
+  revision 2025-03-03 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "system";
+
+  augment "/vaccess:vaccess/vaccess-master:flexe-master/vaccess-master:aps/vaccess-master:ap" {
+    description
+      "Configure ap.";
+    container system {
+      config false;
+      description
+        "Operational data of system in virtual access.";
+      container system-info {
+        description
+          "Operational data of system information.";
+        leaf sys-name {
+          type string {
+            length "1..246";
+          }
+          default "HUAWEI";
+            description
+            "System name.";
+        }
+        leaf sys-object-id {
+          type string {
+            length "0..255";
+          }
+          description
+            "Entity OID.";
+        }
+        leaf platform-name {
+          type string {
+            length "0..255";
+          }
+          description
+            "Name of a platform. For example, Huawei Versatile Routing Platform.";
+        }
+        leaf platform-version {
+          type string {
+            length "1..255";
+          }
+          description
+            "Version of a platform.";
+        }
+        leaf product-name {
+          type string {
+            length "0..255";
+          }
+          description
+            "Name of a product.";
+        }
+        leaf product-version {
+          type string {
+            length "1..255";
+          }
+          description
+            "Product version. The version format is VxxRxxCxxSPxxx, for example, V800R002C01SPC001.";
+        }
+      }
+    }
+  }
+}
+
+  

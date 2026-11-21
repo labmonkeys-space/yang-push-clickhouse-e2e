@@ -1,0 +1,23 @@
+# Python and its virtual env for validate.py.
+# The libyang C library comes from Homebrew: brew install libyang
+[tools]
+python = "3.14"
+
+[env]
+_.python.venv = { path = ".venv", create = true }
+# Homebrew's libyang has no pkg-config file, so the binding build is told where it is.
+LIBYANG_HEADERS = "{{ env.HOMEBREW_PREFIX | default(value='/opt/homebrew') }}/opt/libyang/include"
+LIBYANG_LIBRARIES = "{{ env.HOMEBREW_PREFIX | default(value='/opt/homebrew') }}/opt/libyang/lib"
+PIP_DISABLE_PIP_VERSION_CHECK = "1"
+
+[tasks.setup]
+description = "Install the libyang Python binding into .venv"
+run = [
+  "python -m ensurepip > /dev/null",
+  "python -m pip install -q -r requirements.txt",
+]
+
+[tasks.validate]
+description = "Run the collector and consumer checks"
+depends = ["setup"]
+run = "python -I validate.py"

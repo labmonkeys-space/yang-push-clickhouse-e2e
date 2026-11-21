@@ -1,0 +1,80 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-bgp-link-state-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-bgp-link-state-deviations-NE8000-F1A";
+  prefix bgp-ls-devs-NE8000-F1A;
+
+  import huawei-bgp-link-state {
+    prefix bgp-ls;
+  }
+  import huawei-bgp {
+    prefix bgp;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-bgp-routing-table {
+    prefix bgp-rt;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-bgp-link-state module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:peers/bgp:peer/bgp:afs/bgp:af/bgp-ls:link-state-unicast/bgp-ls:option/bgp-ls:epe-utilized-bw-rfc8571-compatible" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:peer-groups/bgp:peer-group/bgp:afs/bgp:af/bgp-ls:link-state-unicast/bgp-ls:option/bgp-ls:epe-utilized-bw-rfc8571-compatible" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-ls:link-state-unicast/bgp-ls:prefix-routes/bgp-ls:prefix-route/bgp-ls:advertise-nexthop" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-ls:link-state-unicast/bgp-ls:link-routes/bgp-ls:link-route/bgp-ls:advertise-nexthop" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-ls:link-state-unicast/bgp-ls:node-routes/bgp-ls:node-route/bgp-ls:advertise-nexthop" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-ls:link-state-unicast/bgp-ls:link-route2s/bgp-ls:link-route2/bgp-ls:advertise-nexthop" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-ls:link-state-unicast/bgp-ls:node-route2s/bgp-ls:node-route2/bgp-ls:advertise-nexthop" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-ls:link-state-unicast/bgp-ls:srv6sid-routes/bgp-ls:srv6sid-route/bgp-ls:advertise-nexthop" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-ls:link-state-unicast/bgp-ls:peer-receive-srv6sid-routes/bgp-ls:peer-receive-srv6sid-route/bgp-ls:advertise-nexthop" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-ls:link-state-unicast/bgp-ls:peer-receive-link-routes/bgp-ls:peer-receive-link-route/bgp-ls:advertise-nexthop" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-ls:link-state-unicast/bgp-ls:te-policy-routes/bgp-ls:te-policy-route/bgp-ls:advertise-nexthop" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:peer-groups/bgp:peer-group/bgp:afs/bgp:af/bgp-ls:link-state-unicast" {
+    deviate add {
+      must "../../../bgp:peer-establish-mode!='dynamic-ipv6'";
+    }
+  }
+}
+
+  

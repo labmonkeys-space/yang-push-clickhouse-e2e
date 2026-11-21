@@ -1,0 +1,40 @@
+/*
+Copyright (C) 2024 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-l2tpv3-forward-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-l2tpv3-forward-deviations-NE8000-F1A";
+  prefix l2tpv3-forward-devs-NE8000-F1A;
+
+  import huawei-l2tpv3-forward {
+    prefix l2tpv3-forward;
+  }
+
+  import huawei-devm {
+    prefix devm;
+  }
+  
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-l2tpv3-forward module.";
+
+  revision 2024-05-17 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  deviation "/devm:devm/devm:lpu-boards/devm:lpu-board/l2tpv3-forward:l2tpv3-forward" {
+    deviate not-supported;
+  }
+}
+  

@@ -1,0 +1,358 @@
+/*
+Copyright (C) 2021-2024 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-smartlink {
+  namespace "urn:huawei:yang:huawei-smartlink";
+  prefix smartlink;
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-ethernet {
+    prefix ethernet;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  import huawei-pub-type {
+    prefix pub-type;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Smartlink configuration.";
+  revision 2024-06-22 {
+    description
+      "Add smart link group nodes and interface nodes.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-02-21 {
+    description
+      "Display and reset smart link flush.";
+    reference
+      "Huawei private.";
+  }
+  revision 2021-08-23 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "smlk";
+  typedef state-enable {
+    type enumeration {
+      enum "true" {
+        value 1;
+        description
+          "State is enable.";
+      }
+      enum "false" {
+        value 0;
+        description
+          "State is disable.";
+      }
+    }
+    description
+      "State is enable/disable.";
+  }
+  typedef port-role {
+    type enumeration {
+      enum "master" {
+        value 1;
+        description
+          "Port role is master.";
+      }
+      enum "slave" {
+        value 2;
+        description
+          "Port role is slave.";
+      }
+    }  
+    description
+      "Port role.";
+  }
+  typedef auth-mode {
+    type enumeration {
+      enum "simple" {
+        value 1;
+        description 
+          "Authentication mode is simple.";
+      }
+      enum "sha" {
+        value 2;
+        description 
+          "Authentication mode is sha.";
+      }
+      enum "hmac-sha256" {
+        value 3;
+        description 
+          "Authentication mode is hmac-sha256.";
+      }
+    }
+    description
+      "Authentication mode.";
+  }
+  typedef lock-traffic {
+    type enumeration {
+      enum "unknown" {
+        value 0;
+        description
+          "Traffic is not locked.";
+      }
+      enum "force" {
+        value 1;
+        description
+          "Lock traffic on the master interface.";
+      }
+      enum "lock" {
+        value 2;
+        description
+          "Lock traffic on the slave interface.";
+      }
+    }
+    description
+      "Lock traffic on the master or slave interface.";
+  }
+  container smartlink {
+    description
+      "Smart link.";
+    container last-flush-packet-info {
+      config false;
+      description
+        "Statistics of received flush packets.";
+      leaf count {
+        type uint32;
+        description
+          "Number of received flush packets.";
+      }
+      leaf interface-name {
+        type leafref {
+          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        description
+          "Interface that received the latest flush packet.";
+      }
+      leaf time {
+        type yang:date-and-time;
+        description
+          "Time and date that the latest flush packet was received.";
+      }
+      leaf mac-address {
+        type pub-type:mac-address;
+        description
+          "Source MAC address of the latest received flush packet.";
+      }
+      leaf control-vlan {
+        type uint16;
+        description
+          "Control VLAN ID of the latest received flush packet.";
+      }
+    }
+    container groups {
+      description
+        "List of smart link group configurations.";
+      list group {
+        must "(./auth-mode and ./auth-info) or ((not (./auth-mode)) and (not (./auth-info)))";
+        key "id";
+        description
+          "Configure smart link group configuration.";
+        leaf id {
+          type uint16 {
+            range "1..48";
+          }
+          description
+            "Smart link group ID.";
+        }
+        leaf flush-send-enable {
+          type state-enable;
+          default "false";
+          description
+            "Enable/disable flush packet sending when a link is switched."; 
+        }
+        leaf ctrl-vlan-id {
+          when "../flush-send-enable='true'";
+          type uint16 {
+            range "1..4094";
+          }
+          description
+            "Control VLAN ID carried in sent flush packets.";
+        }
+        leaf auth-mode {
+          when "../flush-send-enable='true' and ../ctrl-vlan-id";
+          type auth-mode;
+          description
+            "Authentication mode.";
+        }
+        leaf auth-info {
+          when "../flush-send-enable='true' and ../ctrl-vlan-id and ../auth-mode";
+          type pub-type:password-extend {
+            length "1..128";
+          }
+          description
+            "Authentication password.";
+        }
+        leaf hold-time {
+          type uint16 {
+            range "0..60";
+          }
+          units "100 ms";
+          default "0";
+          description
+            "Delay after which a smart link member interface reports the interface status.";
+        }
+        leaf load-instance-id {
+          type pub-type:id-range {
+            ext:value-range '0..4094';
+            pattern '((409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])?(-(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9]))?(,((409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])(-(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9]))?))*)|((([\\+|\\-](409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9]))|([\\+|\\-]\\((409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])-(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])\\)))?(,(([\\+|\\-](409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9]))|([\\+|\\-]\\((409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])-(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])\\))))*)';
+          }
+          description
+            "Smart link load balancing instance ID.";
+        }
+        leaf protected-instance-id {
+          type pub-type:id-range {
+            ext:value-range '0..4094';
+            pattern '((409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])?(-(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9]))?(,((409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])(-(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9]))?))*)|((([\\+|\\-](409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9]))|([\\+|\\-]\\((409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])-(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])\\)))?(,(([\\+|\\-](409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9]))|([\\+|\\-]\\((409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])-(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{1,2}|[0-9])\\))))*)';
+          }
+          description
+            "Smart link protection instance ID.";
+        }
+        leaf restore-enable {
+          type state-enable;
+          default "false";
+          description
+            "Enable/disable switch traffic back to the master interface.";
+        }
+        leaf enable {
+          type state-enable;
+          default "false";
+          description
+            "Enable/disable smart link group.";
+        }
+        leaf lock-traffic {
+          when "../enable='true'";
+          type lock-traffic;
+          default "unknown";
+          description
+            "Lock traffic on the master or slave interface.";
+        }
+        leaf wtr-time {
+          type uint16 {
+            range "0..1200";
+          }
+          units "s";
+          default "60";
+          description
+            "Time after which traffic is switched back to the master interface.";
+        }
+        container interfaces {
+          description
+            "List of smart link groups interface configuration.";
+          list interface {
+            key "if-name";
+            unique "port-role";
+            description
+              "Configure smart link group configuration.";
+            leaf if-name {
+              type leafref {
+                path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+              }
+              description
+                "Name of smart link group member interface.";
+            }
+            leaf port-role {
+              type port-role;
+              mandatory true;
+              description
+                "Role of smart link group member interface.";
+            }
+          }
+        }
+      }
+    }
+    container flush-receive {
+      must "(./auth-mode and ./auth-info) or ((not (./auth-mode)) and (not (./auth-info)))";
+      description
+        "Configure the authentication mode and password for receiving flush packets globally.";
+      leaf auth-mode {
+        type auth-mode;
+        description
+          "Authentication mode.";
+      }
+      leaf auth-info {
+        when "../auth-mode";
+        type pub-type:password-extend {
+            length "1..128";
+        }
+        description
+          "Authentication password.";
+      }   
+    }
+  }
+  rpc manual-switch {
+    description
+      "Switch link between master link and slave link.";
+    input {
+      leaf id {
+        type uint16 {
+          range "1..48";
+        }
+        description
+          "Smart link group ID.";
+      }
+    }
+  }
+  rpc reset-flush-packet {
+    description
+      "Reset flush packet statistics.";
+    ext:node-ref "/smartlink:smartlink/smartlink:last-flush-packet-info";
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/ethernet:main-interface/ethernet:l2-attribute" {
+    description
+      "Configure smartlink with the interface.";
+    container smartlink {
+      must "(./auth-mode and ./auth-info) or ((not (./auth-mode)) and (not (./auth-info)))";
+      description
+        "Configure smartlink attribute.";
+      leaf detect-active-link {
+        type empty;
+        description
+          "Enable/disable detect active link.";
+      }
+      leaf control-vlan {
+        type uint16 {
+            range "1..4094";
+        }
+        description
+          "Receive interface control VLAN ID.";
+      }
+      leaf auth-mode {
+        when "../control-vlan";
+        type auth-mode;
+        description
+          "Receive interface authentication mode.";
+      }
+      leaf auth-info {
+        when "../control-vlan and ../auth-mode";
+        type pub-type:password-extend {
+          length "1..128";
+        }
+        description
+          "Receive interface authentication password.";
+      }
+    }
+  }
+}
+
+
+
+  

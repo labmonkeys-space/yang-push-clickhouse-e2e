@@ -1,0 +1,331 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-aifi-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-aifi-deviations-NE8000-F1A";
+  prefix aifi-devs-NE8000-F1A;
+
+  import huawei-aifi {
+    prefix aifi;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-aifi module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  typedef host-flow-report-type-deviations {
+    type enumeration {
+      enum "burst-flows" {
+        value 0;
+        description
+          "Report original burst flows and aggregated burst flows.";
+      }
+      enum "original-burst-flows" {
+        value 1;
+        description
+          "Report original burst flows only.";
+      }
+      enum "aggregate-burst-flows" {
+        value 2;
+        description
+          "Report aggregated burst flows only.";
+      }
+      enum "normal-flows" {
+        value 3;
+        description
+          "Report original normal flows and aggregated normal flows.";
+      }
+      enum "carpet-bombing-flows" {
+        value 4;
+        description
+          "Report carpet bombing flows only.";
+      }
+    }
+    description
+      "The type of flow reported.";
+  }
+
+  deviation "/aifi:aifi/aifi:global/aifi:egress-identification-enable" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:carpet-bombing-detect-bandwidth" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:burst-suppress" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:user-defined-flow" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:burst-suppress-protect-lists" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:burst-suppress-unprotect-lists" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:burst-suppress-trust-lists" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:ipv4-suppress-history-records" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:ipv6-suppress-history-records" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:ipv4-suppress-current-rules" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:ipv6-suppress-current-rules" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:ipv4-suppress-log-records" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:ipv6-suppress-log-records" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:ipv4-burst-history" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:ipv6-burst-history" {
+    deviate not-supported;
+  }
+  deviation "/aifi:reset-udf-baseline-ipv4-original-flow" {
+    deviate not-supported;
+  }
+  deviation "/aifi:reset-udf-baseline-ipv6-original-flow" {
+    deviate not-supported;
+  }
+  deviation "/aifi:reset-udf-baseline-aggregated-flow" {
+    deviate not-supported;
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:direction" {
+    deviate delete {
+      must "not(../../user-defined-flow) or (../../user-defined-flow and ../direction='inbound')";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:packet-size" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:high-sample-ratio" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:low-sample-ratio" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:match-pattern" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:classification-enable" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:burst-monitor-enable" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:max-packet-interval-weight" {
+    deviate replace {
+      type uint8 {
+                    range "25..50";
+                }
+    }
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:max-burst-size-weight" {
+    deviate replace {
+      type uint8 {
+                    range "25..50";
+                }
+    }
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:flow-speed-para-weight" {
+    deviate replace {
+      type uint8 {
+                    range "25..50";
+                }
+    }
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:flow-size-para-weight" {
+    deviate replace {
+      type uint8 {
+                    range "25..50";
+                }
+    }
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:packet-len-std-para-weight" {
+    deviate replace {
+      type uint8 {
+                    range "25..50";
+                }
+    }
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:lowest-burst-level" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:flow-initial-silent-period" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:flow-aggregation-enable" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:burst-static-threshold" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:burst-min-threshold" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:carpet-bombing-detect-enable" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:carpet-bombing-ipv4-prefix" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:global/aifi:carpet-bombing-ipv6-prefix" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv4-flow-sips" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv4-flow-sips/static-ipv4-flow-sip)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv6-flow-sips" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv6-flow-sips/static-ipv6-flow-sip)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv4-flow-dips" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv4-flow-dips/static-ipv4-flow-dip)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv6-flow-dips" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv6-flow-dips/static-ipv6-flow-dip)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv4-flow-sip-dips" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv4-flow-sip-dips/static-ipv4-flow-sip-dip)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv6-flow-sip-dips" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv6-flow-sip-dips/static-ipv6-flow-sip-dip)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv4-flow-dip-protocols" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv4-flow-dip-protocols/static-ipv4-flow-dip-protocol)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv6-flow-dip-protocols" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv6-flow-dip-protocols/static-ipv6-flow-dip-protocol)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv4-flow-5tuples" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv4-flow-5tuples/static-ipv4-flow-5tuple)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:static-ipv6-flow-5tuples" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../static-ipv6-flow-5tuples/static-ipv6-flow-5tuple)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:export-ipv4-hosts" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../export-ipv4-hosts/export-ipv4-host)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:export-ipv4-hosts/aifi:export-ipv4-host/aifi:send-flow-type" {
+    deviate replace {
+      type aifi-devs-NE8000-F1A:host-flow-report-type-deviations;
+    }
+  }
+  deviation "/aifi:aifi/aifi:export-ipv6-hosts" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../export-ipv6-hosts/export-ipv6-host)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:export-ipv6-hosts/aifi:export-ipv6-host/aifi:send-flow-type" {
+    deviate replace {
+      type aifi-devs-NE8000-F1A:host-flow-report-type-deviations;
+    }
+  }
+  deviation "/aifi:aifi/aifi:flow-classes" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../flow-classes/flow-class)=0";
+    }
+  }
+  deviation "/aifi:aifi/aifi:host-timeouts/aifi:data-export-interval" {
+    deviate delete {
+      must "not(../../user-defined-flow)";
+    }
+  }
+  deviation "/aifi:aifi/aifi:flow-dscp-values" {
+    deviate delete {
+      must "not(../user-defined-flow) or count(../flow-dscp-values/flow-dscp-value)=0";
+    }
+  }
+
+}
+  

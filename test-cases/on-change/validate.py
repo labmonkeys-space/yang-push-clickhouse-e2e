@@ -12,8 +12,9 @@ the NetCalyx anchor branch finds the anchor, in three spellings: as the
 router sends it, with a quoted key, and in the RFC 8040 encoding that
 RFC 8072 prescribes for a YANG Patch target.
 
-Every check uses the router's YANG library 2338653103 and parses with
-libyang in strict, parse-only mode: node names, types and identities are
+Every check runs against two YANG libraries of the router: 2300156437,
+the advertised library that every subscription-started names, and
+2338653103, the fixed library. libyang parses in strict, parse-only mode: node names, types and identities are
 checked, mandatory nodes and leafref targets are not. That is close to the
 anydata-candidate option of the draft.
 
@@ -23,56 +24,31 @@ import json
 import os
 import sys
 import tempfile
-from dataclasses import dataclass
 
 import libyang
 
-# The router's YANG library, published with the IETF 127 capture.
-# It lists iana-if-type as implemented, so the interface identity resolves.
-LIBRARY = "library-2338653103.json"
+# The checks, their inputs and their predictions. Another implementation
+# can run the same checks from this file and compare per check ID.
+EXPECTED = "expected-results.json"
 
 
-@dataclass
-class Edit:
-    title: str
-    path: str
+def load_expected(path: str) -> dict:
+    """Read the checks; a predicted fail must name part of libyang's error."""
+    with open(path, encoding="utf-8") as f:
+        expected = json.load(f)
+    for check in expected["checks"]:
+        if check["predicted"] == "fail" and not check.get("error_contains"):
+            raise ValueError(f"check {check['id']}: a predicted fail needs error_contains")
+    return expected
 
 
-INTERFACE = Edit("Interface edit, subscription 11", "edit-interface.json")
-ALARM = Edit("Alarm edit, subscription 19", "edit-alarm.json")
-
-
-@dataclass
-class Case:
-    name: str
-    edit: Edit
-    description: str
-    read_from: str | None  # data node to parse under; None is the schema root
-    as_notification: bool  # parse as a YANG notification instead of datastore content
-    predicted: str  # "pass" or "fail"
-
-
-CASES = [
-    Case("A", INTERFACE, "read from the schema root, as collectors do today", None, False, "fail"),
-    Case("B", INTERFACE, "read from the target's parent, the draft's anchor", "/ietf-interfaces:interfaces", False, "pass"),
-    Case("C", ALARM, "read from the schema root, the anchor of a top-level target", None, False, "fail"),
-    Case("D", ALARM, "read as a YANG notification instead", None, True, "fail"),
-]
-
-
-@dataclass
-class Target:
-    name: str
-    description: str
-    path: str
-    predicted: str  # "pass" or "fail"
-
-
-TARGETS = [
-    Target("E", "as the router sends it", "/ietf-interfaces:interfaces/interface[name=100GE0/1/2]", "fail"),
-    Target("F", "with a quoted key", "/ietf-interfaces:interfaces/interface[name='100GE0/1/2']", "pass"),
-    Target("G", "in the RFC 8040 encoding of RFC 8072", "/ietf-interfaces:interfaces/interface=100GE0%2F1%2F2", "fail"),
-]
+def verdict(check: dict, result: str, error: str) -> str:
+    """ok when the result matches, and a fail fails for the predicted reason."""
+    if result != check["predicted"]:
+        return "UNEXPECTED"
+    if result == "fail" and check["error_contains"] not in error:
+        return "UNEXPECTED"
+    return "ok"
 
 
 def one_module_set(library: str) -> tuple[str, list[str]]:
@@ -122,9 +98,23 @@ def one_module_set(library: str) -> tuple[str, list[str]]:
     return out.name, skipped
 
 
-def validate(ctx: libyang.Context, value: str, case: Case) -> tuple[str, str]:
+def substituted(ctx: libyang.Context, named: dict) -> list[str]:
+    """Modules libyang uses at another revision than the one named.
+
+    libyang 6.4.13 builds some base modules into every context, at its own
+    revisions. An import without revision-date then resolves to those, not
+    to the file at the revision the library or the registry names.
+    """
+    used = {}
+    for m in ctx:
+        used.setdefault(m.name(), []).append(next((str(r.date()) for r in m.revisions()), ""))
+    return [f"{name} {'/'.join(used[name])} for {rev}" for name, rev in sorted(named.items())
+            if name in used and rev not in used[name]]
+
+
+def validate(ctx: libyang.Context, value: str, check: dict) -> tuple[str, str]:
     """Parse the value and return ("pass", "") or ("fail", libyang's error)."""
-    if case.as_notification:
+    if check["as_notification"]:
         try:
             ctx.parse_op("json", libyang.IOType.MEMORY, value, dtype=libyang.DataType.NOTIF_YANG)
             return "pass", ""
@@ -132,10 +122,13 @@ def validate(ctx: libyang.Context, value: str, case: Case) -> tuple[str, str]:
             return "fail", str(e).split(": ", 1)[-1]
 
     # The value is parsed as children of this node, or as top-level data.
-    parent = ctx.create_data_path(case.read_from) if case.read_from else None
+    parent = ctx.create_data_path(check["anchor"]) if check["anchor"] else None
     tree = None
     try:
-        tree = ctx.parse_data("json", libyang.IOType.MEMORY, value, parent=parent, parse_only=True, strict=True)
+        # parse-only checks names, types and identities; full also checks
+        # leafrefs and mandatory nodes, as validation of the whole tree would.
+        parse_only = check["mode"] == "parse-only"
+        tree = ctx.parse_data("json", libyang.IOType.MEMORY, value, parent=parent, parse_only=parse_only, strict=True)
         return "pass", ""
     except libyang.LibyangError as e:
         return "fail", str(e).split(": ", 1)[-1]
@@ -164,50 +157,69 @@ def describe(edit: dict) -> str:
     return f"{{{members}: ...}}  ({'with' if prefixed else 'no'} module prefix)"
 
 
-def main() -> int:
-    library, skipped = one_module_set(LIBRARY)
-    print(f"Library: {LIBRARY} (iana-if-type implemented)")
-    if skipped:
-        print(f"Not found, left out: {', '.join(skipped)}")
-
+def run_checks(ctx: libyang.Context, expected: dict, checks: list[dict]) -> int:
+    """Run the checks of one library and return how many did not match."""
     unexpected = 0
-    with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
-        current = None
-        for case in CASES:
-            if case.edit is not current:
-                current = case.edit
-                with open(case.edit.path, encoding="utf-8") as f:
+    current = None
+    for check in checks:
+        if check["kind"] == "parse":
+            if check["edit"] != current:
+                current = check["edit"]
+                with open(current, encoding="utf-8") as f:
                     edit = json.load(f)
                 value = json.dumps(edit["value"])
                 print()
-                print(case.edit.title)
+                print(expected["edits"][current])
                 print(f"   target: {edit['target']}")
                 print(f"   value:  {describe(edit)}")
+            result, error = validate(ctx, value, check)
+        else:
+            if current != "resolve":
+                current = "resolve"
+                print()
+                print("Interface target, resolved as XPath like the NetCalyx anchor branch")
+            result, error = resolve(ctx, check["path"])
 
-            result, error = validate(ctx, value, case)
-            verdict = "ok" if result == case.predicted else "UNEXPECTED"
-            if result != case.predicted:
-                unexpected += 1
-            print(f"{case.name}  {case.description:62}  {result:4}  (predicted {case.predicted}, {verdict})")
-            if error:
-                print(f"   {error[:150]}")
+        v = verdict(check, result, error)
+        if v != "ok":
+            unexpected += 1
+        print(f"{check['id']}  {check['description']:62}  {result:4}  (predicted {check['predicted']}, {v})")
+        if check["kind"] == "resolve":
+            print(f"   {check['path']}")
+        if error:
+            print(f"   {error[:150]}")
+    return unexpected
 
+
+def main() -> int:
+    expected = load_expected(EXPECTED)
+    unexpected = 0
+    for library_file, about in expected["libraries"].items():
+        checks = [c for c in expected["checks"] if c["library"] == library_file]
+        library, skipped = one_module_set(library_file)
+        print(f"Library: {library_file}, {about}")
+        if skipped:
+            print(f"Not found, left out: {', '.join(skipped)}")
+        try:
+            with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
+                with open(library_file, encoding="utf-8") as f:
+                    sets = json.load(f)["ietf-yang-library:yang-library"]["module-set"]
+                named = {m["name"]: m["revision"] for s in sets for k in ("module", "import-only-module") for m in s.get(k, [])}
+                swapped = substituted(ctx, named)
+                if swapped:
+                    print(f"libyang uses {', '.join(swapped)}")
+                unexpected += run_checks(ctx, expected, checks)
+        finally:
+            os.unlink(library)
         print()
-        print("Interface target, resolved as XPath like the NetCalyx anchor branch")
-        for target in TARGETS:
-            result, detail = resolve(ctx, target.path)
-            verdict = "ok" if result == target.predicted else "UNEXPECTED"
-            if result != target.predicted:
-                unexpected += 1
-            print(f"{target.name}  {target.description:62}  {result:4}  (predicted {target.predicted}, {verdict})")
-            print(f"   {target.path}")
-            print(f"   {detail[:150]}")
-
-    print()
     if unexpected:
         print("Result: at least one check did not match its prediction.")
     else:
-        print("Result: the interface value is valid as sent. It fails only when read from the schema root.")
+        print("Result: the interface value is valid as sent with the fixed library, read from")
+        print("        the target's parent. It fails when read from the schema root, and with")
+        print("        the advertised library, which lists iana-if-type as import-only.")
+        print("        Full validation fails on higher-layer-if, which points to an")
+        print("        interface outside this one-entry value.")
         print("        The alarm value cannot pass: its target is a notification, not data,")
         print("        and its alarm-type-id names an identity ietf-alarms does not define,")
         print("        unless the missing deviation changes the type of alarm-type-id.")

@@ -1,0 +1,67 @@
+/******************************************************
+* Copyright (C) 2024 Huawei Technologies Co., Ltd. All rights reserved.
+* Module description & tree structure
+***************************************************/
+module huawei-l2tpv3-forward {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-l2tpv3-forward";
+  prefix l2tpv3-forward;
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-devm {
+    prefix devm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+  description
+    "Device security.";
+  revision 2024-05-14 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "l2vpn";
+
+  grouping devm-l2tpv3-forward {
+    description
+      "Set L2TPv3 forward configuration to devm slot model.";
+    container l2tpv3-forward {
+      description
+        "Configure L2TPv3 forward.";
+      container load-balance {
+        description
+          "Configure load balance.";
+        leaf ipv4-payload-offset {
+          type uint32 {
+              range "1..63";
+          }
+          description
+            "Load balance L2TPv3 by IPv4 payload offset value.";
+        }
+      }
+    }
+  }
+
+  augment "/devm:devm/devm:lpu-boards/devm:lpu-board" {
+    description
+      "Add L2TPv3 forward configuration to devm slot model.";
+    uses devm-l2tpv3-forward;
+  }
+
+  augment "/devm:devm/devm:mpu-boards/devm:mpu-board" {
+    description
+      "Add L2TPv3 forward configuration to devm slot model.";
+    uses devm-l2tpv3-forward;
+  }
+}
+  

@@ -1,0 +1,46 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ippmmgr-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ippmmgr-deviations-NE8000-F1A";
+  prefix ippmmgr-devs-NE8000-F1A;
+
+  import huawei-ippmmgr {
+    prefix ippmmgr;
+  }
+
+  import huawei-devm {
+    prefix devm;
+  }
+
+  import huawei-loadbalance {
+    prefix loadbalance;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-ippmmgr module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/devm:devm/devm:lpu-boards/devm:lpu-board/loadbalance:loadbalance/ippmmgr:l2-hash-arithmetic" {
+    deviate not-supported;
+  }
+
+}
+  

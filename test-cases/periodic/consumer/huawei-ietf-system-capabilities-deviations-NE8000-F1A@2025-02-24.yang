@@ -1,0 +1,40 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ietf-system-capabilities-deviations-NE8000-F1A {
+  yang-version 1.1;
+  namespace "urn:huawei:yang:huawei-ietf-system-capabilities-deviations-NE8000-F1A";
+  prefix sysc-devs-NE8000-F1A;
+
+  import ietf-system-capabilities {
+    prefix sysc;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for ietf-system-capabilities module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/sysc:system-capabilities/sysc:datastore-capabilities/sysc:per-node-capabilities/sysc:node-selection/sysc:node-selector/sysc:node-selector" {
+    deviate replace {
+      type string {
+        length "1..512";
+      }
+    }
+  }
+}
+
+  

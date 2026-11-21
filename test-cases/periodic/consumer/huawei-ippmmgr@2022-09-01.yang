@@ -1,0 +1,135 @@
+/*
+Copyright (C) 2019-2022 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ippmmgr {
+  namespace "urn:huawei:yang:huawei-ippmmgr";
+  prefix ippmmgr;
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-ethernet {
+    prefix ethernet;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-devm {
+    prefix devm;
+  }
+  import huawei-loadbalance {
+    prefix loadbalance;
+  }
+  ext:task-name  "forwarding";
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "IP performance management.";
+  revision 2022-09-01 {
+    description
+      "Add l2 hash-arithmetic.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-03-06 {
+    description
+      "Change description.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-05-10 {
+    description
+      "Init revision.";
+    reference
+      "Huawei private.";
+  }
+
+  typedef l2-hash-arithmetic {
+    type enumeration {
+      enum "arithmetic1" {
+        value 1;
+        description
+          "Specifies the hash algorithm as CRC21b.";
+      }
+      enum "arithmetic2" {
+        value 2;
+        description
+          "Specifies the hash algorithm as CRC253.";
+      }
+      enum "arithmetic3" {
+        value 3;
+        description
+          "Specifies the hash algorithm as 16 Bit XOR.";
+      }
+    }
+    description
+      "L2 load balancing arithmetic.";
+  }
+  
+  container ippmmgr {
+    description
+      "IP performance management.";
+    container global-enable {
+      description
+        "Configure the protocol packets hardware multicast in global.";
+      leaf status {
+        type boolean;
+        default "false";
+        description
+          "Enable/disable the global status.";
+      }
+    }
+  }
+
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface" {
+    description
+      "Protocol packets hardware multicast interface configuration.";
+    container hwmc-if-enable {
+      when "../ethernet:ethernet/ethernet:l3-sub-interface/ethernet:qinq-termination or ../ethernet:ethernet/ethernet:l3-sub-interface/ethernet:dot1q-termination or ../ifm:type='Vlanif'";
+      description
+        "Configure the protocol packets hardware multicast in interface.";
+      leaf status {
+        type boolean;
+        description
+          "Enable/disable the interface status.";
+      }
+    }
+  }
+  augment "/devm:devm/devm:mpu-boards/devm:mpu-board/loadbalance:loadbalance" {
+    description
+      "Configure on a specified board for L2 services.";
+    container l2-hash-arithmetic {
+      presence "Configure hash arithmetic on a specified board for L2 services.";
+      description
+        "Configure l2 hash arithmetic.";     
+      leaf arithmetic {
+        type l2-hash-arithmetic;
+        mandatory true;
+        description
+          "Set l2 hash algorithm.";
+      }
+    }
+  }
+  augment "/devm:devm/devm:lpu-boards/devm:lpu-board/loadbalance:loadbalance" {
+    description
+      "Configure on a specified board for L2 services.";
+    container l2-hash-arithmetic {
+      presence "Configure hash arithmetic on a specified board for L2 services.";
+      description
+        "Configure l2 hash arithmetic.";     
+      leaf arithmetic {
+        type l2-hash-arithmetic;
+        mandatory true;
+        description
+          "Set l2 hash algorithm.";
+      }
+    }
+  }
+}
+  

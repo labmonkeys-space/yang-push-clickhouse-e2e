@@ -1,0 +1,30 @@
+{
+  "ietf-interfaces": [
+    "if-mib",
+    "pre-provisioning"
+  ],
+  "ietf-subscribed-notifications": [
+    "configured",
+    "dscp",
+    "encode-json",
+    "encode-xml",
+    "interface-designation",
+    "replay",
+    "subtree",
+    "supports-vrf",
+    "xpath"
+  ],
+  "ietf-telemetry-message": [
+    "data-collection-manifest",
+    "network-node-manifest"
+  ],
+  "ietf-yang-push": [
+    "on-change"
+  ],
+  "ietf-yang-push-revision": [
+    "yang-push-revision-supported"
+  ],
+  "ietf-yp-observation": [
+    "yang-push-observation-timestamp"
+  ]
+}

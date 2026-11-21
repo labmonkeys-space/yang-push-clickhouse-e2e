@@ -1,0 +1,294 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-bgp-flow-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-bgp-flow-deviations-NE8000-F1A";
+  prefix bgp-flow-devs-NE8000-F1A;
+
+  import huawei-bgp-flow {
+    prefix bgp-flow;
+  }
+  import huawei-bgp {
+    prefix bgp;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-bgp-routing-table {
+    prefix bgp-rt;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-bgp-flow module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef base-flow-rule-type-deviations {
+    type enumeration {
+      enum destination-prefix {
+        value 1;
+        description
+          "Destination prefix.";
+      }
+      enum source-prefix {
+        value 2;
+        description
+          "Source prefix.";
+      }
+      enum ip-protocol {
+        value 3;
+        description
+          "Protocol.";
+      }
+      enum port {
+        value 4;
+        description
+          "Port.";
+      }
+      enum destination-port {
+        value 5;
+        description
+          "Destination port.";
+      }
+      enum source-port {
+        value 6;
+        description
+          "Source Port.";
+      }
+      enum icmp-type {
+        value 7;
+        description
+          "Icmp type.";
+      }
+      enum icmp-code {
+        value 8;
+        description
+          "Icmp code.";
+      }
+      enum tcp-flags {
+        value 9;
+        description
+          "TCP flags.";
+      }
+      enum packet-length {
+        value 10;
+        description
+          "Packet length.";
+      }
+      enum dscp {
+        value 11;
+        description
+          "DSCP.";
+      }
+      enum fragment {
+        value 12;
+        description
+          "Fragment.";
+      }
+      enum flow-label {
+        value 13;
+        description
+          "Flow label.";
+      }
+      enum destination-origin-as {
+        value 201;
+        description
+          "Destination origin AS.";
+      }
+      enum destination-community {
+        value 199;
+        description
+          "Destination community.";
+      }
+      enum source-community {
+        value 200;
+        description
+          "Source community.";
+      }
+    }
+    description
+      "BGP FLOW route rule.";
+  }
+
+  typedef flow-rule-type-deviations {
+    type enumeration {
+      enum destination-prefix {
+        value 1;
+        description
+          "Destination prefix.";
+      }
+      enum source-prefix {
+        value 2;
+        description
+          "Source prefix.";
+      }
+      enum ip-protocol {
+        value 3;
+        description
+          "Protocol.";
+      }
+      enum port {
+        value 4;
+        description
+          "Port.";
+      }
+      enum destination-port {
+        value 5;
+        description
+          "Destination port.";
+      }
+      enum source-port {
+        value 6;
+        description
+          "Source Port.";
+      }
+      enum icmp-type {
+        value 7;
+        description
+          "Icmp type.";
+      }
+      enum icmp-code {
+        value 8;
+        description
+          "Icmp code.";
+      }
+      enum tcp-flags {
+        value 9;
+        description
+          "TCP flags.";
+      }
+      enum packet-length {
+        value 10;
+        description
+          "Packet length.";
+      }
+      enum dscp {
+        value 11;
+        description
+          "DSCP.";
+      }
+      enum fragment {
+        value 12;
+        description
+          "Fragment.";
+      }
+      enum flow-label {
+        value 13;
+        description
+          "Flow label.";
+      }
+    }
+    description
+      "BGP FLOW route rule.";
+  }
+
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv4-flow/bgp-flow:common/bgp-flow:check-origin-as-enable" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv4-flow/bgp-flow:common/bgp-flow:match-interface-group-enable" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv4-flow/bgp-flow:common/bgp-flow:remark-slice-id-enable" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv4-flow/bgp-flow:common/bgp-flow:match-source-community" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv4-flow/bgp-flow:common/bgp-flow:application-awareness" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv6-flow/bgp-flow:common/bgp-flow:check-origin-as-enable" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv6-flow/bgp-flow:common/bgp-flow:match-source-community" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv6-flow/bgp-flow:common/bgp-flow:application-awareness" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:peers/bgp:peer/bgp:afs/bgp:af/bgp-flow:ipv4-flow/bgp-flow:advertise-source-community" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:peers/bgp:peer/bgp:afs/bgp:af/bgp-flow:ipv6-flow/bgp-flow:advertise-source-community" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv4-flow/bgp-flow:route-rule/bgp-flow:source-communitys" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv4-flow/bgp-flow:route-rule/bgp-flow:interface-groups" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv4-flow/bgp-flow:route-actions/bgp-flow:route-action/bgp-flow:remark-slice-ids" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv4-flow/bgp-flow:route-actions/bgp-flow:route-action/bgp-flow:interface-groups" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv4-flow/bgp-flow:route-actions/bgp-flow:route-action/bgp-flow:application-awareness" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv6-flow/bgp-flow:route-rule/bgp-flow:source-communitys" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv6-flow/bgp-flow:route-actions/bgp-flow:route-action/bgp-flow:interface-groups" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv6-flow/bgp-flow:route-actions/bgp-flow:route-action/bgp-flow:application-awareness" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:vpnv4-flow/bgp-flow:route-rule/bgp-flow:interface-groups" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:vpnv4-flow/bgp-flow:route-actions/bgp-flow:route-action/bgp-flow:remark-slice-ids" {
+    deviate not-supported;
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:vpnv4-flow/bgp-flow:route-actions/bgp-flow:route-action/bgp-flow:interface-groups" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv4-flow/bgp-flow:common/bgp-flow:check-origin-as-uncheck-interface-group" {
+    deviate delete {
+      must "../check-origin-as-enable='false'";
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp-flow:ipv6-flow/bgp-flow:common/bgp-flow:check-origin-as-uncheck-interface-group" {
+    deviate delete {
+      must "../check-origin-as-enable='false'";
+    }
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv4-flow/bgp-flow:routes/bgp-flow:route/bgp-flow:rule-indexs/bgp-flow:rule-index/bgp-flow:type" {
+    deviate replace {
+      type bgp-flow-devs-NE8000-F1A:base-flow-rule-type-deviations;
+    }
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:ipv6-flow/bgp-flow:routes/bgp-flow:route/bgp-flow:rule-indexs/bgp-flow:rule-index/bgp-flow:type" {
+    deviate replace {
+      type bgp-flow-devs-NE8000-F1A:base-flow-rule-type-deviations;
+    }
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:vpnv4-flow/bgp-flow:routes/bgp-flow:route/bgp-flow:rule-indexs/bgp-flow:rule-index/bgp-flow:type" {
+    deviate replace {
+      type bgp-flow-devs-NE8000-F1A:flow-rule-type-deviations;
+    }
+  }
+  deviation "/bgp:bgp/bgp:base-process/bgp-rt:bgp-route/bgp-flow:vpnv6-flow/bgp-flow:routes/bgp-flow:route/bgp-flow:rule-indexs/bgp-flow:rule-index/bgp-flow:type" {
+    deviate replace {
+      type bgp-flow-devs-NE8000-F1A:flow-rule-type-deviations;
+    }
+  }
+}
+
+  

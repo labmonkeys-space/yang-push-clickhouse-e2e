@@ -1,0 +1,56 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-gre-fwd-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-gre-fwd-deviations-NE8000-F1A";
+  prefix gre-fwd-devs-NE8000-F1A;
+
+  import huawei-gre-fwd {
+    prefix gre-fwd;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  import huawei-gre {
+    prefix gre;
+  }
+
+  import huawei-tunnel-management {
+    prefix tnlm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-gre-fwd module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/gre-fwd:gre-fwd/gre-fwd:global-attribute" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/gre-fwd:gre-fwd/gre-fwd:target-board/gre-fwd:backup-slot-id" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/tnlm:tunnel-protocol/tnlm:type/gre:gre/gre:gre-tunnel/gre-fwd:unicast-forward/gre-fwd:reassemble-board/gre-fwd:backup-slot-id" {
+    deviate not-supported;
+  }
+
+}
+  

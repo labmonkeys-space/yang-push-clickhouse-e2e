@@ -1,0 +1,92 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-acl-ucl-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-acl-ucl-deviations-NE8000-F1A";
+  prefix acl-ucl-devs-NE8000-F1A;
+
+  import huawei-acl-ucl {
+    prefix acl-ucl;
+  }
+  import huawei-acl {
+    prefix acl;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-acl-ucl module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/acl:acl/acl:groups/acl:group/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:source-group" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:groups/acl:group/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:dest/acl-ucl:passthrough-domain" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:groups/acl:group/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:dest-group" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:groups/acl:group/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:vpn" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:groups/acl:group/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:log-flag" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:active-status" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:protocol-type/acl-ucl:zero" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:source/acl-ucl:source-ip-any" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:source/acl-ucl:ip" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:source-group" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:dest/acl-ucl:dest-ip-any" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:dest/acl-ucl:ip" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:dest/acl-ucl:passthrough-domain" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:vpn" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:icmp-type" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:icmp-code" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:tcp-flag" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:time-range-name" {
+    deviate not-supported;
+  }
+  deviation "/acl:acl/acl:group6s/acl:group6/acl-ucl:rule-ucls/acl-ucl:rule-ucl/acl-ucl:log-flag" {
+    deviate not-supported;
+  }
+}
+
+  

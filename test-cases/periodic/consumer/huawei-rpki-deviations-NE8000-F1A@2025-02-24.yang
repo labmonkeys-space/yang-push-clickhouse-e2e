@@ -1,0 +1,60 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-rpki-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-rpki-deviations-NE8000-F1A";
+  prefix rpki-devs-NE8000-F1A;
+
+  import huawei-rpki {
+    prefix rpki;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-rpki module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef aspa-as-type-deviations {
+    type enumeration {
+      enum provider {
+        value 1;
+        description
+          "AS role is provider.";
+      }
+    }
+    description
+      "The type of aspa AS.";
+  }
+
+  deviation "/rpki:rpki/rpki:rpki/rpki:aspa-validation/rpki:static-records/rpki:static-record/rpki:type" {
+    deviate replace {
+      type rpki-devs-NE8000-F1A:aspa-as-type-deviations;
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/rpki:rpki/rpki:sessions/rpki:session/rpki:version" {
+    deviate replace {
+      type uint8 {
+        range "2";
+      }
+    }
+  }
+}
+
+  

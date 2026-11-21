@@ -1,0 +1,130 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-l3-multicast-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-l3-multicast-deviations-NE8000-F1A";
+  prefix l3mc-devs-NE8000-F1A;
+
+  import huawei-l3-multicast {
+    prefix l3mc;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-l3-multicast module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef limit-type-deviations {
+    type enumeration {
+      enum pim-sm-star-group {
+        value 1;
+        description
+          "PIM-SM (*, g).";
+      }
+      enum pim-sm-source-group {
+        value 2;
+        description
+          "PIM-SM (s, g).";
+      }
+      enum pim-dm-star-group {
+        value 3;
+        description
+          "PIM-DM (*, g).";
+      }
+      enum pim-dm-source-group {
+        value 4;
+        description
+          "PIM-DM (s, g).";
+      }
+    }
+    description
+      "Limit type.";
+  }
+
+  deviation "/l3mc:get-multicast-boundary-ipv4-policy-filter-result" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/l3mc:multicast/l3mc:ipv4/l3mc:interface-boundary-policys" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/l3mc:multicast/l3mc:ipv4/l3mc:interface-boundary-in-policys" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/l3mc:multicast/l3mc:ipv4/l3mc:interface-boundary-out-policys" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/l3mc:multicast/l3mc:ipv4/l3mc:interface-boundary-policy-infos" {
+    deviate not-supported;
+  }
+  deviation "/l3mc:l3-multicast/l3mc:ipv4/l3mc:limits/l3mc:limit/l3mc:type" {
+    deviate replace {
+      type l3mc-devs-NE8000-F1A:limit-type-deviations;
+    }
+  }
+  deviation "/l3mc:l3-multicast/l3mc:ipv6/l3mc:limits/l3mc:limit/l3mc:type" {
+    deviate replace {
+      type enumeration {
+        enum pim-sm-star-group {
+          value 1;
+          description
+            "PIM-SM (*, g).";
+        }
+        enum pim-sm-source-group {
+          value 2;
+          description
+            "PIM-SM (s, g).";
+        }
+      }
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/l3mc:multicast/l3mc:ipv4/l3mc:limits/l3mc:limit/l3mc:type" {
+    deviate replace {
+      type enumeration {
+        enum pim-sm-star-group {
+          value 1;
+          description
+            "PIM-SM (*, g).";
+        }
+        enum pim-sm-source-group {
+          value 2;
+          description
+            "PIM-SM (s, g).";
+        }
+      }
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/l3mc:multicast/l3mc:ipv6/l3mc:limits/l3mc:limit/l3mc:type" {
+    deviate replace {
+      type enumeration {
+        enum pim-sm-star-group {
+          value 1;
+          description
+            "PIM-SM (*, g).";
+        }
+        enum pim-sm-source-group {
+          value 2;
+          description
+            "PIM-SM (s, g).";
+        }
+      }
+    }
+  }
+}
+
+  

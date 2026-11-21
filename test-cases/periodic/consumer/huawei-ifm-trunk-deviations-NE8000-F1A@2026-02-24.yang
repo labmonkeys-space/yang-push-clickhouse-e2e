@@ -1,0 +1,127 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ifm-trunk-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ifm-trunk-deviations-NE8000-F1A";
+  prefix ifm-trunk-devs-NE8000-F1A;
+
+  import huawei-ifm-trunk {
+    prefix ifm-trunk;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-ifm-trunk module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef trunk-hash-type-deviations {
+    type enumeration {
+      enum ip {
+        value 1;
+        description
+          "Specify the IP-address-based per-destination load balancing mode. In this mode, data flows are differentiated based on IP addresses of packets to ensure that the packets of the same data flow are transmitted over the same member link.";
+      }
+      enum mac {
+        value 2;
+        description
+          "Specify the MAC-address-based per-destination load balancing mode. In this mode, data flows are differentiated based on MAC addresses of packets to ensure that the packets of the same data flow are transmitted over the same member link.";
+      }
+      enum packet-all {
+        value 3;
+        description
+          "Specifies the per-packet load balancing mode. In this mode, one packet (not a data flow) is regarded as a unit, and packets are dispersed and transmitted among different member links.";
+      }
+      enum symmetric {
+        value 14;
+        description
+          "Symmetric hash arithmetic.";
+      }
+      enum symmetric-complement {
+        value 15;
+        description
+          "Symmetric complement hash arithmetic.";
+      }
+    }
+    description
+      "Trunk hash type.";
+  }
+
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ifm-trunk:trunk/ifm-trunk:min-up-num" {
+    deviate replace {
+      type uint16 {
+        range "1..64";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ifm-trunk:trunk/ifm-trunk:max-up-num" {
+    deviate replace {
+      type uint16 {
+        range "1..64";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ifm-trunk:trunk/ifm-trunk:hash-type" {
+    deviate add {
+      must "(../../ifm:type='Ip-Trunk' and (../hash-type='ip' or ../hash-type='packet-all')) or (../../ifm:type='Eth-Trunk' and (../work-mode='manual' or ../work-mode='static')) or (../../ifm:type='Eth-Trunk' and ../work-mode='backup' and ../hash-type='mac')";
+    }
+    deviate replace {
+      type ifm-trunk-devs-NE8000-F1A:trunk-hash-type-deviations;
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ifm-trunk:trunk/ifm-trunk:work-mode" {
+    deviate add {
+      must "(../../ifm:type='Eth-Trunk' and (../work-mode='backup' or ../work-mode='manual' or ../work-mode='static')) or (../../ifm:type='Ip-Trunk' and ../work-mode='manual') or (../../ifm:type!='Eth-Trunk' and ../../ifm:type!='Ip-Trunk') or (not (../../ifm:type))";
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ifm-trunk:trunk/ifm-trunk:up-member-num" {
+    deviate replace {
+      type uint32 {
+        range "0..64";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ifm-trunk:trunk/ifm-trunk:online-member-num" {
+    deviate replace {
+      type uint32 {
+        range "0..64";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ifm-trunk:trunk/ifm-trunk:member-num" {
+    deviate replace {
+      type uint32 {
+        range "0..64";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ifm-trunk:trunk/ifm-trunk:members/ifm-trunk:member" {
+    deviate replace {
+      max-elements 64;
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ifm-trunk:trunk/ifm-trunk:members/ifm-trunk:member/ifm-trunk:weight" {
+    deviate replace {
+      type uint32 {
+        range "1..64";
+      }
+    }
+  }
+}
+
+  

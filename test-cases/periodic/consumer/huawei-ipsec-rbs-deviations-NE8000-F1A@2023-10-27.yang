@@ -1,0 +1,53 @@
+/*
+Copyright (C) 2023 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ipsec-rbs-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ipsec-rbs-deviations-NE8000-F1A";
+  prefix ipsec-rbs-devs-NE8000-F1A;
+
+  import huawei-ipsec-rbs {
+    prefix ipsec-rbs;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  import huawei-ip {
+    prefix ip;
+  }
+
+  import huawei-vrrp {
+    prefix vrrp;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-ipsec-rbs module.";
+
+  revision 2023-10-27 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/ipsec-rbs:ipsec-rbs" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ip:ipv4/vrrp:vrrp/vrrp:groups/vrrp:group/ipsec-rbs:ipsec" {
+    deviate not-supported;
+  }
+
+}
+  

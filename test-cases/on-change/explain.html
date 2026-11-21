@@ -192,7 +192,7 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
 <section>
   <span class="eyebrow">Try it</span>
   <h2>Flip the switch</h2>
-  <p>Each setting maps to one check in <code>validate.py</code>, with the router's YANG library 2338653103. The messages are libyang 6.4.13's own.</p>
+  <p>Each setting maps to one check in <code>validate.py</code>, with the fixed YANG library 2338653103. With the advertised library 2300156437 the anchor setting also fails, on the identity (B1). The messages are libyang 6.4.13's own.</p>
   <div class="board">
     <div class="controls">
       <fieldset>
@@ -206,7 +206,7 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
       </fieldset>
     </div>
     <div class="result pass" id="result" aria-live="polite">
-      <div class="head"><span class="check" id="r-check">B</span><span class="word" id="r-word">pass</span></div>
+      <div class="head"><span class="check" id="r-check">B2</span><span class="word" id="r-word">pass</span></div>
       <p id="r-text">The value is valid exactly as the router sent it. This is the payload we propose should pass.</p>
       <div class="err" id="r-err"></div>
     </div>
@@ -228,7 +228,7 @@ footer { color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px; }
   <span class="eyebrow">Answer</span>
   <h2>The payload we propose should pass</h2>
   <div class="answer">
-    <p>The captured value, unchanged, read from <code>/ietf-interfaces:interfaces</code>. That is check B.</p>
+    <p>The captured value, unchanged, read from <code>/ietf-interfaces:interfaces</code>. That is check B2.</p>
     <p>A against B answers the on-change question: read the value from the parent of the target.</p>
   </div>
 </section>
@@ -255,10 +255,10 @@ docker run --rm -v "$PWD":/case:ro on-change-case</pre>
 </main>
 <script>
 const CASES = {
-  root: { check: "A", state: "fail",
+  root: { check: "A2", state: "fail",
     text: "How collectors and consumers read it today. At the root, interface needs the prefix ietf-interfaces:.",
     err: 'Top-level JSON object member "interface" must be namespace-qualified. (line 1)' },
-  anchor: { check: "B", state: "pass",
+  anchor: { check: "B2", state: "pass",
     text: "The value is valid exactly as the router sent it. This is the payload we propose should pass.",
     err: "" }
 };

@@ -1,0 +1,393 @@
+/*
+Copyright (C) 2022-2024 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-mc-timestamp-refresh {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-mc-timestamp-refresh";
+  prefix mc-timestamp-refresh;
+  import huawei-pub-type {
+    prefix pub-type;
+  }
+  import huawei-qos {
+    prefix qos;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+  description
+    "Multicast timestamp refresh.";
+  revision 2024-01-23 {
+    description
+      "Modify when condition of mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-01-16 {
+    description
+      "Add ptp-time leaf.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-12-15 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "forwarding";
+  typedef instance-mode {
+    type enumeration {
+      enum "2022-7" {
+        value 1;
+        description
+          "SMPTE 2022-7 mode.";
+      }
+      enum "common" {
+        value 2;
+        description
+          "Common mode.";
+      }
+    }
+    description
+      "Instance Mode type.";
+  }
+  typedef stream-type {
+    type enumeration {
+      enum "video-stream" {
+        value 1;
+        description
+          "Video stream.";
+      }
+      enum "ancillary-data" {
+        value 2;
+        description
+          "Ancillary data.";
+      }
+      enum "audio-stream" {
+        value 3;
+        description
+          "Audio stream.";
+      }
+      enum "unknown-stream" {
+        value 4;
+        description
+          "Unknown stream.";
+      }
+    }
+    description
+      "Stream type.";
+  }
+  typedef frame-rate {
+    type enumeration {
+      enum "25fps" {
+        value 1;
+        description
+          "25fps.";
+      }
+      enum "29.97fps" {
+        value 2;
+        description
+          "30/1.001 (29.97)fps.";
+      }
+      enum "50fps" {
+        value 3;
+        description
+          "50fps.";
+      }
+      enum "59.94fps" {
+        value 4;
+        description
+          "60/1.001 (59.94)fps.";
+      }
+      enum "60fps" {
+        value 5;
+        description
+          "60fps.";
+      }
+      enum "100fps" {
+        value 6;
+        description
+          "100fps.";
+      }
+      enum "119.88fps" {
+        value 7;
+        description
+          "120/1.001 (119.88)fps.";
+      }
+      enum "120fps" {
+        value 8;
+        description
+          "120fps.";
+      }
+    }
+    description
+      "Frame rate type.";
+  }
+  typedef sampling-rate {
+    type enumeration {
+      enum "48khz" {
+        value 1;
+        description
+          "48khz.";
+      }
+      enum "96khz" {
+        value 2;
+        description
+          "96khz.";
+      }
+    }
+    description
+      "Sampling rate.";
+  }
+  typedef adjust-direction {
+    type enumeration {
+      enum "plus" {
+        value 1;
+        description
+          "Increase the timestamp-refresh offset value.";
+      }
+      enum "minus" {
+        value 2;
+        description
+          "Decrease the timestamp-refresh offset value.";
+      }
+    }
+    description
+      "Adjust direction.";
+  }
+  container mc-timestamp-refresh {
+    description
+      "Configure multicast timestamp-refresh.";
+    container instances {
+      description
+        "List of multicast timestamp-refresh instances.";
+      list instance {
+        key "instance-name";
+        max-elements "4000";
+        description
+          "Configure multicast timestamp-refresh instance.";
+        leaf instance-name {
+          type string {
+            length "1..127";
+          }
+          description
+            "Name of a multicast timestamp-refresh instance.";
+        }
+        leaf mode {
+          type instance-mode;
+          must "not(../stream-type='unknown-stream')";
+          description
+            "Instance mode.";
+        }
+        leaf stream-type {
+          type stream-type;
+          description
+            "Stream type.";
+        }
+        leaf frame-rate {
+          when "../stream-type='video-stream' or ../stream-type='ancillary-data'";
+          type frame-rate;
+          mandatory true;
+          description
+            "Frame rate.";
+        }
+        leaf sampling-rate {
+          when "../stream-type='audio-stream'";
+          type sampling-rate;
+          mandatory true;
+          description
+            "Sampling rate.";
+        }
+        leaf ts-offset-update-threshold {
+          when "not(../stream-type='unknown-stream')";
+          type uint32 {
+            range "50..100000";
+          }
+          units us;
+          default "500";
+          description
+            "Timestamp offset update threshold.";
+        }
+        choice adjust-time-type {
+          description
+            "Adjust time type.";
+          case adjust-by-time {
+            description
+            "Adjust the timestamp value of packets by time.";
+            container adjust-by-time {
+              description
+                "Configure adjust offset by time.";
+              leaf adjust-value {
+                type uint32 {
+                  range "1..9999";
+                }
+                units ms;
+                must "not(../../stream-type='unknown-stream')";
+                mandatory true;
+                description
+                "Adjust by time.";
+              }
+              leaf adjust-direction {
+                type adjust-direction;
+                must "not(../../stream-type='unknown-stream')";
+                mandatory true;
+                description
+                  "Adjust direction.";
+              }
+            }
+          }
+          case adjust-by-timestamp {
+            description
+            "Adjust the timestamp value of packets by timestamp.";
+            container adjust-by-timestamp {
+              description
+                "Configure adjust offset by timestamp.";
+              leaf adjust-value {
+                type uint32 {
+                  range "1..960000";
+                }
+                must "not(../../stream-type='unknown-stream')";
+                mandatory true;
+                description
+                "Adjust by timestamp.";
+              }
+              leaf adjust-direction {
+                type adjust-direction;
+                must "not(../../stream-type='unknown-stream')";
+                mandatory true;
+                description
+                  "Adjust direction.";
+              }
+            }
+          }
+        }
+        leaf local-ts-offset {
+          type pub-type:hex-binary;
+          config false;
+          description
+            "Local timestamp offset.";
+        }
+        leaf global-ts-offset {
+          type pub-type:hex-binary;
+          config false;
+          description
+            "Global timestamp offset.";
+        }
+        leaf adjust-ts-offset {
+          type pub-type:hex-binary;
+          config false;
+          description
+            "Adjust timestamp offset.";
+        }
+        leaf final-ts-offset {
+          type pub-type:hex-binary;
+          config false;
+          description
+            "Final timestamp offset.";
+        }
+      }
+    }
+  }
+  rpc set-timestamp-refresh-offset {
+    description
+      "Set timestamp-refresh hex-tsoffset.";
+    input {
+      leaf instance-name {
+        type leafref {
+          path "/mc-timestamp-refresh:mc-timestamp-refresh/mc-timestamp-refresh:instances/mc-timestamp-refresh:instance/mc-timestamp-refresh:instance-name";
+        }
+        mandatory true;
+        description
+          "Name of a multicast timestamp-refresh instance.";
+      }
+      leaf ts-offset {
+        type pub-type:hex-binary;
+        mandatory true;
+        description
+          "Timestamp offset.";
+      }
+      leaf ptp-time {
+        type uint64;
+        description
+          "Ptp time.";
+      }
+    }
+  }
+  rpc set-timestamp-refresh-decimal-offset {
+    description
+      "Set timestamp-refresh decimal-tsoffset.";
+    input {
+      leaf instance-name {
+        type leafref {
+          path "/mc-timestamp-refresh:mc-timestamp-refresh/mc-timestamp-refresh:instances/mc-timestamp-refresh:instance/mc-timestamp-refresh:instance-name";
+        }
+        mandatory true;
+        description
+          "Name of a multicast timestamp-refresh instance.";
+      }
+      choice ts-offset {
+        mandatory true;
+        description
+        "Timestamp offset.";
+        case plus-ts-offset {
+            description
+            "Plus timestamp offset value.";
+            leaf plus-ts-offset {
+              type uint32 {
+                range "0..2147483647";
+              }
+              description
+              "Plus timestamp offset value.";
+            }
+        }
+        case minus-ts-offset {
+            description
+            "Minus timestamp offset value.";
+            leaf minus-ts-offset {
+              type uint32 {
+                range "0..2147483648";
+              }
+              description
+              "Minus timestamp offset value.";
+            }
+        }
+      }
+      leaf ptp-time {
+        type uint64;
+        description
+          "Ptp time.";
+      }
+    }
+  }
+  augment "/qos:qos/qos:classifier-template/qos:traffic-behaviors/qos:traffic-behavior" {
+    description
+      "Multicast timestamp-refresh."; 
+    container multicast-timestamp-refresh {
+      description
+        "Configure multicast timestamp-refresh.";
+      container bind-instance {
+        description
+          "Configure a binding relationship between the timestamp-refresh instance and a traffic behavior.";
+        leaf instance-name {
+          type leafref {
+            path "/mc-timestamp-refresh:mc-timestamp-refresh/mc-timestamp-refresh:instances/mc-timestamp-refresh:instance/mc-timestamp-refresh:instance-name";
+          }
+          must "count(/qos:qos/qos:classifier-template/qos:traffic-behaviors/qos:traffic-behavior/mc-timestamp-refresh:multicast-timestamp-refresh/mc-timestamp-refresh:bind-instance[mc-timestamp-refresh:instance-name = current()])= 1";
+          description
+            "Name of a multicast timestamp-refresh instance.";
+        }
+      }
+    }
+  }
+}
+
+  

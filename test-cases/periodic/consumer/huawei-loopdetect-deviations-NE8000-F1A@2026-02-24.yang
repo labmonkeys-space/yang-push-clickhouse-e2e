@@ -1,0 +1,71 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-loopdetect-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-loopdetect-deviations-NE8000-F1A";
+  prefix loopdetect-devs-NE8000-F1A;
+
+  import huawei-loopdetect {
+    prefix loopdetect;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-loopdetect module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/loopdetect:loopdetect/loopdetect:ldetect-global/loopdetect:loose-mode" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/loopdetect:loopdetect/loopdetect:loop-detect/loopdetect:block-packet-number" {
+    deviate not-supported;
+  }
+  deviation "/loopdetect:loopdetect/loopdetect:trigger-detect/loopdetect:global/loopdetect:min-port-up-time" {
+    deviate replace {
+      type uint16 {
+        range "1..100";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/loopdetect:loopdetect/loopdetect:loopback-detect/loopdetect:block-time" {
+    deviate replace {
+      type uint32 {
+        range "5..255";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/loopdetect:loopdetect/loopdetect:loop-detect/loopdetect:block-time-value" {
+    deviate replace {
+      type uint16 {
+                  range "1..255";
+                }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/loopdetect:loopdetect/loopdetect:loop-detect/loopdetect:trigger-down" {
+    deviate add {
+      must "(/loopdetect:loopdetect/loopdetect:ldetect-global/loopdetect:mode='normal' and ../loopdetect:trigger-down='true') or ../loopdetect:trigger-down='false'";
+    }
+  }
+
+}
+  

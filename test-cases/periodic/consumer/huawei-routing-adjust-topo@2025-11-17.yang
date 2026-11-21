@@ -1,0 +1,391 @@
+/*
+Copyright (C) 2023-2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-routing-adjust-topo {
+  namespace "urn:huawei:yang:huawei-routing-adjust-topo";
+  prefix ra-topo;
+  import huawei-extension {
+    prefix ext;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-bgp {
+    prefix bgp;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Routing adjust topology.";
+  revision 2025-11-17 {
+    description
+      "Add traffic outbound.";
+    reference "Huawei private.";
+  }
+  revision 2023-12-05 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+  ext:task-name  "routing-adjust";
+
+  typedef topo-type {
+    type enumeration {
+      enum "square-shape" {
+	    value 0;
+        description
+          "Square-shaped topology with four routers.";
+      }
+      enum "v-shape" {
+	    value 1;
+        description
+          "V-shaped topology with four routers.";
+      }
+    }
+    description
+      "Type definition for routing adjust topology.";
+  }
+  typedef as-number-validate {
+    type string {
+      length "1..11";
+      pattern '((([1-9]\d{0,8})|([1-3]\d{9})|(4[0-1]\d{8})|(42[0-8]\d{7})|(429[0-3]\d{6})|(4294[0-8]\d{5})|(42949[0-5]\d{4})|(429496[0-6]\d{3})|(4294967[0-1]\d{2})|(42949672[0-8]\d{1})|(429496729[0-5]))|((([1-9]\d{0,3})|([1-5]\d{4})|(6[0-4]\d{3})|(65[0-4]\d{2})|(655[0-2]\d)|(6553[0-5]))[\.](([0-9]\d{0,3})|([1-5]\d{4})|(6[0-4]\d{3})|(65[0-4]\d{2})|(655[0-2]\d)|(6553[0-5]))))';
+    }
+    description
+      "Set the AS number.";
+  }
+  container routing-adjust-topo {
+    description
+	  "Configure routing adjust topo.";
+    container topologys {
+      description
+        "List of topologys.";
+      list topology {
+        key "name";
+        description
+          "Configure a routing adjust topology.";
+        leaf name {
+          type string {
+            length "1..31";
+          }
+          description
+            "Routing adjust topology name.";
+        }
+        leaf type {
+          type topo-type;
+          description
+            "Topology instance type.";
+        }
+        container partner-nodes {
+          when "../type";
+          description
+            "List of partner nodes.";
+          list partner-node {
+            must "(../../type='square-shape' and count(../partner-node)<=1) or ../../type!='square-shape'";
+            must "(../../type='v-shape' and count(../partner-node)<=1) or ../../type!='v-shape'";
+            key "router-id";
+            description
+              "Configure a partner node.";
+            leaf router-id {
+              type inet:ipv4-address-no-zone;
+              description
+                "Specify the router ID of the topology instance router.";
+            }
+            leaf as-number {
+              type as-number-validate;
+              must "not(../../../ra-topo:remote-nodes/ra-topo:remote-node[ra-topo:router-id=current()/../ra-topo:router-id]) or (../../../ra-topo:remote-nodes/ra-topo:remote-node[ra-topo:router-id=current()/../ra-topo:router-id]/ra-topo:as-number!=current())";
+              description
+                "Specify the AS number of the topology instance router.";
+            }
+          }
+        }
+        container remote-nodes {
+          when "../type";
+          description
+            "List of remote nodes.";
+          list remote-node {
+            must "(../../type='square-shape' and count(../remote-node)<=2) or ../../type!='square-shape'";
+            must "(../../type='v-shape' and count(../remote-node)<=2) or ../../type!='v-shape'";
+            key "router-id";
+            description
+              "Configure a remote node.";
+            leaf router-id {
+              type inet:ipv4-address-no-zone;
+              description
+                "Specify the router ID of the topology instance router.";
+            }
+            leaf as-number {
+              type as-number-validate;
+              must "not(../../../ra-topo:partner-nodes/ra-topo:partner-node[ra-topo:router-id=current()/../ra-topo:router-id]) or (../../../ra-topo:partner-nodes/ra-topo:partner-node[ra-topo:router-id=current()/../ra-topo:router-id]/ra-topo:as-number!=current())";
+              description
+                "Specify the AS number of the topology instance router.";
+            }
+          }
+        }
+      }
+    }
+    container routing-adjust-topology-state {
+      config false;
+      description
+        "Routing adjust topology state.";
+      container traffic-outbound-adjacency-states {
+        description
+          "List of outbound-adjacency-state.";
+        list traffic-outbound-adjacency-state {
+          key "vpn-name topology-name";
+          description
+            "Statistics of BGP routing adjust topology outbound adjacency.";
+          leaf vpn-name {
+            type leafref {
+              path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+            }
+            description
+              "VPN instance name.";
+          }
+          leaf topology-name {
+            type string {
+              length "1..31";
+            }
+            description
+              "Routing adjust topology name.";
+          }
+          leaf topology-type {
+            type ra-topo:topo-type;
+            description
+              "Routing adjust topology type.";
+          }
+          leaf link-satisfy-topology {
+            type string {
+              length "1..100";
+            }
+            description
+              "Is link satisfy topology.";
+          }
+          container adjacencys {
+            description
+              "List of BGP routing adjust topology adjacencys.";
+            list adjacency {
+              key "local-router-id remote-router-id link-local-as-plain link-remote-as-plain";
+              description
+                "Statistics of BGP routing adjust topology adjacency.";
+              leaf local-router-id {
+                type inet:ipv4-address-no-zone;
+                description
+                  "Local router ID of the link node.";
+              }
+              leaf remote-router-id {
+                type inet:ipv4-address-no-zone;
+                description
+                  "Remote router ID of the link node.";
+              }
+              leaf link-local-as-plain {
+                type uint32;
+                description
+                  "Local AS number of the link node, the value 0 indicates that the AS number of the local link node is not configured.";
+              }
+              leaf link-remote-as-plain {
+                type uint32;
+                description
+                  "Remote AS number of the link node, the value 0 indicates that the AS number of the remote link node is not configured.";
+              }
+              leaf link-local-as {
+                type bgp:as-number-validate;
+                description
+                  "The AS number of link local node.";
+              }
+              leaf link-remote-as {
+                type bgp:as-number-validate;
+                description
+                  "The AS number of link remote node.";
+              }
+              leaf maximum-link-bandwidth {
+                type uint64;
+                units bit/s;
+                description
+                  "Maximum link bandwidth.";
+              }
+              leaf utilized-link-bandwidth {
+                type uint64;
+                units bit/s;
+                description
+                  "Utilized link bandwidth.";
+              }
+              leaf bandwidth-usage-percentage {
+                type string {
+                  length "1..31";
+                }
+                description
+                  "Bandwidth usage percentage.";
+              }
+              container peer-nodes {
+                description
+                  "List of BGP peer node.";
+                list peer-node {
+                  key "local-as remote-as local-address remote-address";
+                  description
+                    "Statistics of BGP peer node.";
+                  leaf local-as {
+                    type bgp:as-number-validate;
+                    description
+                      "Local AS number of the peer.";
+                  }
+                  leaf remote-as {
+                    type bgp:as-number-validate;
+                    description
+                      "Remote AS number of the peer.";
+                  }
+                  leaf local-address {
+                    type inet:ip-address-no-zone;
+                    description
+                      "Local address of the peer.";
+                  }
+                  leaf remote-address {
+                    type inet:ip-address-no-zone;
+                    description
+                      "Remote address of the peer.";
+                  }
+                  leaf maximum-link-bandwidth {
+                    type uint64;
+                    units bit/s;
+                    description
+                      "Maximum link bandwidth.";
+                  }
+                  leaf utilized-link-bandwidth {
+                    type uint64;
+                    units bit/s;
+                    description
+                      "Utilized link bandwidth.";
+                  }
+                  leaf bandwidth-usage-percentage {
+                    type string {
+                      length "1..31";
+                    }
+                    description
+                      "Bandwidth usage percentage.";
+                  }
+                  container interface-statisticss {
+                    description
+                      "List of the interface statistics.";
+                    list interface-statistics {
+                      key "interface-name";
+                      description
+                        "Statistics of BGP peer out interface.";
+                      leaf interface-name {
+                        type leafref {
+                          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+                        }
+                        description
+                          "Interface name.";
+                      }
+                      leaf port-bandwidth {
+                        type uint64;
+                        units bit/s;
+                        description
+                          "Port bandwidth.";
+                      }
+                      leaf utilized-bandwidth {
+                        type uint64;
+                        units bit/s;
+                        description
+                          "Utilized bandwidth.";
+                      }
+                      leaf bandwidth-usage-percentage {
+                        type string {
+                          length "1..31";
+                        }
+                        description
+                          "Bandwidth usage percentage.";
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          container srv6-sids {
+            description
+              "List of BGP routing adjust SRv6 SIDs.";
+            list srv6-sid {
+              key "sid-value";
+              description
+                "Statistics of BGP routing adjust SRv6 SID.";
+              leaf sid-value {
+                type inet:ipv6-address-no-zone;
+                description
+                  "Sid value.";
+              }
+              leaf maximum-link-bandwidth {
+                type uint64;
+                units bit/s;
+                description
+                  "Maximum link bandwidth.";
+              }
+              leaf utilized-link-bandwidth {
+                type uint64;
+                units bit/s;
+                description
+                  "Utilized link bandwidth.";
+              }
+              leaf bandwidth-usage-percentage {
+                type string {
+                  length "1..31";
+                }
+                description
+                  "Bandwidth usage percentage.";
+              }
+              container interface-statisticss {
+                description
+                  "List of the interface statistics.";
+                list interface-statistics {
+                  key "interface-name";
+                  description
+                    "Statistics of BGP peer out interface.";
+                  leaf interface-name {
+                    type leafref {
+                      path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+                    }
+                    description
+                      "Interface name.";
+                  }
+                  leaf port-bandwidth {
+                    type uint64;
+                    units bit/s;
+                    description
+                      "Port bandwidth.";
+                  }
+                  leaf utilized-bandwidth {
+                    type uint64;
+                    units bit/s;
+                    description
+                      "Utilized bandwidth.";
+                  }
+                  leaf bandwidth-usage-percentage {
+                    type string {
+                      length "1..31";
+                    }
+                    description
+                      "Bandwidth usage percentage.";
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+  

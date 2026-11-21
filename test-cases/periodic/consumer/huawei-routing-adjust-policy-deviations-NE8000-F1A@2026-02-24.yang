@@ -1,0 +1,44 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-routing-adjust-policy-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-routing-adjust-policy-deviations-NE8000-F1A";
+  prefix ra-policy-devs-NE8000-F1A;
+
+  import huawei-routing-adjust-policy {
+    prefix ra-policy;
+  }
+  import huawei-bgp {
+    prefix bgp;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-routing-adjust-policy module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ra-policy:routing-adjust-policy" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp:ipv4-unicast/ra-policy:routing-adjusts" {
+    deviate not-supported;
+  }
+}
+
+  

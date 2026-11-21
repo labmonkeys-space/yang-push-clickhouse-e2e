@@ -1,0 +1,204 @@
+{
+  "ietf-yang-library:yang-library": {
+    "module-set": [
+      {
+        "name": "config-module",
+        "module": [
+          {
+            "name": "huawei-devm",
+            "revision": "2026-06-11",
+            "namespace": "urn:huawei:yang:huawei-devm",
+            "submodule": [
+              {
+                "name": "huawei-devm-action",
+                "revision": "2026-04-13"
+              },
+              {
+                "name": "huawei-devm-type",
+                "revision": "2026-06-11"
+              }
+            ],
+            "deviation": [
+              "huawei-devm-deviations-NE8000-F1A"
+            ]
+          },
+          {
+            "name": "huawei-devm-deviations-NE8000-F1A",
+            "revision": "2026-02-24",
+            "namespace": "urn:huawei:yang:huawei-devm-deviations-NE8000-F1A"
+          },
+          {
+            "name": "huawei-ietf-interfaces-deviations-NE8000-F1A",
+            "revision": "2026-02-24",
+            "namespace": "urn:huawei:yang:huawei-ietf-interfaces-deviations-NE8000-F1A"
+          },
+          {
+            "name": "ietf-interfaces",
+            "revision": "2018-02-20",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces",
+            "feature": [
+              "pre-provisioning",
+              "if-mib"
+            ],
+            "deviation": [
+              "huawei-ietf-interfaces-deviations-NE8000-F1A"
+            ]
+          }
+        ],
+        "import-only-module": [
+          {
+            "name": "huawei-extension",
+            "revision": "2023-03-16",
+            "namespace": "urn:huawei:yang:huawei-extension"
+          },
+          {
+            "name": "huawei-pub-type",
+            "revision": "2021-12-16",
+            "namespace": "urn:huawei:yang:huawei-pub-type"
+          },
+          {
+            "name": "ietf-inet-types",
+            "revision": "2013-07-15",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-inet-types"
+          },
+          {
+            "name": "ietf-yang-types",
+            "revision": "2013-07-15",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"
+          }
+        ]
+      },
+      {
+        "name": "state-module",
+        "import-only-module": [
+          {
+            "name": "huawei-extension",
+            "revision": "2023-03-16",
+            "namespace": "urn:huawei:yang:huawei-extension"
+          },
+          {
+            "name": "huawei-pub-type",
+            "revision": "2021-12-16",
+            "namespace": "urn:huawei:yang:huawei-pub-type"
+          },
+          {
+            "name": "iana-if-type",
+            "revision": "2017-01-19",
+            "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type"
+          },
+          {
+            "name": "ietf-inet-types",
+            "revision": "2013-07-15",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-inet-types"
+          },
+          {
+            "name": "ietf-yang-types",
+            "revision": "2013-07-15",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"
+          }
+        ]
+      }
+    ],
+    "schema": [
+      {
+        "name": "state-schema",
+        "module-set": [
+          "config-module",
+          "state-module"
+        ]
+      }
+    ],
+    "datastore": [
+      {
+        "name": "ietf-datastores:operational",
+        "schema": "state-schema"
+      }
+    ],
+    "content-id": "2300156437"
+  },
+  "ietf-yang-library:modules-state": {
+    "module-set-id": "2300156437",
+    "module": [
+      {
+        "name": "huawei-devm",
+        "revision": "2026-06-11",
+        "namespace": "urn:huawei:yang:huawei-devm",
+        "conformance-type": "implement",
+        "deviation": [
+          {
+            "name": "huawei-devm-deviations-NE8000-F1A",
+            "revision": "2026-02-24"
+          }
+        ],
+        "submodule": [
+          {
+            "name": "huawei-devm-action",
+            "revision": "2026-04-13"
+          },
+          {
+            "name": "huawei-devm-type",
+            "revision": "2026-06-11"
+          }
+        ]
+      },
+      {
+        "name": "huawei-devm-deviations-NE8000-F1A",
+        "revision": "2026-02-24",
+        "namespace": "urn:huawei:yang:huawei-devm-deviations-NE8000-F1A",
+        "conformance-type": "implement"
+      },
+      {
+        "name": "huawei-extension",
+        "revision": "2023-03-16",
+        "namespace": "urn:huawei:yang:huawei-extension",
+        "conformance-type": "import"
+      },
+      {
+        "name": "huawei-ietf-interfaces-deviations-NE8000-F1A",
+        "revision": "2026-02-24",
+        "namespace": "urn:huawei:yang:huawei-ietf-interfaces-deviations-NE8000-F1A",
+        "conformance-type": "implement"
+      },
+      {
+        "name": "huawei-pub-type",
+        "revision": "2021-12-16",
+        "namespace": "urn:huawei:yang:huawei-pub-type",
+        "conformance-type": "import"
+      },
+      {
+        "name": "iana-if-type",
+        "revision": "2017-01-19",
+        "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type",
+        "conformance-type": "import"
+      },
+      {
+        "name": "ietf-inet-types",
+        "revision": "2013-07-15",
+        "namespace": "urn:ietf:params:xml:ns:yang:ietf-inet-types",
+        "conformance-type": "import"
+      },
+      {
+        "name": "ietf-interfaces",
+        "revision": "2018-02-20",
+        "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces",
+        "conformance-type": "implement",
+        "feature": [
+          "pre-provisioning",
+          "if-mib"
+        ],
+        "deviation": [
+          {
+            "name": "huawei-ietf-interfaces-deviations-NE8000-F1A",
+            "revision": "2026-02-24"
+          }
+        ]
+      },
+      {
+        "name": "ietf-yang-types",
+        "revision": "2013-07-15",
+        "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types",
+        "conformance-type": "import"
+      }
+    ]
+  }
+}

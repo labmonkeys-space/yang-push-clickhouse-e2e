@@ -1,0 +1,102 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-dhcpv6-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-dhcpv6-deviations-NE8000-F1A";
+  prefix dhcpv6-devs-NE8000-F1A;
+
+  import huawei-dhcpv6 {
+    prefix dhcpv6;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-vlan {
+    prefix vlan;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-dhcpv6 module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/dhcpv6:dhcpv6-snooping-if" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/dhcpv6:dhcpv6-relay-attribute/dhcpv6:rebuild-option" {
+    deviate not-supported;
+  }
+  deviation "/vlan:vlan/vlan:vlans/vlan:vlan/dhcpv6:dhcpv6-snooping-vlan" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:relay/dhcpv6:pd-route/dhcpv6:access-limit" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:packet-discard-alarm-threshold" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:packet-discard-alarm" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:packet-rate-threshold" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:check-packet-rate" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:check-request-mac" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:detect-confirm-client" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:mac-conflict-detect" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:detect-retransmit" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:option18-format" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:snooping/dhcpv6:global/dhcpv6:option37-format" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:server" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:reset-dhcpv6-snooping-packet-statistics" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:reset-dhcpv6-snooping-discarded-packet-statistics" {
+    deviate not-supported;
+  }
+  deviation "/dhcpv6:reset-dhcpv6-snooping-dynamic-binding-table" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/dhcpv6:dhcpv6-relay-attribute" {
+    deviate add {
+      must '(count(destination-addresses/destination-address) + count(destination-ifs/destination-if)) <= 8';
+    }
+  }
+  deviation "/dhcpv6:dhcpv6/dhcpv6:common/dhcpv6:global/dhcpv6:duid-format" {
+    deviate replace {
+      default "ll";
+    }
+  }
+}
+
+  

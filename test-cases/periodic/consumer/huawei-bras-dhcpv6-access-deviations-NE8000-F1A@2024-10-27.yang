@@ -1,0 +1,81 @@
+/*
+Copyright (C) 2024 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-bras-dhcpv6-access-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-bras-dhcpv6-access-deviations-NE8000-F1A";
+  prefix bras-dhcpv6-access-devs-NE8000-F1A;
+
+  import huawei-bras-dhcpv6-access {
+    prefix bras-dhcpv6-access;
+  }
+  import huawei-aaa {
+    prefix aaa;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-devm {
+    prefix devm;
+  }
+  import huawei-bras-basic-access {
+    prefix bras-basic-access;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-bras-dhcpv6-access module.";
+
+  revision 2024-10-27 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/bras-dhcpv6-access:bras-dhcpv6-access/bras-dhcpv6-access:cp-upgrades" {
+    deviate not-supported;
+  }
+  deviation "/aaa:aaa/aaa:domains/aaa:domain/bras-basic-access:bas/bras-dhcpv6-access:dhcpv6-access/bras-dhcpv6-access:pppoe-keep-online" {
+    deviate not-supported;
+  }
+  deviation "/devm:devm/devm:lpu-boards/devm:lpu-board/bras-dhcpv6-access:dhcpv6-access" {
+    deviate not-supported;
+  }
+  deviation "/aaa:aaa/aaa:domains/aaa:domain/bras-basic-access:bas/bras-dhcpv6-access:dhcpv6-access/bras-dhcpv6-access:lease-proxy/bras-dhcpv6-access:prefer-time" {
+    deviate replace {
+      type uint32 {
+        range "40..3600";
+      }
+    }
+  }
+  deviation "/aaa:aaa/aaa:domains/aaa:domain/bras-basic-access:bas/bras-dhcpv6-access:dhcpv6-access/bras-dhcpv6-access:lease-proxy/bras-dhcpv6-access:valid-time" {
+    deviate replace {
+      type uint32 {
+        range "60..3620";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/bras-basic-access:bas/bras-basic-access:access-type/bras-basic-access:layer2-subscriber/bras-basic-access:layer2-subscriber/bras-dhcpv6-access:dhcpv6-access/bras-dhcpv6-access:lease-proxy/bras-dhcpv6-access:prefer-time" {
+    deviate replace {
+      type uint32 {
+        range "40..3600";
+      }
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/bras-basic-access:bas/bras-basic-access:access-type/bras-basic-access:layer2-subscriber/bras-basic-access:layer2-subscriber/bras-dhcpv6-access:dhcpv6-access/bras-dhcpv6-access:lease-proxy/bras-dhcpv6-access:valid-time" {
+    deviate replace {
+      type uint32 {
+        range "60..3620";
+      }
+    }
+  }
+}
+
+  

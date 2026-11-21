@@ -1,0 +1,50 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ospfv3-srv6-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ospfv3-srv6-deviations-NE8000-F1A";
+  prefix ospfv3-srv6-devs-NE8000-F1A;
+
+  import huawei-ospfv3-srv6 {
+    prefix ospfv3-srv6;
+  }
+  import huawei-ospfv3 {
+    prefix ospfv3;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-ospfv3-srv6 module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3-srv6:srv6/ospfv3-srv6:auto-sid-advertise/ospfv3-srv6:coc" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3-srv6:srv6/ospfv3-srv6:auto-sid-advertise/ospfv3-srv6:psp-coc" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3-srv6:srv6/ospfv3-srv6:auto-sid-advertise/ospfv3-srv6:psp-usp-usd-coc" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3-srv6:srv6/ospfv3-srv6:compress" {
+    deviate not-supported;
+  }
+}
+
+  

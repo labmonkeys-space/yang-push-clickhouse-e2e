@@ -1,0 +1,200 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-devm-vaccess {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-devm-vaccess";
+  prefix devm-vaccess;
+
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-vaccess {
+    prefix vaccess;
+  }
+  import huawei-vaccess-master {
+    prefix vaccess-master;
+  }
+  import huawei-devm {
+    prefix devm; 
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Virtual Access Entity Management.";
+  revision 2025-08-27 {
+    description
+      "Init revision.";
+    reference
+      "Huawei private.";
+  }
+
+  ext:task-name "device-mgr";
+    
+  grouping apinfos {
+    description
+      "Device information of Port expansion.";
+    container devm {
+      description
+        "Configure the devm.";
+      container physical-entitys {
+        config false;
+        description
+          "List of physical entities.";
+        list physical-entity {
+          key "class position serial-number";
+          description
+            "Operational data of physical entities.";
+          leaf class {
+            type devm:entity-class-type;
+              description
+                "Entity class.";
+          }
+          leaf position {
+            type string {
+                length "1..32";
+              }
+              description
+                "Entity position.";
+          }
+          leaf serial-number {
+            type string {
+                length "0..32";
+              }
+              description
+                "Entity number.";
+          }
+          leaf index {
+            type uint32;
+              description
+                "Entity index.";
+          }
+          leaf chassis-index {
+            type uint32;
+            description
+              "Chassis index.";
+          }
+          leaf board-index {
+            type uint32;
+            description
+              "Board index.";
+          }
+          leaf name {
+            type string {
+                length "0..128";
+              }
+              description
+                "Entity name.";
+          }
+          leaf entity-description {
+            type string {
+                length "0..256";
+              }
+              description
+                "Entity description.";
+          }
+          leaf alias {
+            type string {
+              length "0..128";
+            }
+            description
+              "Entity alias.";
+          }
+          leaf vendor-type {
+            type string {
+                length "0..64";
+              }
+              description
+                "Type of a hardware entity.";
+          }
+          leaf contained-index {
+            type uint32;
+            description
+              "Information about the parent index of an entity.";
+          }
+          leaf parent-relative-position {
+            type uint32;
+            description
+              "Position of an entity relative to its parent entity.";
+          }
+          leaf hardware-version {
+            type string {
+                length "0..128";
+              }
+              description
+                "Hardware version.";
+          }
+          leaf firmware-version {
+            type string {
+                length "0..128";
+              }
+              description
+                "Firmware version.";
+            }
+          leaf software-version {
+            type string {
+                length "0..128";
+              }
+              description
+                "Software version.";
+          }
+          leaf module-name {
+            type string {
+                length "0..128";
+              }
+              description
+                "Module name.";
+          }
+          leaf is-fru {
+            type boolean;
+            description
+              "Whether the entity a replaceable unit.";
+          }
+          leaf admin-state {
+            type devm:entity-admin-state;
+              description
+                "Administration state (read-only).";
+          }
+          leaf running-state {
+            type devm:entity-oper-state-type;
+              description
+                "Running state of an entity (read-only).";
+          }
+          leaf standby-state {
+            type devm:entity-standby-state;
+              description
+                "Active/standby state.";
+          }
+          leaf system-oid {
+            type string {
+              length "1..128";
+            }
+            description
+              "Entity OID.";
+          }
+          leaf ls-name {
+            type string {
+              length "1..32";
+            }
+            description
+              "The LS name of the entity.";
+          }
+        }
+      }
+    }
+  }
+  augment "/vaccess:vaccess/vaccess-master:flexe-master/vaccess-master:aps/vaccess-master:ap" {
+    description
+      "Virtual access devm configuration information augment to module vaccess 4.0.";
+    uses apinfos;
+  }
+}
+  

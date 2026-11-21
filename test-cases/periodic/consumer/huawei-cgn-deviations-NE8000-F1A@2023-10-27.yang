@@ -1,0 +1,465 @@
+/*
+Copyright (C) 2023 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-cgn-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-cgn-deviations-NE8000-F1A";
+  prefix cgn-devs-NE8000-F1A;
+
+  import huawei-cgn {
+    prefix cgn;
+  }
+
+  import huawei-license {
+    prefix lcs;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  import huawei-bras-cu-agent {
+    prefix bras-cu-agent;
+  }
+
+  import huawei-vsm {
+    prefix vsm;
+  }
+
+  import huawei-bd {
+    prefix bd;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-cgn module.";
+
+  revision 2023-10-27 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  typedef card-id-deviations {
+    type enumeration {
+      enum "NA" {
+        value 0;
+        description
+          "The enumeration is NA when the service is based on slot or engine.";
+      }
+    }
+    description
+      "CGN card ID.";
+  }
+
+  typedef engine-id-na-deviations {
+    type enumeration {
+      enum "NA" {
+        value 0;
+        description
+          "The enumeration is NA when the service is based on slot or card.";
+      }
+    }
+    description
+      "CGN engine ID.";
+  }
+
+  deviation "/cgn:cgn/cgn:nat-service-infos" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:nat-instance-infos" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:instance-address-usages" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:nat-ip-pools" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:log" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:import-ribs" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:weighted-load-balance" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:address-group" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:public-ip" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:start-port" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:port-range" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:port-total" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:up-escape" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-alloc-times" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-alloc-number" {
+    deviate not-supported;
+  }
+
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-first" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-second" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-third" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-fourth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-fifth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-sixth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-seventh" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-eighth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-ninth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-tenth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-eleventh" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twelfth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-thirteenth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-fourteenth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-fifteenth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-sixteenth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-seventeenth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-eighteenth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-nineteenth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twentieth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twenty-first" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twenty-second" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twenty-third" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twenty-fourth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twenty-fifth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twenty-sixth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twenty-seventh" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twenty-eighth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-twenty-ninth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-thirtieth" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-thirty-first" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:extend-port-start-thirty-second" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:port-current-total" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:port-current-tcp" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:port-current-udp" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:port-current-icmp" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:radius-specified-pcp-port" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:pcp-start-port" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:pcp-end-port" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:pcp-authentication" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:pcp-session-number" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:token" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:port-limit-packet-drop-number" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:fib-miss-packet-drop-number" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:fast-forward-statistics-id" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:hit-fast-forward-packets" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:send-to-cpu-packets" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:reverse-hit-fast-forward-packets" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-tables/cgn:user-table/cgn:reverse-send-to-cpu-packets" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:engine" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:card" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:three-tuple" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:hit" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:user-id" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:pcp" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:sudden-traffic-drop" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:fast-forward" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:pcp-description" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:pcp-filter-ip" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:pcp-filter-mask" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:session-tables/cgn:session-table/cgn:pcp-filter-port" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:vsu-board-infos" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:board-level-statistics-infos" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:cpu-level-statistics-infos" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:nat-ip-pool-infos" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-user-tables/cgn:input/cgn:port-usage" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-user-tables/cgn:input/cgn:top-ten" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-user-tables/cgn:input/cgn:by-tcp" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-user-tables/cgn:input/cgn:by-non-tcp" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-user-tables/cgn:input/cgn:exchange-ip-failed" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-user-tables/cgn:input/cgn:domain" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-user-tables/cgn:input/cgn:user-name" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-user-tables/cgn:input/cgn:nat-ip-pool" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-user-tables/cgn:input/cgn:pool-section-id" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-server-maps/cgn:input/cgn:engine" {
+    deviate not-supported;
+  }
+  deviation "/cgn:filter-server-maps/cgn:input/cgn:card" {
+    deviate not-supported;
+  }
+  deviation "/cgn:reset-user-by-address-group" {
+    deviate not-supported;
+  }
+  deviation "/cgn:reset-user-by-nat-ip-pool" {
+    deviate not-supported;
+  }
+  deviation "/cgn:reset-session-table/cgn:input/cgn:engine" {
+    deviate not-supported;
+  }
+  deviation "/cgn:reset-session-table/cgn:input/cgn:card" {
+    deviate not-supported;
+  }
+  deviation "/cgn:reset-session-table/cgn:input/cgn:user-id" {
+    deviate not-supported;
+  }
+  deviation "/cgn:reset-session-table/cgn:input/cgn:pcp" {
+    deviate not-supported;
+  }
+  deviation "/cgn:get-port-usage-distributes" {
+    deviate not-supported;
+  }
+  deviation "/lcs:license/cgn:active-nat-sessions" {
+    deviate not-supported;
+  }
+  deviation "/lcs:license/cgn:session-capacitys" {
+    deviate not-supported;
+  }
+  deviation "/lcs:license/cgn:session-capacitys-verbose-infos" {
+    deviate not-supported;
+  }
+  deviation "/lcs:license/cgn:active-bandwidths" {
+    deviate not-supported;
+  }
+  deviation "/lcs:license/cgn:bandwidth-capacitys" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:user-table-usages/cgn:user-table-usage/cgn:engine" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:engine-id-na-deviations;
+    }
+  }
+  deviation "/cgn:cgn/cgn:user-table-usages/cgn:user-table-usage/cgn:card" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:card-id-deviations;
+    }
+  }
+  deviation "/cgn:cgn/cgn:server-maps/cgn:server-map/cgn:engine" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:engine-id-na-deviations;
+    }
+  }
+  deviation "/cgn:cgn/cgn:server-maps/cgn:server-map/cgn:card" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:card-id-deviations;
+    }
+  }
+  deviation "/cgn:cgn/cgn:server-map-usages/cgn:server-map-usage/cgn:engine" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:engine-id-na-deviations;
+    }
+  }
+  deviation "/cgn:cgn/cgn:server-map-usages/cgn:server-map-usage/cgn:card" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:card-id-deviations;
+    }
+  }
+  deviation "/cgn:cgn/cgn:session-table-usages/cgn:session-table-usage/cgn:engine" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:engine-id-na-deviations;
+    }
+  }
+  deviation "/cgn:cgn/cgn:session-table-usages/cgn:session-table-usage/cgn:card" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:card-id-deviations;
+    }
+  }
+  deviation "/cgn:cgn/cgn:fragment-table-usages/cgn:fragment-table-usage/cgn:engine" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:engine-id-na-deviations;
+    }
+  }
+  deviation "/cgn:cgn/cgn:fragment-table-usages/cgn:fragment-table-usage/cgn:card" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:card-id-deviations;
+    }
+  }
+  deviation "/cgn:filter-server-maps/cgn:output/cgn:server-maps/cgn:server-map/cgn:engine" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:engine-id-na-deviations;
+    }
+  }
+  deviation "/cgn:filter-server-maps/cgn:output/cgn:server-maps/cgn:server-map/cgn:card" {
+    deviate replace {
+      type cgn-devs-NE8000-F1A:card-id-deviations;
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cgn:bind-container" {
+    deviate not-supported;
+  }
+  deviation "/cgn:cgn/cgn:static-mapping" {
+    deviate delete {
+      must "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+    }
+    deviate add {
+      must "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board' or not (/bras-cu-agent:bras-cu-agent/bras-cu-agent:cu-agent)";
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cgn:cgn/cgn:ve-link-mode" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/cgn:cgn/cgn:bd-access" {
+    deviate not-supported;
+  }
+}
+  

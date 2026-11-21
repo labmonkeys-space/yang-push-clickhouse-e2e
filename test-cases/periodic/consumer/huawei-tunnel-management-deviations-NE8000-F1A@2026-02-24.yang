@@ -1,0 +1,242 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-tunnel-management-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-tunnel-management-deviations-NE8000-F1A";
+  prefix tnlm-devs-NE8000-F1A;
+
+  import huawei-tunnel-management {
+    prefix tnlm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-tunnel-management module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef tunnel-type-deviations {
+    type enumeration {
+      enum invalid {
+        value 0;
+        description
+          "Tunnel of the none type. The none type is an initial type, indicating that no tunnel type is configured. A tunnel can be used only after a tunnel type excluding the none type is configured.";
+      }
+      enum ldp {
+        value 1;
+        description
+          "LDP tunnel.";
+      }
+      enum bgp {
+        value 2;
+        description
+          "BGP tunnel.";
+      }
+      enum te {
+        value 3;
+        description
+          "TE tunnel.";
+      }
+      enum static-lsp {
+        value 4;
+        description
+          "Static LSP.";
+      }
+      enum gre {
+        value 5;
+        description
+          "GRE tunnel.";
+      }
+      enum uni {
+        value 6;
+        description
+          "UNI tunnel.";
+      }
+      enum tnl-group {
+        value 7;
+        description
+          "Tunnel group that consists of a primary tunnel and a secondary tunnel.";
+      }
+      enum sub-te {
+        value 8;
+        description
+          "Virtual tunnel that exclusively occupies the specified bandwidth of a TE tunnel.";
+      }
+      enum sub-group {
+        value 9;
+        description
+          "Virtual tunnel that occupies the specified bandwidth of the primary and secondary tunnels in a tunnel group.";
+      }
+      enum 6over4 {
+        value 10;
+        description
+          "IPv6-over-IPv4 tunnel.";
+      }
+      enum 6to4 {
+        value 11;
+        description
+          "IPv6-to-IPv4 tunnel.";
+      }
+      enum mpls-local-ifnet {
+        value 12;
+        description
+          "MPLS_local_IFNET tunnel, which is mainly used as a virtual tunnel between two ASBRs in the VPN Option B networking.";
+      }
+      enum ldp6 {
+        value 13;
+        description
+          "LDP6 tunnel, which is an IPv6 tunnel.";
+      }
+      enum nvgre {
+        value 15;
+        description
+          "NVGRE tunnel.";
+      }
+      enum p2mp-ldp {
+        value 16;
+        description
+          "P2MP LDP tunnel.";
+      }
+      enum vxlan {
+        value 23;
+        description
+          "VXLAN tunnel.";
+      }
+      enum ipsec {
+        value 24;
+        description
+          "IPSec Tunnel.";
+      }
+      enum p2mp-te {
+        value 32;
+        description
+          "P2MP TE tunnel.";
+      }
+      enum vxlan-nvo3 {
+        value 39;
+        description
+          "VXLAN_NVO3 tunnel.";
+      }
+      enum gre6 {
+        value 40;
+        description
+          "GRE6 tunnel.";
+      }
+      enum srbe-lsp {
+        value 41;
+        description
+          "SR-LSP tunnel.";
+      }
+      enum vxlan6-nvo3 {
+        value 42;
+        description
+          "VXLAN6_NVO3 tunnel.";
+      }
+      enum srv6 {
+        value 43;
+        description
+          "SRv6 tunnel.";
+      }
+      enum 4over6 {
+        value 44;
+        description
+          "IPv4-over-IPv6 tunnel.";
+      }
+      enum 6rd {
+        value 45;
+        description
+          "6rd tunnel.";
+      }
+      enum sr-te {
+        value 47;
+        description
+          "SR-TE tunnel.";
+      }
+      enum p2mp-gre {
+        value 64;
+        description
+          "P2MP GRE tunnel.";
+      }
+      enum ldp-lsp {
+        value 255;
+        description
+          "LDP lsp tunnel.";
+      }
+      enum sr-te-policy {
+        value 50;
+        description
+          "SR TE policy tunnel.";
+      }
+      enum sr-te-policy-group {
+        value 51;
+        description
+          "SR TE policy group tunnel.";
+      }
+      enum srv6-te-policy {
+        value 52;
+        description
+          "SRv6 TE Policy.";
+      }
+      enum srv6-te-flow-group {
+        value 55;
+        description
+          "SRv6 TE Flow group.";
+      }
+      enum sd-wan {
+        value 56;
+        description
+          "SD-WAN Tunnel.";
+      }
+      enum flex-algo-lsp {
+        value 147;
+        description
+          "FLEX-ALGO LSP.";
+      }
+      enum colored-sr-te {
+        value 148;
+        description
+          "Colored SR-TE.";
+      }
+    }
+    description
+      "Tunnel type.";
+  }
+
+  deviation "/tnlm:tunnel-management/tnlm:tunnel-infos/tnlm:tunnel-info/tnlm:color-type/tnlm:color-priority" {
+    deviate not-supported;
+  }
+  deviation "/tnlm:tunnel-management/tnlm:tunnel-policys/tnlm:tunnel-policy/tnlm:ipv6-set/tnlm:policy-type/tnlm:select-sequences/tnlm:select-sequence/tnlm:unmix" {
+    deviate delete {
+      must "(../select-tunnel-types/select-tunnel-type[type = 'srv6-te-policy'] and ../select-tunnel-types/select-tunnel-type[type = 'srv6-te-flow-group'] and ../unmix = 'true') or (../unmix = 'false')";
+    }
+    deviate add {
+      must "(count(../select-tunnel-types/select-tunnel-type)=1) and (../unmix = 'false') or
+            (count(../select-tunnel-types/select-tunnel-type)=2) and count(../select-tunnel-types/select-tunnel-type[type = 'gre6'])= 0 and (../unmix = 'true')";
+    }
+  }
+  deviation "/tnlm:tunnel-management/tnlm:tunnel-policys/tnlm:tunnel-policy/tnlm:ipv6-set/tnlm:policy-type/tnlm:select-sequences/tnlm:select-sequence/tnlm:select-tunnel-types/tnlm:select-tunnel-type" {
+    deviate add {
+      must "(type='gre6' and count(../../select-tunnel-types/select-tunnel-type)=1) or (type != 'gre6')";
+    }
+  }
+  deviation "/tnlm:tunnel-management/tnlm:tunnel-infos/tnlm:tunnel-info/tnlm:type" {
+    deviate replace {
+      type tnlm-devs-NE8000-F1A:tunnel-type-deviations;
+    }
+  }
+}
+
+  
