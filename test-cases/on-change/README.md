@@ -85,18 +85,17 @@ How `validate.py` checks:
 - **Interface edit, from the schema root** (check A), as collectors and consumers read it today: `Top-level JSON object member "interface" must be namespace-qualified.`
 - **Alarm edit, from the root** (check C), which is the anchor of a top-level target: `Unexpected notification element "alarm-notification".`
 - **Alarm edit, read as a notification** (check D): `Invalid identityref "LLDP_REMTABLECHANGE" value - identity not found in module "ietf-alarms".`
+- **Interface target, resolved as XPath** (checks E to G). The [NetCalyx `anydata-validation-anchor-poc`](https://github.com/network-analytics/NetCalyx/tree/anydata-validation-anchor-poc) branch finds the anchor with `lys_find_xpath` on the target, and `validate.py` does the same with plain libyang. The router's form fails with `Invalid character 0x47 ('G')` (E). The RFC 8040 encoding fails the same way (G). Only a quoted key resolves (F).
 
-The IETF 127 hackathon branches, checked separately on 21 November 2026 outside this repository, on the interface edit:
-
-- [mxyns/libyang `feature/anydata-schema-anchor`](https://github.com/mxyns/libyang/tree/feature/anydata-schema-anchor) at 6f395d68, anchored at `/ietf-interfaces:interfaces/interface`, parse-only and strict: the value is valid as sent.
-- [NetCalyx `anydata-validation-anchor-poc`](https://github.com/network-analytics/NetCalyx/tree/anydata-validation-anchor-poc) resolves the anchor with `lys_find_xpath` on the target. libyang stops at the unquoted key with `Invalid character 0x47 ('G')`. With `[name='100GE0/1/2']` it resolves.
+The [mxyns/libyang `feature/anydata-schema-anchor`](https://github.com/mxyns/libyang/tree/feature/anydata-schema-anchor) branch, checked separately on 21 November 2026 at 6f395d68, anchored at `/ietf-interfaces:interfaces/interface`, parse-only and strict: the interface value is valid as sent.
 
 ## Expected result
 
 - **Interface edit, from the anchor** (check B): the value validates unchanged. This is the payload we propose should pass.
 - **Alarm edit:** no reading can pass. The router would have to send the alarm as a notification, not as a datastore edit, and qualify `alarm-type-id` with the module that defines it.
+- **Interface target:** a collector needs one agreed spelling. RFC 8072 asks for the RFC 8040 encoding, `interface=100GE0%2F1%2F2`, which an XPath lookup cannot read (G). The router sends neither that nor valid XPath (E).
 
-`validate.py` prints each edit, its checks with their prediction, and the result:
+`validate.py` prints each edit and the target lookup, the checks with their prediction, and the result:
 
 ```text
 Library: library-2338653103.json (iana-if-type implemented)
@@ -117,9 +116,22 @@ C  read from the schema root, the anchor of a top-level target     fail  (predic
 D  read as a YANG notification instead                             fail  (predicted fail, ok)
    Invalid identityref "LLDP_REMTABLECHANGE" value - identity not found in module "ietf-alarms".: Data path: /ietf-alarms:alarm-notification/alarm-type-i
 
+Interface target, resolved as XPath like the NetCalyx anchor branch
+E  as the router sends it                                          fail  (predicted fail, ok)
+   /ietf-interfaces:interfaces/interface[name=100GE0/1/2]
+   Invalid character 0x47 ('G'), perhaps "100" is supposed to be a function call.
+F  with a quoted key                                               pass  (predicted pass, ok)
+   /ietf-interfaces:interfaces/interface[name='100GE0/1/2']
+   schema node /ietf-interfaces:interfaces/interface
+G  in the RFC 8040 encoding of RFC 8072                            fail  (predicted fail, ok)
+   /ietf-interfaces:interfaces/interface=100GE0%2F1%2F2
+   Invalid character 0x47 ('G'), perhaps "100" is supposed to be a function call.
+
 Result: the interface value is valid as sent. It fails only when read from the schema root.
         The alarm value cannot pass: its target is a notification, not data,
         and its alarm-type-id names an identity the library does not define.
+        An XPath lookup of the target works only with a quoted key, which
+        neither the router's form nor the RFC 8040 encoding has.
 ```
 
 Exit code 0 means every check matched its prediction.

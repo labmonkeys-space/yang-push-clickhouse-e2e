@@ -7,6 +7,11 @@ root, as collectors do today, and the parent of its target, the anchor of
 draft-netana-netmod-yang-anydata-validation-00. The alarm edit
 (subscription 19) has a top-level target, so its anchor is the root.
 
+The interface target is also resolved to its schema node as XPath, the way
+the NetCalyx anchor branch finds the anchor, in three spellings: as the
+router sends it, with a quoted key, and in the RFC 8040 encoding that
+RFC 8072 prescribes for a YANG Patch target.
+
 Every check uses the router's YANG library 2338653103 and parses with
 libyang in strict, parse-only mode: node names, types and identities are
 checked, mandatory nodes and leafref targets are not. That is close to the
@@ -52,6 +57,21 @@ CASES = [
     Case("B", INTERFACE, "read from the target's parent, the draft's anchor", "/ietf-interfaces:interfaces", False, "pass"),
     Case("C", ALARM, "read from the schema root, the anchor of a top-level target", None, False, "fail"),
     Case("D", ALARM, "read as a YANG notification instead", None, True, "fail"),
+]
+
+
+@dataclass
+class Target:
+    name: str
+    description: str
+    path: str
+    predicted: str  # "pass" or "fail"
+
+
+TARGETS = [
+    Target("E", "as the router sends it", "/ietf-interfaces:interfaces/interface[name=100GE0/1/2]", "fail"),
+    Target("F", "with a quoted key", "/ietf-interfaces:interfaces/interface[name='100GE0/1/2']", "pass"),
+    Target("G", "in the RFC 8040 encoding of RFC 8072", "/ietf-interfaces:interfaces/interface=100GE0%2F1%2F2", "fail"),
 ]
 
 
@@ -126,6 +146,17 @@ def validate(ctx: libyang.Context, value: str, case: Case) -> tuple[str, str]:
             tree.root().free()
 
 
+def resolve(ctx: libyang.Context, path: str) -> tuple[str, str]:
+    """Resolve a target to schema nodes with lys_find_xpath, as NetCalyx does."""
+    try:
+        nodes = list(ctx.find_path(path))
+    except libyang.LibyangError as e:
+        return "fail", str(e).split(": ", 1)[-1]
+    if len(nodes) != 1:
+        return "fail", f"{len(nodes)} schema nodes"
+    return "pass", f"schema node {nodes[0].schema_path()}"
+
+
 def describe(edit: dict) -> str:
     members = ", ".join(f'"{name}"' for name in edit["value"])
     prefixed = all(":" in name for name in edit["value"])
@@ -160,6 +191,17 @@ def main() -> int:
             if error:
                 print(f"   {error[:150]}")
 
+        print()
+        print("Interface target, resolved as XPath like the NetCalyx anchor branch")
+        for target in TARGETS:
+            result, detail = resolve(ctx, target.path)
+            verdict = "ok" if result == target.predicted else "UNEXPECTED"
+            if result != target.predicted:
+                unexpected += 1
+            print(f"{target.name}  {target.description:62}  {result:4}  (predicted {target.predicted}, {verdict})")
+            print(f"   {target.path}")
+            print(f"   {detail[:150]}")
+
     print()
     if unexpected:
         print("Result: at least one check did not match its prediction.")
@@ -167,6 +209,8 @@ def main() -> int:
         print("Result: the interface value is valid as sent. It fails only when read from the schema root.")
         print("        The alarm value cannot pass: its target is a notification, not data,")
         print("        and its alarm-type-id names an identity the library does not define.")
+        print("        An XPath lookup of the target works only with a quoted key, which")
+        print("        neither the router's form nor the RFC 8040 encoding has.")
     return 1 if unexpected else 0
 
 
