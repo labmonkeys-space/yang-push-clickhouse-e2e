@@ -127,6 +127,26 @@ class Library:
                     if tag == "module" or e["name"] not in self.entries:
                         self.entries[e["name"]] = e
             self.sets.append((name, members))
+        # libyang needs the RFC 7895 modules-state as well, with its module-set-id.
+        legacy = root.find(f".//{NS}modules-state")
+        self.module_set_id = legacy.findtext(NS + "module-set-id").strip()
+        self.legacy = []
+        for m in legacy.findall(NS + "module"):
+            d = {"name": m.findtext(NS + "name").strip(), "revision": (m.findtext(NS + "revision") or "").strip(),
+                 "namespace": m.findtext(NS + "namespace").strip(),
+                 "conformance-type": m.findtext(NS + "conformance-type").strip()}
+            feats = [x.text.strip() for x in m.findall(NS + "feature") if x.text and x.text.strip()]
+            if feats:
+                d["feature"] = feats
+            devs = [{"name": x.findtext(NS + "name").strip(), "revision": x.findtext(NS + "revision").strip()}
+                    for x in m.findall(NS + "deviation")]
+            if devs:
+                d["deviation"] = devs
+            subs = [{"name": x.findtext(NS + "name").strip(), "revision": x.findtext(NS + "revision").strip()}
+                    for x in m.findall(NS + "submodule")]
+            if subs:
+                d["submodule"] = subs
+            self.legacy.append(d)
 
     def json_identity(self, value):
         pfx, _, name = value.partition(":")
@@ -167,6 +187,9 @@ class Library:
             "schema": [{"name": self.schema, "module-set": [d["name"] for d in out_sets]}],
             "datastore": [{"name": self.datastore, "schema": self.schema}],
             "content-id": self.content_id,
+        }, "ietf-yang-library:modules-state": {
+            "module-set-id": self.module_set_id,
+            "module": sorted((d for d in self.legacy if d["name"] in names), key=lambda d: (d["name"], d["revision"])),
         }}
 
 

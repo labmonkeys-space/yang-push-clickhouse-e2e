@@ -1,0 +1,20 @@
+{
+  "case": "periodic",
+  "not-captured": [{"module": "iana-if-type@2017-01-19", "note": "named by the library, text not captured"}],
+  "payloads": {
+    "push-update-s06.json": "Subscription 6, /ietf-interfaces:interfaces/interface, module-version ietf-interfaces",
+    "push-update-s03.json": "Subscription 3, /huawei-devm:devm/physical-entitys/physical-entity, module-version huawei-devm"
+  },
+  "checks": [
+    {"id": "P1", "payload": "push-update-s06.json", "role": "collector", "schema": {"library": "library-2300156437.json"},
+     "description": "advertised library 2300156437", "mode": "parse-only", "predicted": "fail", "error_contains": "iana-if-type"},
+    {"id": "P2", "payload": "push-update-s06.json", "role": "collector", "schema": {"library": "library-2338653103.json"},
+     "description": "fixed library 2338653103", "mode": "parse-only", "predicted": "pass"},
+    {"id": "P3", "payload": "push-update-s06.json", "role": "consumer", "schema": {"registry": 628},
+     "description": "schema 628 and its references", "mode": "parse-only", "predicted": "fail", "error_contains": "unable to map prefix"},
+    {"id": "P4", "payload": "push-update-s03.json", "role": "collector", "schema": {"library": "library-2300156437.json"},
+     "description": "advertised library 2300156437", "mode": "parse-only", "predicted": "pass"},
+    {"id": "P5", "payload": "push-update-s03.json", "role": "consumer", "schema": {"registry": 628},
+     "description": "schema 628 and its references", "mode": "parse-only", "predicted": "pass"}
+  ]
+}

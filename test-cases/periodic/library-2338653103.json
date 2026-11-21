@@ -64,5 +64,44 @@
       }
     ],
     "content-id": "2338653103"
+  },
+  "ietf-yang-library:modules-state": {
+    "module-set-id": "2338653103",
+    "module": [
+      {
+        "name": "huawei-ietf-interfaces-deviations-NE8000-F1A",
+        "revision": "2026-02-24",
+        "namespace": "urn:huawei:yang:huawei-ietf-interfaces-deviations-NE8000-F1A",
+        "conformance-type": "implement"
+      },
+      {
+        "name": "iana-if-type",
+        "revision": "2017-01-19",
+        "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type",
+        "conformance-type": "implement"
+      },
+      {
+        "name": "ietf-interfaces",
+        "revision": "2018-02-20",
+        "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces",
+        "conformance-type": "implement",
+        "feature": [
+          "pre-provisioning",
+          "if-mib"
+        ],
+        "deviation": [
+          {
+            "name": "huawei-ietf-interfaces-deviations-NE8000-F1A",
+            "revision": "2026-02-24"
+          }
+        ]
+      },
+      {
+        "name": "ietf-yang-types",
+        "revision": "2013-07-15",
+        "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types",
+        "conformance-type": "import"
+      }
+    ]
   }
 }
