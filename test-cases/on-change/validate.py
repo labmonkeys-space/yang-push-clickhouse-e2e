@@ -200,14 +200,17 @@ def main() -> int:
         print(f"Library: {library_file}, {about}")
         if skipped:
             print(f"Not found, left out: {', '.join(skipped)}")
-        with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
-            with open(library_file, encoding="utf-8") as f:
-                sets = json.load(f)["ietf-yang-library:yang-library"]["module-set"]
-            named = {m["name"]: m["revision"] for s in sets for k in ("module", "import-only-module") for m in s.get(k, [])}
-            swapped = substituted(ctx, named)
-            if swapped:
-                print(f"libyang uses {', '.join(swapped)}")
-            unexpected += run_checks(ctx, expected, checks)
+        try:
+            with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
+                with open(library_file, encoding="utf-8") as f:
+                    sets = json.load(f)["ietf-yang-library:yang-library"]["module-set"]
+                named = {m["name"]: m["revision"] for s in sets for k in ("module", "import-only-module") for m in s.get(k, [])}
+                swapped = substituted(ctx, named)
+                if swapped:
+                    print(f"libyang uses {', '.join(swapped)}")
+                unexpected += run_checks(ctx, expected, checks)
+        finally:
+            os.unlink(library)
         print()
     if unexpected:
         print("Result: at least one check did not match its prediction.")

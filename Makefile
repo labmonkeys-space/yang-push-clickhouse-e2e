@@ -18,7 +18,9 @@ help:
 ## check: Validate the Compose file and compile the Python sources
 check:
 	docker compose config -q
-	python3 -m py_compile consumer/consumer.py consumer/report.py
+	python3 -m py_compile consumer/consumer.py consumer/report.py \
+	  test-cases/on-change/validate.py test-cases/on-change/extract-library.py \
+	  test-cases/periodic/validate.py test-cases/periodic/prepare.py
 
 # NetCalyx logs in to the simulated devices over NETCONF with this key.
 keys/id_ed25519:

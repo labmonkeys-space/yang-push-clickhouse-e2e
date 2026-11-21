@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 """Copy the entries of the modules the two edits need from a router's YANG library reply into RFC 8525 JSON.
 
-Usage: extract_lib.py <get-yang-library.xml> <out.json>
+Usage: extract-library.py <get-yang-library.xml> <out.json>
 Keeps the router's module-set, schema and datastore names, features and deviations.
 Fails when yang/ has no file at a revision the library names.
 """

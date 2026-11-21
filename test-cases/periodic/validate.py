@@ -82,7 +82,11 @@ def one_module_set(library: str) -> str:
 
 
 def collector_context(library: str) -> libyang.Context:
-    return libyang.Context("collector", yanglib_path=one_module_set(library), yanglib_fmt="json")
+    path = one_module_set(library)
+    try:
+        return libyang.Context("collector", yanglib_path=path, yanglib_fmt="json")
+    finally:
+        os.unlink(path)
 
 
 def consumer_context() -> libyang.Context:
