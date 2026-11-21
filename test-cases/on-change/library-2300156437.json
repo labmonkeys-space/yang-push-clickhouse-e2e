@@ -1,0 +1,127 @@
+{
+  "ietf-yang-library:yang-library": {
+    "module-set": [
+      {
+        "name": "config-module",
+        "module": [
+          {
+            "name": "ietf-interfaces",
+            "revision": "2018-02-20",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces",
+            "feature": [
+              "pre-provisioning",
+              "if-mib"
+            ],
+            "deviation": [
+              "huawei-ietf-interfaces-deviations-NE8000-F1A"
+            ]
+          },
+          {
+            "name": "huawei-ietf-interfaces-deviations-NE8000-F1A",
+            "revision": "2026-02-24",
+            "namespace": "urn:huawei:yang:huawei-ietf-interfaces-deviations-NE8000-F1A"
+          }
+        ],
+        "import-only-module": [
+          {
+            "name": "ietf-yang-types",
+            "revision": "2013-07-15",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"
+          }
+        ]
+      },
+      {
+        "name": "state-module",
+        "module": [
+          {
+            "name": "ietf-alarms",
+            "revision": "2019-09-11",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-alarms",
+            "deviation": [
+              "huawei-ietf-alarms-deviations-NE8000-F1A"
+            ]
+          }
+        ],
+        "import-only-module": [
+          {
+            "name": "ietf-yang-types",
+            "revision": "2013-07-15",
+            "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"
+          },
+          {
+            "name": "iana-if-type",
+            "revision": "2017-01-19",
+            "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type"
+          }
+        ]
+      }
+    ],
+    "schema": [
+      {
+        "name": "state-schema",
+        "module-set": [
+          "config-module",
+          "state-module"
+        ]
+      }
+    ],
+    "datastore": [
+      {
+        "name": "ietf-datastores:operational",
+        "schema": "state-schema"
+      }
+    ],
+    "content-id": "2300156437"
+  },
+  "ietf-yang-library:modules-state": {
+    "module-set-id": "2300156437",
+    "module": [
+      {
+        "name": "ietf-interfaces",
+        "revision": "2018-02-20",
+        "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces",
+        "conformance-type": "implement",
+        "feature": [
+          "pre-provisioning",
+          "if-mib"
+        ],
+        "deviation": [
+          {
+            "name": "huawei-ietf-interfaces-deviations-NE8000-F1A",
+            "revision": "2026-02-24"
+          }
+        ]
+      },
+      {
+        "name": "huawei-ietf-interfaces-deviations-NE8000-F1A",
+        "revision": "2026-02-24",
+        "namespace": "urn:huawei:yang:huawei-ietf-interfaces-deviations-NE8000-F1A",
+        "conformance-type": "implement"
+      },
+      {
+        "name": "ietf-yang-types",
+        "revision": "2013-07-15",
+        "namespace": "urn:ietf:params:xml:ns:yang:ietf-yang-types",
+        "conformance-type": "import"
+      },
+      {
+        "name": "iana-if-type",
+        "revision": "2017-01-19",
+        "namespace": "urn:ietf:params:xml:ns:yang:iana-if-type",
+        "conformance-type": "import"
+      },
+      {
+        "name": "ietf-alarms",
+        "revision": "2019-09-11",
+        "namespace": "urn:ietf:params:xml:ns:yang:ietf-alarms",
+        "conformance-type": "implement",
+        "deviation": [
+          {
+            "name": "huawei-ietf-alarms-deviations-NE8000-F1A",
+            "revision": "2025-02-24"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,40 +1,22 @@
 {
   "case": "on-change",
-  "not-captured": [
-    {"module": "iana-if-type@2017-01-19", "note": "named by the library, text not captured"}
-  ],
-  "edits": {
-    "edit-interface.json": "Interface edit, subscription 11",
-    "edit-alarm.json": "Alarm edit, subscription 19"
-  },
+  "not-captured": [{"module": "iana-if-type@2017-01-19", "note": "named by the library, text not captured"}],
+  "edits": {"edit-interface.json": "Interface edit, subscription 11", "edit-alarm.json": "Alarm edit, subscription 19"},
+  "libraries": {"library-2300156437.json": "the advertised library, named by every subscription-started; iana-if-type import-only", "library-2338653103.json": "the fixed library, published with the IETF 127 capture; iana-if-type implemented"},
   "checks": [
-    {"id": "A", "library": "library-2338653103.json", "kind": "parse", "edit": "edit-interface.json",
-     "description": "read from the schema root, as collectors do today",
-     "anchor": null, "as_notification": false, "mode": "parse-only",
-     "predicted": "fail", "error_contains": "must be namespace-qualified"},
-    {"id": "B", "library": "library-2338653103.json", "kind": "parse", "edit": "edit-interface.json",
-     "description": "read from the target's parent, the draft's anchor",
-     "anchor": "/ietf-interfaces:interfaces", "as_notification": false, "mode": "parse-only",
-     "predicted": "pass"},
-    {"id": "C", "library": "library-2338653103.json", "kind": "parse", "edit": "edit-alarm.json",
-     "description": "read from the schema root, the anchor of a top-level target",
-     "anchor": null, "as_notification": false, "mode": "parse-only",
-     "predicted": "fail", "error_contains": "Unexpected notification element"},
-    {"id": "D", "library": "library-2338653103.json", "kind": "parse", "edit": "edit-alarm.json",
-     "description": "read as a YANG notification instead",
-     "anchor": null, "as_notification": true, "mode": "parse-only",
-     "predicted": "fail", "error_contains": "identity not found in module \"ietf-alarms\""},
-    {"id": "E", "library": "library-2338653103.json", "kind": "resolve",
-     "description": "as the router sends it",
-     "path": "/ietf-interfaces:interfaces/interface[name=100GE0/1/2]",
-     "predicted": "fail", "error_contains": "Invalid character 0x47"},
-    {"id": "F", "library": "library-2338653103.json", "kind": "resolve",
-     "description": "with a quoted key",
-     "path": "/ietf-interfaces:interfaces/interface[name='100GE0/1/2']",
-     "predicted": "pass"},
-    {"id": "G", "library": "library-2338653103.json", "kind": "resolve",
-     "description": "in the RFC 8040 encoding of RFC 8072",
-     "path": "/ietf-interfaces:interfaces/interface=100GE0%2F1%2F2",
-     "predicted": "fail", "error_contains": "Invalid character 0x47"}
+    {"id": "A1", "library": "library-2300156437.json", "kind": "parse", "edit": "edit-interface.json", "description": "read from the schema root, as collectors do today", "anchor": null, "as_notification": false, "mode": "parse-only", "predicted": "fail", "error_contains": "must be namespace-qualified"},
+    {"id": "B1", "library": "library-2300156437.json", "kind": "parse", "edit": "edit-interface.json", "description": "read from the target's parent, the draft's anchor", "anchor": "/ietf-interfaces:interfaces", "as_notification": false, "mode": "parse-only", "predicted": "fail", "error_contains": "iana-if-type"},
+    {"id": "C1", "library": "library-2300156437.json", "kind": "parse", "edit": "edit-alarm.json", "description": "read from the schema root, the anchor of a top-level target", "anchor": null, "as_notification": false, "mode": "parse-only", "predicted": "fail", "error_contains": "Unexpected notification element"},
+    {"id": "D1", "library": "library-2300156437.json", "kind": "parse", "edit": "edit-alarm.json", "description": "read as a YANG notification instead", "anchor": null, "as_notification": true, "mode": "parse-only", "predicted": "fail", "error_contains": "identity not found in module \"ietf-alarms\""},
+    {"id": "E1", "library": "library-2300156437.json", "kind": "resolve", "description": "as the router sends it", "path": "/ietf-interfaces:interfaces/interface[name=100GE0/1/2]", "predicted": "fail", "error_contains": "Invalid character 0x47"},
+    {"id": "F1", "library": "library-2300156437.json", "kind": "resolve", "description": "with a quoted key", "path": "/ietf-interfaces:interfaces/interface[name='100GE0/1/2']", "predicted": "pass"},
+    {"id": "G1", "library": "library-2300156437.json", "kind": "resolve", "description": "in the RFC 8040 encoding of RFC 8072", "path": "/ietf-interfaces:interfaces/interface=100GE0%2F1%2F2", "predicted": "fail", "error_contains": "Invalid character 0x47"},
+    {"id": "A2", "library": "library-2338653103.json", "kind": "parse", "edit": "edit-interface.json", "description": "read from the schema root, as collectors do today", "anchor": null, "as_notification": false, "mode": "parse-only", "predicted": "fail", "error_contains": "must be namespace-qualified"},
+    {"id": "B2", "library": "library-2338653103.json", "kind": "parse", "edit": "edit-interface.json", "description": "read from the target's parent, the draft's anchor", "anchor": "/ietf-interfaces:interfaces", "as_notification": false, "mode": "parse-only", "predicted": "pass"},
+    {"id": "C2", "library": "library-2338653103.json", "kind": "parse", "edit": "edit-alarm.json", "description": "read from the schema root, the anchor of a top-level target", "anchor": null, "as_notification": false, "mode": "parse-only", "predicted": "fail", "error_contains": "Unexpected notification element"},
+    {"id": "D2", "library": "library-2338653103.json", "kind": "parse", "edit": "edit-alarm.json", "description": "read as a YANG notification instead", "anchor": null, "as_notification": true, "mode": "parse-only", "predicted": "fail", "error_contains": "identity not found in module \"ietf-alarms\""},
+    {"id": "E2", "library": "library-2338653103.json", "kind": "resolve", "description": "as the router sends it", "path": "/ietf-interfaces:interfaces/interface[name=100GE0/1/2]", "predicted": "fail", "error_contains": "Invalid character 0x47"},
+    {"id": "F2", "library": "library-2338653103.json", "kind": "resolve", "description": "with a quoted key", "path": "/ietf-interfaces:interfaces/interface[name='100GE0/1/2']", "predicted": "pass"},
+    {"id": "G2", "library": "library-2338653103.json", "kind": "resolve", "description": "in the RFC 8040 encoding of RFC 8072", "path": "/ietf-interfaces:interfaces/interface=100GE0%2F1%2F2", "predicted": "fail", "error_contains": "Invalid character 0x47"}
   ]
 }

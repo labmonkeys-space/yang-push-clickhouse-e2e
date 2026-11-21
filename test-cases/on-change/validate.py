@@ -12,8 +12,9 @@ the NetCalyx anchor branch finds the anchor, in three spellings: as the
 router sends it, with a quoted key, and in the RFC 8040 encoding that
 RFC 8072 prescribes for a YANG Patch target.
 
-Every check uses the router's YANG library 2338653103 and parses with
-libyang in strict, parse-only mode: node names, types and identities are
+Every check runs against two YANG libraries of the router: 2300156437,
+the advertised library that every subscription-started names, and
+2338653103, the fixed library. libyang parses in strict, parse-only mode: node names, types and identities are
 checked, mandatory nodes and leafref targets are not. That is close to the
 anydata-candidate option of the draft.
 
@@ -139,51 +140,58 @@ def describe(edit: dict) -> str:
     return f"{{{members}: ...}}  ({'with' if prefixed else 'no'} module prefix)"
 
 
+def run_checks(ctx: libyang.Context, expected: dict, checks: list[dict]) -> int:
+    """Run the checks of one library and return how many did not match."""
+    unexpected = 0
+    current = None
+    for check in checks:
+        if check["kind"] == "parse":
+            if check["edit"] != current:
+                current = check["edit"]
+                with open(current, encoding="utf-8") as f:
+                    edit = json.load(f)
+                value = json.dumps(edit["value"])
+                print()
+                print(expected["edits"][current])
+                print(f"   target: {edit['target']}")
+                print(f"   value:  {describe(edit)}")
+            result, error = validate(ctx, value, check)
+        else:
+            if current != "resolve":
+                current = "resolve"
+                print()
+                print("Interface target, resolved as XPath like the NetCalyx anchor branch")
+            result, error = resolve(ctx, check["path"])
+
+        v = verdict(check, result, error)
+        if v != "ok":
+            unexpected += 1
+        print(f"{check['id']}  {check['description']:62}  {result:4}  (predicted {check['predicted']}, {v})")
+        if check["kind"] == "resolve":
+            print(f"   {check['path']}")
+        if error:
+            print(f"   {error[:150]}")
+    return unexpected
+
+
 def main() -> int:
     expected = load_expected(EXPECTED)
-    checks = expected["checks"]
-    library_file = checks[0]["library"]
-    library, skipped = one_module_set(library_file)
-    print(f"Library: {library_file} (iana-if-type implemented)")
-    if skipped:
-        print(f"Not found, left out: {', '.join(skipped)}")
-
     unexpected = 0
-    with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
-        current = None
-        for check in checks:
-            if check["kind"] == "parse":
-                if check["edit"] != current:
-                    current = check["edit"]
-                    with open(current, encoding="utf-8") as f:
-                        edit = json.load(f)
-                    value = json.dumps(edit["value"])
-                    print()
-                    print(expected["edits"][current])
-                    print(f"   target: {edit['target']}")
-                    print(f"   value:  {describe(edit)}")
-                result, error = validate(ctx, value, check)
-            else:
-                if current != "resolve":
-                    current = "resolve"
-                    print()
-                    print("Interface target, resolved as XPath like the NetCalyx anchor branch")
-                result, error = resolve(ctx, check["path"])
-
-            v = verdict(check, result, error)
-            if v != "ok":
-                unexpected += 1
-            print(f"{check['id']}  {check['description']:62}  {result:4}  (predicted {check['predicted']}, {v})")
-            if check["kind"] == "resolve":
-                print(f"   {check['path']}")
-            if error:
-                print(f"   {error[:150]}")
-
-    print()
+    for library_file, about in expected["libraries"].items():
+        checks = [c for c in expected["checks"] if c["library"] == library_file]
+        library, skipped = one_module_set(library_file)
+        print(f"Library: {library_file}, {about}")
+        if skipped:
+            print(f"Not found, left out: {', '.join(skipped)}")
+        with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
+            unexpected += run_checks(ctx, expected, checks)
+        print()
     if unexpected:
         print("Result: at least one check did not match its prediction.")
     else:
-        print("Result: the interface value is valid as sent. It fails only when read from the schema root.")
+        print("Result: the interface value is valid as sent with the fixed library, read from")
+        print("        the target's parent. It fails when read from the schema root, and with")
+        print("        the advertised library, which lists iana-if-type as import-only.")
         print("        The alarm value cannot pass: its target is a notification, not data,")
         print("        and its alarm-type-id names an identity ietf-alarms does not define,")
         print("        unless the missing deviation changes the type of alarm-type-id.")
