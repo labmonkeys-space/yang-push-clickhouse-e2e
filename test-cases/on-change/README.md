@@ -3,6 +3,15 @@
 One edit from the IETF 127 capture, validated two ways with libyang 6.4.13 and the router's YANG library 2338653103.
 It shows what the edit value should be validated against, and which payload should pass.
 
+## Read first
+
+1. **The edit.** A push-change-update carries YANG Patch edits ([RFC 8641](https://www.rfc-editor.org/rfc/rfc8641), [RFC 8072](https://www.rfc-editor.org/rfc/rfc8072)). Each edit has a `target`, here one interface entry, and a `value`, which holds only that entry, not a tree from the root. See `edit.json`.
+2. **Names in JSON.** At the top of a tree a member name carries its module, `ietf-interfaces:interface`. Below a node of the same module it does not ([RFC 7951, section 4](https://www.rfc-editor.org/rfc/rfc7951#section-4)). The router sends `interface` without the module.
+3. **The anchor.** [draft-netana-netmod-yang-anydata-validation-00](https://datatracker.ietf.org/doc/draft-netana-netmod-yang-anydata-validation/), sections 3.3 and 4.3.2: the value is read as a child of the target's parent, here `/ietf-interfaces:interfaces`. There the plain name `interface` is correct.
+4. **The library.** The value uses the identity `iana-if-type:ethernetCsmacd`. It resolves only when the YANG library lists `iana-if-type` as implemented ([RFC 8525](https://www.rfc-editor.org/rfc/rfc8525)). The router's library 2338653103 does.
+
+With 1 to 3, check A against check B below answers the question. Point 4 is why B passes with this library.
+
 ## Run it
 
 With mise on macOS:
