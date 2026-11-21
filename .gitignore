@@ -6,3 +6,6 @@ __pycache__/
 _bmad-output/
 _bmad/
 openspec/
+
+# macOS
+.DS_Store
