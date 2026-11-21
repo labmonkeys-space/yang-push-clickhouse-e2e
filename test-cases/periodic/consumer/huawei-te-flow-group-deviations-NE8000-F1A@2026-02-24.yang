@@ -1,0 +1,68 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-te-flow-group-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-te-flow-group-deviations-NE8000-F1A";
+  prefix teflowgroup-devs-NE8000-F1A;
+
+  import huawei-te-flow-group {
+    prefix teflowgroup;
+  }
+  import huawei-srv6 {
+    prefix srv6;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-te-flow-group module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:mapping-policys/teflowgroup:mapping-policy/teflowgroup:restrict-ipv6-prefix" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:locators" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:te-flow-groups/teflowgroup:te-flow-group/teflowgroup:disable-auto-select-default" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:te-flow-groups/teflowgroup:te-flow-group/teflowgroup:strict-match-enable" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:te-flow-groups/teflowgroup:te-flow-group/teflowgroup:binding-sids" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:te-flow-groups/teflowgroup:te-flow-group/teflowgroup:apn-id-ipv6-maps" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:running-flow-groups/teflowgroup:running-flow-group/teflowgroup:binding-sids" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:running-flow-groups/teflowgroup:running-flow-group/teflowgroup:flow-maps/teflowgroup:flow-map/teflowgroup:policy-endpoint" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:flow-group-down-reasons/teflowgroup:flow-group-down-reason/teflowgroup:binding-sids" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/teflowgroup:teflowgroup/teflowgroup:flow-group-down-reasons/teflowgroup:flow-group-down-reason/teflowgroup:flow-maps/teflowgroup:flow-map/teflowgroup:policy-endpoint" {
+    deviate not-supported;
+  }
+}
+
+  

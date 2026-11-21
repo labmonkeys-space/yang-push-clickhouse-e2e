@@ -1,0 +1,2517 @@
+/*
+Copyright (C) 2019-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-fm {
+  namespace "urn:huawei:yang:huawei-fm";
+  prefix fm;
+  
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-snmp {
+    prefix snmp;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  import huawei-extension {
+    prefix ext;
+  }  
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Fault management module.";
+
+  revision 2026-06-17 {
+    description
+      "Introduce type and object-type attributes to the active-alarm list for enhanced alarm filtering and classification.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-10-24 {
+    description
+      "Add rpc.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-11-14 {
+    description
+      "Add active alarm reason, active and historical alarm's description, alarms operation limit.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-01-25 {
+    description
+      "Modity node-ref.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-06-04 {
+    description
+      "Add rpc and modify information of fm containers.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-01-20 {
+    description
+      "Modity fm.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-12-10 {
+    description
+      "Add host.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-10-26 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  typedef severity-level {
+    type enumeration {
+      enum "critical" {
+        value 1;
+        description
+          "Critical alarm.";
+      }
+      enum "major" {
+        value 2;
+        description
+          "Major alarm.";
+      }
+      enum "minor" {
+        value 3;
+        description
+          "Minor alarm.";
+      }
+      enum "warning" {
+        value 4;
+        description
+          "Warning alarm.";
+      }
+    }
+    description
+      "The type of severity level.";
+  }
+  typedef enable-flag {
+    type enumeration {
+      enum "false" {
+        value 2;
+        description
+          "Disabled status.";
+      }
+      enum "true" {
+        value 1;
+        description
+          "Enabled status.";
+      }
+    }
+    description
+      "Enable or disable.";
+  }
+  typedef trap-status {
+    type enumeration {
+      enum "on" {
+        value 1;
+        description
+          "Whether traps are enabled.";
+      }
+      enum "off" {
+        value 0;
+        description
+          "Whether traps are disabled.";
+      }
+    }
+    description
+      "The type of trap status.";
+  }
+  typedef rootcause-indication {
+    type enumeration {
+      enum "independent" {
+        value 3;
+        description
+          "Independent alarm.";
+      }
+      enum "root-cause" {
+        value 2;
+        description
+          "Root alarm.";
+      }
+      enum "non-root-cause" {
+        value 1;
+        description
+          "Correlative alarm.";
+      }
+    }
+    description
+      "The type of root cause indication.";
+  }
+  typedef inverse-mode-type {
+    type enumeration {
+      enum "forbid-reverse" {
+        value 0;
+        description
+          "Forbid reversion.";
+      }
+      enum "auto-resume" {
+        value 1;
+        description
+          "Automatic reversion resumption.";
+      }
+      enum "manual-resume" {
+        value 2;
+        description
+          "Manual reversion resumption.";
+      }
+    }
+    description
+      "The type of inverse mode.";
+  }
+  typedef inverse-status {
+    type enumeration {
+      enum "on" {
+        value 1;
+        description
+          "Inverse status is on.";
+      }
+      enum "off" {
+        value 0;
+        description
+          "Inverse status is off.";
+      }
+    }
+    description
+      "The type of inverse status.";
+  }
+  typedef devm-mask-type {
+    type enumeration {
+      enum "board" {
+        value 1;
+        description
+          "Mask type is board.";
+      }
+      enum "card" {
+        value 2;
+        description
+          "Mask type is card.";
+      }
+    }
+    description
+      "The type of device.";
+  }
+  typedef addres-type {
+    type enumeration {
+      enum "ipv4" {
+        value 1;
+        description
+          "The address type is IPv4.";
+      }
+      enum "ipv6" {
+        value 2;
+        description
+          "The address type is IPv6.";
+      }
+    }
+    description
+      "The type of IP address.";
+  }
+  typedef global-trapstatus-type {
+    type enumeration {
+      enum "disable" {
+        value 0;
+        description
+          "Trap status is disable.";
+      }
+      enum "enable" {
+        value 1;
+        description
+          "Trap status is enable.";
+      }
+      enum "default" {
+        value 2;
+        description
+          "Default value.";
+      }
+    }
+    description
+      "The type of trap status.";
+  }
+  typedef host-enable-flag {
+    type enumeration {
+      enum "false" {
+        value 2;
+        description
+          "Host status is off.";
+      }
+      enum "true" {
+        value 1;
+        description
+          "Host status is on.";
+      }
+    }
+    description
+      "The type of trap status.";
+  }
+  typedef auxiliary-type {
+    type enumeration {
+      enum "normal" {
+        value 1;
+        description
+          "Normal Alarm.";
+      }
+      enum "reversed" {
+        value 2;
+        description
+          "Reversed Alarm.";
+      }
+      enum "non-report" {
+        value 3;
+        description
+          "NonReport Alarm.";
+      }
+      enum "non-root" {
+        value 4;
+        description
+          "NonRoot Alarm.";
+      }
+    }
+    description
+      "The type of auxiliary.";
+  }
+  typedef address-family-type {
+    type enumeration {
+      enum "ipv4" {
+        value 1;
+        description
+          "The address type is IPv4.";
+      }
+      enum "ipv6" {
+        value 2;
+        description
+          "The address type is IPv6.";
+      }
+    }
+    description
+      "The type of IP address.";
+  }
+  typedef alarm-type {
+    type enumeration {
+      enum "communication" {
+        value 1;
+        description
+          "The alarm type is communication.";
+      }
+      enum "quality-of-service" {
+        value 2;
+        description
+          "The alarm type is quality-of-service.";
+      }
+      enum "processing-error" {
+        value 3;
+        description
+          "The alarm type is processing-error.";
+      }
+      enum "equipment" {
+        value 4;
+        description
+          "The alarm type is equipment.";
+      }
+      enum "environment" {
+        value 5;
+        description
+          "The alarm type is environment.";
+      }
+      enum "power" {
+        value 6;
+        description
+          "The alarm type is power.";
+      }
+      enum "signaling" {
+        value 7;
+        description
+          "The alarm type is signaling.";
+      }
+      enum "trunk" {
+        value 8;
+        description
+          "The alarm type is trunk.";
+      }
+      enum "software" {
+        value 9;
+        description
+          "The alarm type is software.";
+      }
+      enum "running" {
+        value 10;
+        description
+          "The alarm type is running.";
+      }
+      enum "omcinside" {
+        value 11;
+        description
+          "The alarm type is omcinside.";
+      }
+      enum "integrity-violation" {
+        value 12;
+        description
+          "The alarm type is integrity-violation.";
+      }
+      enum "operation-violation" {
+        value 13;
+        description
+          "The alarm type is operation-violation.";
+      }
+      enum "physical-violation" {
+        value 14;
+        description
+          "The alarm type is physical-violation.";
+      }
+      enum "security-or-mech-violation" {
+        value 15;
+        description
+          "The alarm type is security-or-mech-violation.";
+      }
+      enum "time-domain-violation" {
+        value 16;
+        description
+          "The alarm type is time-domain-violation.";
+      }
+    }
+    description
+      "Alarm type of an alarm.";
+  }
+  typedef alarm-object-type {
+    type enumeration {
+      enum "bgp-peer" {
+        value 1;
+        description
+          "The alarm object type is bgp-peer.";
+      }
+      enum "bgp-instance" {
+        value 2;
+        description
+          "The alarm object type is bgp-instance.";
+      }
+      enum "isis-instance" {
+        value 3;
+        description
+          "The alarm object type is isis-instance.";
+      }
+      enum "isis-peer" {
+        value 4;
+        description
+          "The alarm object type is isis-peer.";
+      }
+      enum "ospf-peer" {
+        value 5;
+        description
+          "The alarm object type is ospf-peer.";
+      }
+      enum "ospf-instance" {
+        value 6;
+        description
+          "The alarm object type is ospf-instance.";
+      }
+      enum "ospfv3-peer" {
+        value 7;
+        description
+          "The alarm object type is ospfv3-peer.";
+      }
+      enum "ospfv3-instance" {
+        value 8;
+        description
+          "The alarm object type is ospfv3-instance.";
+      }
+      enum "static-lsp" {
+        value 9;
+        description
+          "The alarm object type is static-lsp.";
+      }
+      enum "staticcr-lsp" {
+        value 10;
+        description
+          "The alarm object type is staticcr-lsp.";
+      }
+      enum "ldp-session" {
+        value 11;
+        description
+          "The alarm object type is ldp-session.";
+      }
+      enum "tunnel" {
+        value 12;
+        description
+          "The alarm object type is tunnel.";
+      }
+      enum "msdp-peer" {
+        value 13;
+        description
+          "The alarm object type is msdp-peer.";
+      }
+      enum "msdp-instance" {
+        value 14;
+        description
+          "The alarm object type is msdp-instance.";
+      }
+      enum "pim-peer" {
+        value 15;
+        description
+          "The alarm object type is pim-peer.";
+      }
+      enum "pim-instance" {
+        value 16;
+        description
+          "The alarm object type is pim-instance.";
+      }
+      enum "pim-routing-table" {
+        value 17;
+        description
+          "The alarm object type is pim-routing-table.";
+      }
+      enum "igmp-routing-table" {
+        value 18;
+        description
+          "The alarm object type is igmp-routing-table.";
+      }
+      enum "l3vpn" {
+        value 19;
+        description
+          "The alarm object type is l3vpn.";
+      }
+      enum "vpn-instance" {
+        value 20;
+        description
+          "The alarm object type is vpn-instance.";
+      }
+      enum "rrpp-ringprotectiongroup" {
+        value 21;
+        description
+          "The alarm object type is rrpp-ringprotectiongroup.";
+      }
+      enum "interface" {
+        value 22;
+        description
+          "The alarm object type is interface.";
+      }
+      enum "fr-pvc" {
+        value 23;
+        description
+          "The alarm object type is fr-pvc.";
+      }
+      enum "mc-trunk" {
+        value 24;
+        description
+          "The alarm object type is mc-trunk.";
+      }
+      enum "bfd-session" {
+        value 25;
+        description
+          "The alarm object type is bfd-session.";
+      }
+      enum "bfd-sessionnumber" {
+        value 26;
+        description
+          "The alarm object type is bfd-sessionnumber.";
+      }
+      enum "ethernet-link" {
+        value 27;
+        description
+          "The alarm object type is ethernet-link.";
+      }
+      enum "l2multicast-forwardingtable" {
+        value 28;
+        description
+          "The alarm object type is l2multicast-forwardingtable.";
+      }
+      enum "macaddrratio" {
+        value 29;
+        description
+          "The alarm object type is macaddrratio.";
+      }
+      enum "fib" {
+        value 30;
+        description
+          "The alarm object type is fib.";
+      }
+      enum "cccvc" {
+        value 31;
+        description
+          "The alarm object type is cccvc.";
+      }
+      enum "kompellavc" {
+        value 32;
+        description
+          "The alarm object type is kompellavc.";
+      }
+      enum "pwvc" {
+        value 33;
+        description
+          "The alarm object type is pwvc.";
+      }
+      enum "svc" {
+        value 34;
+        description
+          "The alarm object type is svc.";
+      }
+      enum "vplsvc" {
+        value 35;
+        description
+          "The alarm object type is vplsvc.";
+      }
+      enum "vplsvsi" {
+        value 36;
+        description
+          "The alarm object type is vplsvsi.";
+      }
+      enum "l2multicast-protectiongroup" {
+        value 37;
+        description
+          "The alarm object type is l2multicast-protectiongroup.";
+      }
+      enum "netstreamindex" {
+        value 38;
+        description
+          "The alarm object type is netstreamindex.";
+      }
+      enum "l2multicast-group" {
+        value 39;
+        description
+          "The alarm object type is l2multicast-group.";
+      }
+      enum "collectionfile" {
+        value 40;
+        description
+          "The alarm object type is collectionfile.";
+      }
+      enum "device" {
+        value 41;
+        description
+          "The alarm object type is device.";
+      }
+      enum "license" {
+        value 42;
+        description
+          "The alarm object type is license.";
+      }
+      enum "packetstatistics" {
+        value 43;
+        description
+          "The alarm object type is packetstatistics.";
+      }
+      enum "port" {
+        value 44;
+        description
+          "The alarm object type is port.";
+      }
+      enum "link-layer" {
+        value 45;
+        description
+          "The alarm object type is link-layer.";
+      }
+      enum "portstatistic" {
+        value 46;
+        description
+          "The alarm object type is portstatistic.";
+      }
+      enum "storage-medium" {
+        value 47;
+        description
+          "The alarm object type is storage-medium.";
+      }
+      enum "devicelinklayer" {
+        value 48;
+        description
+          "The alarm object type is devicelinklayer.";
+      }
+      enum "cbqos" {
+        value 49;
+        description
+          "The alarm object type is cbqos.";
+      }
+      enum "radius" {
+        value 50;
+        description
+          "The alarm object type is radius.";
+      }
+      enum "boardslink" {
+        value 51;
+        description
+          "The alarm object type is boardslink.";
+      }
+      enum "addresspool" {
+        value 52;
+        description
+          "The alarm object type is addresspool.";
+      }
+      enum "dhcp" {
+        value 53;
+        description
+          "The alarm object type is dhcp.";
+      }
+      enum "mactableitem" {
+        value 54;
+        description
+          "The alarm object type is mactableitem.";
+      }
+      enum "cfcard" {
+        value 55;
+        description
+          "The alarm object type is cfcard.";
+      }
+      enum "charging" {
+        value 56;
+        description
+          "The alarm object type is charging.";
+      }
+      enum "frame" {
+        value 57;
+        description
+          "The alarm object type is frame.";
+      }
+      enum "board" {
+        value 58;
+        description
+          "The alarm object type is board.";
+      }
+      enum "card" {
+        value 59;
+        description
+          "The alarm object type is card.";
+      }
+      enum "optical-module" {
+        value 60;
+        description
+          "The alarm object type is optical-module.";
+      }
+      enum "power" {
+        value 61;
+        description
+          "The alarm object type is power.";
+      }
+      enum "fan" {
+        value 62;
+        description
+          "The alarm object type is fan.";
+      }
+      enum "lcd" {
+        value 63;
+        description
+          "The alarm object type is lcd.";
+      }
+      enum "cmu" {
+        value 64;
+        description
+          "The alarm object type is cmu.";
+      }
+      enum "channel" {
+        value 65;
+        description
+          "The alarm object type is channel.";
+      }
+      enum "environment" {
+        value 66;
+        description
+          "The alarm object type is environment.";
+      }
+      enum "forwarding-engine" {
+        value 67;
+        description
+          "The alarm object type is forwarding-engine.";
+      }
+      enum "patch" {
+        value 68;
+        description
+          "The alarm object type is patch.";
+      }
+      enum "cpu" {
+        value 69;
+        description
+          "The alarm object type is cpu.";
+      }
+      enum "memory" {
+        value 70;
+        description
+          "The alarm object type is memory.";
+      }
+      enum "process" {
+        value 71;
+        description
+          "The alarm object type is process.";
+      }
+      enum "device-routing-table" {
+        value 72;
+        description
+          "The alarm object type is device-routing-table.";
+      }
+      enum "laser" {
+        value 73;
+        description
+          "The alarm object type is laser.";
+      }
+      enum "pw-oam" {
+        value 74;
+        description
+          "The alarm object type is pw-oam.";
+      }
+      enum "pw-aps" {
+        value 75;
+        description
+          "The alarm object type is pw-aps.";
+      }
+      enum "trunk" {
+        value 76;
+        description
+          "The alarm object type is trunk.";
+      }
+      enum "apstunnelgroup" {
+        value 77;
+        description
+          "The alarm object type is apstunnelgroup.";
+      }
+      enum "mpls-ring" {
+        value 78;
+        description
+          "The alarm object type is mpls-ring.";
+      }
+      enum "mep-rmep" {
+        value 79;
+        description
+          "The alarm object type is mep-rmep.";
+      }
+      enum "mep" {
+        value 80;
+        description
+          "The alarm object type is mep.";
+      }
+      enum "remote-device" {
+        value 81;
+        description
+          "The alarm object type is remote-device.";
+      }
+      enum "bfdsessiondown" {
+        value 82;
+        description
+          "The alarm object type is bfdsessiondown.";
+      }
+      enum "section-oam" {
+        value 83;
+        description
+          "The alarm object type is section-oam.";
+      }
+      enum "ne" {
+        value 84;
+        description
+          "The alarm object type is ne.";
+      }
+      enum "lmsp" {
+        value 85;
+        description
+          "The alarm object type is lmsp.";
+      }
+      enum "relay" {
+        value 86;
+        description
+          "The alarm object type is relay.";
+      }
+      enum "vc12" {
+        value 87;
+        description
+          "The alarm object type is vc12.";
+      }
+      enum "vc4" {
+        value 88;
+        description
+          "The alarm object type is vc4.";
+      }
+      enum "exttime" {
+        value 89;
+        description
+          "The alarm object type is exttime.";
+      }
+      enum "sysclock" {
+        value 90;
+        description
+          "The alarm object type is sysclock.";
+      }
+      enum "synsource" {
+        value 91;
+        description
+          "The alarm object type is synsource.";
+      }
+      enum "multi-chassis-protocol-channel" {
+        value 92;
+        description
+          "The alarm object type is multi-chassis-protocol-channel.";
+      }
+      enum "interface-linkevent" {
+        value 93;
+        description
+          "The alarm object type is interface-linkevent.";
+      }
+      enum "cespw" {
+        value 94;
+        description
+          "The alarm object type is cespw.";
+      }
+      enum "ethpw" {
+        value 95;
+        description
+          "The alarm object type is ethpw.";
+      }
+      enum "lag-member" {
+        value 96;
+        description
+          "The alarm object type is lag-member.";
+      }
+      enum "lag" {
+        value 97;
+        description
+          "The alarm object type is lag.";
+      }
+      enum "ptpport" {
+        value 98;
+        description
+          "The alarm object type is ptpport.";
+      }
+      enum "sdhport" {
+        value 99;
+        description
+          "The alarm object type is sdhport.";
+      }
+      enum "ethport" {
+        value 100;
+        description
+          "The alarm object type is ethport.";
+      }
+      enum "new-board" {
+        value 101;
+        description
+          "The alarm object type is new-board.";
+      }
+      enum "new-subcard" {
+        value 102;
+        description
+          "The alarm object type is new-subcard.";
+      }
+      enum "fei" {
+        value 103;
+        description
+          "The alarm object type is fei.";
+      }
+      enum "laser-group" {
+        value 104;
+        description
+          "The alarm object type is laser-group.";
+      }
+      enum "odu0-path" {
+        value 105;
+        description
+          "The alarm object type is odu0-path.";
+      }
+      enum "odu0-tcm1" {
+        value 106;
+        description
+          "The alarm object type is odu0-tcm1.";
+      }
+      enum "odu0-tcm2" {
+        value 107;
+        description
+          "The alarm object type is odu0-tcm2.";
+      }
+      enum "odu0-tcm3" {
+        value 108;
+        description
+          "The alarm object type is odu0-tcm3.";
+      }
+      enum "odu0-tcm4" {
+        value 109;
+        description
+          "The alarm object type is odu0-tcm4.";
+      }
+      enum "odu0-tcm5" {
+        value 110;
+        description
+          "The alarm object type is odu0-tcm5.";
+      }
+      enum "odu0-tcm6" {
+        value 111;
+        description
+          "The alarm object type is odu0-tcm6.";
+      }
+      enum "odu1-path" {
+        value 112;
+        description
+          "The alarm object type is odu1-path.";
+      }
+      enum "odu1-tcm1" {
+        value 113;
+        description
+          "The alarm object type is odu1-tcm1.";
+      }
+      enum "odu1-tcm2" {
+        value 114;
+        description
+          "The alarm object type is odu1-tcm2.";
+      }
+      enum "odu1-tcm3" {
+        value 115;
+        description
+          "The alarm object type is odu1-tcm3.";
+      }
+      enum "odu1-tcm4" {
+        value 116;
+        description
+          "The alarm object type is odu1-tcm4.";
+      }
+      enum "odu1-tcm5" {
+        value 117;
+        description
+          "The alarm object type is odu1-tcm5.";
+      }
+      enum "odu1-tcm6" {
+        value 118;
+        description
+          "The alarm object type is odu1-tcm6.";
+      }
+      enum "odu2-path" {
+        value 119;
+        description
+          "The alarm object type is odu2-path.";
+      }
+      enum "odu2-tcm1" {
+        value 120;
+        description
+          "The alarm object type is odu2-tcm1.";
+      }
+      enum "odu2-tcm2" {
+        value 121;
+        description
+          "The alarm object type is odu2-tcm2.";
+      }
+      enum "odu2-tcm3" {
+        value 122;
+        description
+          "The alarm object type is odu2-tcm3.";
+      }
+      enum "odu2-tcm4" {
+        value 123;
+        description
+          "The alarm object type is odu2-tcm4.";
+      }
+      enum "odu2-tcm5" {
+        value 124;
+        description
+          "The alarm object type is odu2-tcm5.";
+      }
+      enum "odu2-tcm6" {
+        value 125;
+        description
+          "The alarm object type is odu2-tcm6.";
+      }
+      enum "odu3-path" {
+        value 126;
+        description
+          "The alarm object type is odu3-path.";
+      }
+      enum "odu3-tcm1" {
+        value 127;
+        description
+          "The alarm object type is odu3-tcm1.";
+      }
+      enum "odu3-tcm2" {
+        value 128;
+        description
+          "The alarm object type is odu3-tcm2.";
+      }
+      enum "odu3-tcm3" {
+        value 129;
+        description
+          "The alarm object type is odu3-tcm3.";
+      }
+      enum "odu3-tcm4" {
+        value 130;
+        description
+          "The alarm object type is odu3-tcm4.";
+      }
+      enum "odu3-tcm5" {
+        value 131;
+        description
+          "The alarm object type is odu3-tcm5.";
+      }
+      enum "odu3-tcm6" {
+        value 132;
+        description
+          "The alarm object type is odu3-tcm6.";
+      }
+      enum "odu4-path" {
+        value 133;
+        description
+          "The alarm object type is odu4-path.";
+      }
+      enum "odu4-tcm1" {
+        value 134;
+        description
+          "The alarm object type is odu4-tcm1.";
+      }
+      enum "odu4-tcm2" {
+        value 135;
+        description
+          "The alarm object type is odu4-tcm2.";
+      }
+      enum "odu4-tcm3" {
+        value 136;
+        description
+          "The alarm object type is odu4-tcm3.";
+      }
+      enum "odu4-tcm4" {
+        value 137;
+        description
+          "The alarm object type is odu4-tcm4.";
+      }
+      enum "odu4-tcm5" {
+        value 138;
+        description
+          "The alarm object type is odu4-tcm5.";
+      }
+      enum "odu4-tcm6" {
+        value 139;
+        description
+          "The alarm object type is odu4-tcm6.";
+      }
+      enum "oduflex-path" {
+        value 140;
+        description
+          "The alarm object type is oduflex-path.";
+      }
+      enum "oduflex-tcm1" {
+        value 141;
+        description
+          "The alarm object type is oduflex-tcm1.";
+      }
+      enum "oduflex-tcm2" {
+        value 142;
+        description
+          "The alarm object type is oduflex-tcm2.";
+      }
+      enum "oduflex-tcm3" {
+        value 143;
+        description
+          "The alarm object type is oduflex-tcm3.";
+      }
+      enum "oduflex-tcm4" {
+        value 144;
+        description
+          "The alarm object type is oduflex-tcm4.";
+      }
+      enum "oduflex-tcm5" {
+        value 145;
+        description
+          "The alarm object type is oduflex-tcm5.";
+      }
+      enum "oduflex-tcm6" {
+        value 146;
+        description
+          "The alarm object type is oduflex-tcm6.";
+      }
+      enum "otu1-path" {
+        value 147;
+        description
+          "The alarm object type is otu1-path.";
+      }
+      enum "otu2-path" {
+        value 148;
+        description
+          "The alarm object type is otu2-path.";
+      }
+      enum "otu3-path" {
+        value 149;
+        description
+          "The alarm object type is otu3-path.";
+      }
+      enum "otu4-path" {
+        value 150;
+        description
+          "The alarm object type is otu4-path.";
+      }
+      enum "sdh-path" {
+        value 151;
+        description
+          "The alarm object type is sdh-path.";
+      }
+      enum "shelf" {
+        value 152;
+        description
+          "The alarm object type is shelf.";
+      }
+      enum "accesspointnode" {
+        value 153;
+        description
+          "The alarm object type is accesspointnode.";
+      }
+      enum "masterpeer" {
+        value 154;
+        description
+          "The alarm object type is masterpeer.";
+      }
+      enum "virtualaccessinterface" {
+        value 155;
+        description
+          "The alarm object type is virtualaccessinterface.";
+      }
+      enum "virtualcircuit" {
+        value 156;
+        description
+          "The alarm object type is virtualcircuit.";
+      }
+      enum "virtualpath" {
+        value 157;
+        description
+          "The alarm object type is virtualpath.";
+      }
+      enum "virtualpathgroup" {
+        value 158;
+        description
+          "The alarm object type is virtualpathgroup.";
+      }
+      enum "sysclock-osn" {
+        value 159;
+        description
+          "The alarm object type is sysclock-osn.";
+      }
+      enum "synsource-osn" {
+        value 160;
+        description
+          "The alarm object type is synsource-osn.";
+      }
+      enum "synsource-obj" {
+        value 161;
+        description
+          "The alarm object type is synsource-obj.";
+      }
+      enum "sysclock-obj" {
+        value 162;
+        description
+          "The alarm object type is sysclock-obj.";
+      }
+      enum "otucn-path" {
+        value 163;
+        description
+          "The alarm object type is otucn-path.";
+      }
+      enum "oducn-path" {
+        value 164;
+        description
+          "The alarm object type is oducn-path.";
+      }
+      enum "s1ap-signaling-link" {
+        value 165;
+        description
+          "The alarm object type is s1ap-signaling-link.";
+      }
+      enum "diameter-link" {
+        value 166;
+        description
+          "The alarm object type is diameter-link.";
+      }
+      enum "diameter-router" {
+        value 167;
+        description
+          "The alarm object type is diameter-router.";
+      }
+      enum "diameter-peer" {
+        value 168;
+        description
+          "The alarm object type is diameter-peer.";
+      }
+      enum "diameter-linkset" {
+        value 169;
+        description
+          "The alarm object type is diameter-linkset.";
+      }
+      enum "gtpc-path" {
+        value 170;
+        description
+          "The alarm object type is gtpc-path.";
+      }
+      enum "enodeb" {
+        value 171;
+        description
+          "The alarm object type is enodeb.";
+      }
+      enum "trill-instance" {
+        value 172;
+        description
+          "The alarm object type is trill-instance.";
+      }
+      enum "sdh-optport" {
+        value 173;
+        description
+          "The alarm object type is sdh-optport.";
+      }
+      enum "new-laser" {
+        value 174;
+        description
+          "The alarm object type is new-laser.";
+      }
+      enum "data-processing-instance" {
+        value 175;
+        description
+          "The alarm object type is data-processing-instance.";
+      }
+      enum "uap" {
+        value 176;
+        description
+          "The alarm object type is uap.";
+      }
+      enum "vni" {
+        value 177;
+        description
+          "The alarm object type is vni.";
+      }
+      enum "ru" {
+        value 178;
+        description
+          "The alarm object type is ru.";
+      }
+      enum "iot-card" {
+        value 179;
+        description
+          "The alarm object type is iot-card.";
+      }
+      enum "cc" {
+        value 180;
+        description
+          "The alarm object type is cc.";
+      }
+      enum "wdm-lsp" {
+        value 181;
+        description
+          "The alarm object type is wdm-lsp.";
+      }
+      enum "node" {
+        value 182;
+        description
+          "The alarm object type is node.";
+      }
+      enum "ospf-cl" {
+        value 183;
+        description
+          "The alarm object type is ospf-cl.";
+      }
+      enum "ospf-nbr" {
+        value 184;
+        description
+          "The alarm object type is ospf-nbr.";
+      }
+      enum "rsvp-nbr" {
+        value 185;
+        description
+          "The alarm object type is rsvp-nbr.";
+      }
+      enum "wdm-service" {
+        value 186;
+        description
+          "The alarm object type is wdm-service.";
+      }
+      enum "tel-ochpath" {
+        value 187;
+        description
+          "The alarm object type is tel-ochpath.";
+      }
+      enum "tel-otnpath" {
+        value 188;
+        description
+          "The alarm object type is tel-otnpath.";
+      }
+      enum "tel" {
+        value 189;
+        description
+          "The alarm object type is tel.";
+      }
+      enum "oduk-spr" {
+        value 190;
+        description
+          "The alarm object type is oduk-spr.";
+      }
+      enum "sdh-node" {
+        value 191;
+        description
+          "The alarm object type is sdh-node.";
+      }
+      enum "sdh-service" {
+        value 192;
+        description
+          "The alarm object type is sdh-service.";
+      }
+      enum "sdh-lsp" {
+        value 193;
+        description
+          "The alarm object type is sdh-lsp.";
+      }
+      enum "per-cc" {
+        value 194;
+        description
+          "The alarm object type is per-cc.";
+      }
+      enum "sdh-tel" {
+        value 195;
+        description
+          "The alarm object type is sdh-tel.";
+      }
+      enum "tel-sdhpath" {
+        value 196;
+        description
+          "The alarm object type is tel-sdhpath.";
+      }
+      enum "sdh-msp" {
+        value 197;
+        description
+          "The alarm object type is sdh-msp.";
+      }
+      enum "network" {
+        value 198;
+        description
+          "The alarm object type is network.";
+      }
+      enum "pw" {
+        value 199;
+        description
+          "The alarm object type is pw.";
+      }
+      enum "vm" {
+        value 200;
+        description
+          "The alarm object type is vm.";
+      }
+      enum "l2vpn-uni" {
+        value 201;
+        description
+          "The alarm object type is l2vpn-uni.";
+      }
+      enum "l2vpn-nni" {
+        value 202;
+        description
+          "The alarm object type is l2vpn-nni.";
+      }
+      enum "evpn" {
+        value 203;
+        description
+          "The alarm object type is evpn.";
+      }
+      enum "vpws-protect-group" {
+        value 204;
+        description
+          "The alarm object type is vpws-protect-group.";
+      }
+      enum "vpls-protect-group" {
+        value 205;
+        description
+          "The alarm object type is vpls-protect-group.";
+      }
+      enum "qos-pwqueue" {
+        value 206;
+        description
+          "The alarm object type is qos-pwqueue.";
+      }
+      enum "qos-vuniqueue" {
+        value 207;
+        description
+          "The alarm object type is qos-vuniqueue.";
+      }
+      enum "qos-portqueue" {
+        value 208;
+        description
+          "The alarm object type is qos-portqueue.";
+      }
+      enum "qos-stream" {
+        value 209;
+        description
+          "The alarm object type is qos-stream.";
+      }
+      enum "service-access-point" {
+        value 210;
+        description
+          "The alarm object type is service-access-point.";
+      }
+      enum "vm-pae-oam" {
+        value 211;
+        description
+          "The alarm object type is vm-pae-oam.";
+      }
+      enum "erps-ring" {
+        value 212;
+        description
+          "The alarm object type is erps-ring.";
+      }
+      enum "erps-node" {
+        value 213;
+        description
+          "The alarm object type is erps-node.";
+      }
+      enum "dns-local-entity" {
+        value 214;
+        description
+          "The alarm object type is dns-local-entity.";
+      }
+      enum "dns-server" {
+        value 215;
+        description
+          "The alarm object type is dns-server.";
+      }
+      enum "vlr" {
+        value 216;
+        description
+          "The alarm object type is vlr.";
+      }
+      enum "sgs-link" {
+        value 217;
+        description
+          "The alarm object type is sgs-link.";
+      }
+      enum "lbnp-peer" {
+        value 218;
+        description
+          "The alarm object type is lbnp-peer.";
+      }
+      enum "va-pw" {
+        value 220;
+        description
+          "The alarm object type is va-pw.";
+      }
+      enum "lmsp-obj" {
+        value 221;
+        description
+          "The alarm object type is lmsp-obj.";
+      }
+      enum "resource-unit" {
+        value 222;
+        description
+          "The alarm object type is resource-unit.";
+      }
+      enum "process-position" {
+        value 223;
+        description
+          "The alarm object type is process-position.";
+      }
+      enum "license-feature" {
+        value 224;
+        description
+          "The alarm object type is license-feature.";
+      }
+      enum "service-node-resources" {
+        value 225;
+        description
+          "The alarm object type is service-node-resources.";
+      }
+      enum "path-state-information" {
+        value 226;
+        description
+          "The alarm object type is path-state-information.";
+      }
+      enum "cg-control" {
+        value 227;
+        description
+          "The alarm object type is cg-control.";
+      }
+      enum "ocs-control" {
+        value 228;
+        description
+          "The alarm object type is ocs-control.";
+      }
+      enum "pcrf-state" {
+        value 229;
+        description
+          "The alarm object type is pcrf-state.";
+      }
+      enum "inner-resource" {
+        value 230;
+        description
+          "The alarm object type is inner-resource.";
+      }
+      enum "parser-db-upgrade-state" {
+        value 231;
+        description
+          "The alarm object type is parser-db-upgrade-state.";
+      }
+      enum "service-filter-effective" {
+        value 232;
+        description
+          "The alarm object type is service-filter-effective.";
+      }
+      enum "ugw-function" {
+        value 233;
+        description
+          "The alarm object type is ugw-function.";
+      }
+      enum "spu-group-control" {
+        value 234;
+        description
+          "The alarm object type is spu-group-control.";
+      }
+      enum "prompt-information" {
+        value 235;
+        description
+          "The alarm object type is prompt-information.";
+      }
+      enum "apn-address-pool" {
+        value 236;
+        description
+          "The alarm object type is apn-address-pool.";
+      }
+      enum "virtual-access-tunnel" {
+        value 237;
+        description
+          "The alarm object type is virtual-access-tunnel.";
+      }
+      enum "openflow-connection" {
+        value 238;
+        description
+          "The alarm object type is openflow-connection.";
+      }
+      enum "pcep-session" {
+        value 239;
+        description
+          "The alarm object type is pcep-session.";
+      }
+      enum "fast-reroute" {
+        value 240;
+        description
+          "The alarm object type is fast-reroute.";
+      }
+      enum "tnlecmp-group" {
+        value 241;
+        description
+          "The alarm object type is tnlecmp-group.";
+      }
+      enum "tnlecmp-member" {
+        value 242;
+        description
+          "The alarm object type is tnlecmp-member.";
+      }
+      enum "sncp-obj" {
+        value 243;
+        description
+          "The alarm object type is sncp-obj.";
+      }
+      enum "forward-resource" {
+        value 244;
+        description
+          "The alarm object type is forward-resource.";
+      }
+      enum "tpm" {
+        value 245;
+        description
+          "The alarm object type is tpm.";
+      }
+      enum "logfile" {
+        value 246;
+        description
+          "The alarm object type is logfile.";
+      }
+      enum "plugin" {
+        value 247;
+        description
+          "The alarm object type is plugin.";
+      }
+      enum "ptp-pkt-los-obj" {
+        value 248;
+        description
+          "The alarm object type is ptp-pkt-los-obj.";
+      }
+      enum "m3ua-destination-entity" {
+        value 249;
+        description
+          "The alarm object type is m3ua-destination-entity.";
+      }
+      enum "m3ua-signaling-link" {
+        value 250;
+        description
+          "The alarm object type is m3ua-signaling-link.";
+      }
+      enum "m3ua-signaling-route" {
+        value 251;
+        description
+          "The alarm object type is m3ua-signaling-route.";
+      }
+      enum "nse-signaling-entity" {
+        value 252;
+        description
+          "The alarm object type is nse-signaling-entity.";
+      }
+      enum "ip-nsvc" {
+        value 253;
+        description
+          "The alarm object type is ip-nsvc.";
+      }
+      enum "rnc" {
+        value 254;
+        description
+          "The alarm object type is rnc.";
+      }
+      enum "sccp-dsp" {
+        value 255;
+        description
+          "The alarm object type is sccp-dsp.";
+      }
+      enum "sccp-subsystem" {
+        value 256;
+        description
+          "The alarm object type is sccp-subsystem.";
+      }
+      enum "usn-function" {
+        value 257;
+        description
+          "The alarm object type is usn-function.";
+      }
+      enum "gtpu-path" {
+        value 258;
+        description
+          "The alarm object type is gtpu-path.";
+      }
+      enum "ta" {
+        value 259;
+        description
+          "The alarm object type is ta.";
+      }
+      enum "ip-farm" {
+        value 260;
+        description
+          "The alarm object type is ip-farm.";
+      }
+      enum "ip-farm-server" {
+        value 261;
+        description
+          "The alarm object type is ip-farm-server.";
+      }
+      enum "cslb-service" {
+        value 262;
+        description
+          "The alarm object type is cslb-service.";
+      }
+      enum "dns-link" {
+        value 263;
+        description
+          "The alarm object type is dns-link.";
+      }
+      enum "cg-function" {
+        value 264;
+        description
+          "The alarm object type is cg-function.";
+      }
+      enum "udr-link" {
+        value 265;
+        description
+          "The alarm object type is udr-link.";
+      }
+      enum "report-server" {
+        value 266;
+        description
+          "The alarm object type is report-server.";
+      }
+      enum "fp" {
+        value 267;
+        description
+          "The alarm object type is fp.";
+      }
+      enum "hlr" {
+        value 268;
+        description
+          "The alarm object type is hlr.";
+      }
+      enum "sdh-vc3path" {
+        value 269;
+        description
+          "The alarm object type is sdh-vc3path.";
+      }
+      enum "sdh-vc12path" {
+        value 270;
+        description
+          "The alarm object type is sdh-vc12path.";
+      }
+      enum "disk-partition" {
+        value 272;
+        description
+          "The alarm object type is disk-partition.";
+      }
+      enum "lpt-interface" {
+        value 273;
+        description
+          "The alarm object type is lpt-interface.";
+      }
+      enum "software-package" {
+        value 275;
+        description
+          "The alarm object type is software-package.";
+      }
+      enum "auto-cfg-service" {
+        value 276;
+        description
+          "The alarm object type is auto-cfg-service.";
+      }
+      enum "localuser" {
+        value 277;
+        description
+          "The alarm object type is localuser.";
+      }
+      enum "rbs-channel" {
+        value 278;
+        description
+          "The alarm object type is rbs-channel.";
+      }
+      enum "flexe-interface" {
+        value 279;
+        description
+          "The alarm object type is flexe-interface.";
+      }
+      enum "sub-if-channel" {
+        value 280;
+        description
+          "The alarm object type is sub-if-channel.";
+      }
+      enum "dcn-phy-interface" {
+        value 281;
+        description
+          "The alarm object type is dcn-phy-interface.";
+      }
+      enum "tunnel-resource" {
+        value 282;
+        description
+          "The alarm object type is tunnel-resource.";
+      }
+      enum "lcsap-link-configuration" {
+        value 283;
+        description
+          "The alarm object type is lcsap-link-configuration.";
+      }
+      enum "slslink" {
+        value 284;
+        description
+          "The alarm object type is slslink.";
+      }
+      enum "customer-edge" {
+        value 285;
+        description
+          "The alarm object type is customer-edge.";
+      }
+      enum "certificate" {
+        value 286;
+        description
+          "The alarm object type is certificate.";
+      }
+      enum "af-db-upgrade-state" {
+        value 287;
+        description
+          "The alarm object type is af-db-upgrade-state.";
+      }
+      enum "sbcap-link" {
+        value 288;
+        description
+          "The alarm object type is sbcap-link.";
+      }
+      enum "m3ap-link" {
+        value 289;
+        description
+          "The alarm object type is m3ap-link.";
+      }
+      enum "mvno-resource" {
+        value 290;
+        description
+          "The alarm object type is mvno-resource.";
+      }
+      enum "etree-leaf-aps-group" {
+        value 291;
+        description
+          "The alarm object type is etree-leaf-aps-group.";
+      }
+      enum "sdup-link" {
+        value 292;
+        description
+          "The alarm object type is sdup-link.";
+      }
+      enum "redundancy-usn" {
+        value 293;
+        description
+          "The alarm object type is redundancy-usn.";
+      }
+      enum "mcr-function" {
+        value 294;
+        description
+          "The alarm object type is mcr-function.";
+      }
+      enum "rsvpte-nbr" {
+        value 295;
+        description
+          "The alarm object type is rsvpte-nbr.";
+      }
+      enum "gve-vlan-pair" {
+        value 296;
+        description
+          "The alarm object type is gve-vlan-pair.";
+      }
+      enum "wdmport" {
+        value 297;
+        description
+          "The alarm object type is wdmport.";
+      }
+      enum "rmsp-obj" {
+        value 298;
+        description
+          "The alarm object type is rmsp-obj.";
+      }
+      enum "tm-tunnel-path" {
+        value 299;
+        description
+          "The alarm object type is tm-tunnel-path.";
+      }
+      enum "laser-lane" {
+        value 300;
+        description
+          "The alarm object type is laser-lane.";
+      }
+      enum "tetheringdatabase-loading-state" {
+        value 301;
+        description
+          "The alarm object type is tetheringdatabase-loading-state.";
+      }
+      enum "resource" {
+        value 302;
+        description
+          "The alarm object type is resource.";
+      }
+      enum "external-database-loading-state" {
+        value 303;
+        description
+          "The alarm object type is external-database-loading-state.";
+      }
+      enum "esa-state" {
+        value 304;
+        description
+          "The alarm object type is esa-state.";
+      }
+      enum "servicedbstate" {
+        value 305;
+        description
+          "The alarm object type is servicedbstate.";
+      }
+      enum "flexeaps-group" {
+        value 307;
+        description
+          "The alarm object type is flexeaps-group.";
+      }
+      enum "rugroup" {
+        value 308;
+        description
+          "The alarm object type is rugroup.";
+      }
+      enum "flexechannel-obj" {
+        value 309;
+        description
+          "The alarm object type is flexechannel-obj.";
+      }
+      enum "electservice" {
+        value 310;
+        description
+          "The alarm object type is electservice.";
+      }
+      enum "evpn-instance" {
+        value 311;
+        description
+          "The alarm object type is evpn-instance.";
+      }
+      enum "base-plane-link" {
+        value 312;
+        description
+          "The alarm object type is base-plane-link.";
+      }
+      enum "registrydiscoveyservice" {
+        value 313;
+        description
+          "The alarm object type is registrydiscoveyservice.";
+      }
+      enum "oducn-tcm1" {
+        value 315;
+        description
+          "The alarm object type is oducn-tcm1.";
+      }
+      enum "oducn-tcm2" {
+        value 316;
+        description
+          "The alarm object type is oducn-tcm2.";
+      }
+      enum "oducn-tcm3" {
+        value 317;
+        description
+          "The alarm object type is oducn-tcm3.";
+      }
+      enum "oducn-tcm4" {
+        value 318;
+        description
+          "The alarm object type is oducn-tcm4.";
+      }
+      enum "oducn-tcm5" {
+        value 319;
+        description
+          "The alarm object type is oducn-tcm5.";
+      }
+      enum "oducn-tcm6" {
+        value 320;
+        description
+          "The alarm object type is oducn-tcm6.";
+      }
+      enum "fast-reroute-slot" {
+        value 322;
+        description
+          "The alarm object type is fast-reroute-slot.";
+      }
+      enum "flexe-group" {
+        value 323;
+        description
+          "The alarm object type is flexe-group.";
+      }
+      enum "bier-routing-table" {
+        value 324;
+        description
+          "The alarm object type is bier-routing-table.";
+      }
+      enum "sr-policy" {
+        value 325;
+        description
+          "The alarm object type is sr-policy.";
+      }
+      enum "oas-application" {
+        value 326;
+        description
+          "The alarm object type is oas-application.";
+      }
+      enum "securityrisk" {
+        value 327;
+        description
+          "The alarm object type is securityrisk.";
+      }
+      enum "new-flexe-group-obj" {
+        value 328;
+        description
+          "The alarm object type is new-flexe-group-obj.";
+      }
+      enum "tel-flex-ochpath" {
+        value 329;
+        description
+          "The alarm object type is tel-flex-ochpath.";
+      }
+      enum "new-ethport-obj" {
+        value 330;
+        description
+          "The alarm object type is new-ethport-obj.";
+      }
+      enum "flood-traffic" {
+        value 331;
+        description
+          "The alarm object type is flood-traffic.";
+      }
+      enum "mdns-gateway-record" {
+        value 333;
+        description
+          "The alarm object type is mdns-gateway-record.";
+      }
+      enum "fg-path-obj" {
+        value 334;
+        description
+          "The alarm object type is fg-path-obj.";
+      }
+      enum "fg-aps-obj" {
+        value 335;
+        description
+          "The alarm object type is fg-aps-obj.";
+      }
+      enum "fg-client-obj" {
+        value 336;
+        description
+          "The alarm object type is fg-client-obj.";
+      }
+      enum "dcn-serial-interface" {
+        value 337;
+        description
+          "The alarm object type is dcn-serial-interface.";
+      }
+      enum "tunnel-oam-obj" {
+        value 338;
+        description
+          "The alarm object type is tunnel-oam-obj.";
+      }
+      enum "pw-oam-obj" {
+        value 339;
+        description
+          "The alarm object type is pw-oam-obj.";
+      }
+      enum "fg-group-obj" {
+        value 340;
+        description
+          "The alarm object type is fg-group-obj.";
+      }
+      enum "up-backup-group" {
+        value 341;
+        description
+          "The alarm object type is up-backup-group.";
+      }
+      enum "fg-sncp-obj" {
+        value 342;
+        description
+          "The alarm object type is fg-sncp-obj.";
+      }
+      enum "dldp-neighbornumber" {
+        value 343;
+        description
+          "The alarm object type is dldp-neighbornumber.";
+      }
+      enum "l2multicast-oif" {
+        value 344;
+        description
+          "The alarm object type is l2multicast-oif.";
+      }
+      enum "ecgw-family-user" {
+        value 346;
+        description
+          "The alarm object type is ecgw-family-user.";
+      }
+      enum "lldp-peer" {
+        value 348;
+        description
+          "The alarm object type is lldp-peer.";
+      }
+      enum "lac-session" {
+        value 349;
+        description
+          "The alarm object type is lac-session.";
+      }
+      enum "eai-fault-preception-board" {
+        value 350;
+        description
+          "The alarm object type is eai-fault-preception-board.";
+      }
+      enum "eai-fault-preception-port" {
+        value 351;
+        description
+          "The alarm object type is eai-fault-preception-port.";
+      }
+      enum "liquid" {
+        value 352;
+        description
+          "The alarm object type is liquid.";
+      }
+      enum "oas-software-package" {
+        value 353;
+        description
+          "The alarm object type is oas-software-package.";
+      }
+      enum "ad-sso-server" {
+        value 360;
+        description
+          "The alarm object type is ad-sso-server.";
+      }
+    }
+    description
+      "Alarm object type of an alarm.";
+  }
+  ext:task-name  "fault-mgr";
+  container fm {
+    description
+      "Fault management module.";
+    container global {
+      description
+        "Configure the global parameters.";
+      leaf correlation-enable {
+        type boolean;
+        default "false";
+        description
+          "Enable/disable alarm correlation analysis.";
+      }
+      leaf inverse-mode {
+        type inverse-mode-type;
+        default "forbid-reverse";
+        description
+          "Alarm reversion mode, which can be Forbid Reversion, Auto Resume, or Manual Resume.";
+      }
+      leaf history-record-mode {
+        type boolean;
+        default "true";
+        description
+          "Enable/disable wrap historical alarm records.";
+      }
+      leaf trap-switch {
+        type global-trapstatus-type;
+        default "default";
+        description
+          "Trap switch.";
+      }
+      leaf suppress-enable {
+        type boolean;
+        default "true";
+        description
+          "Enable/disable alarm suppression.";
+      }
+    }
+    container inverse-ports {
+      description
+        "List of alarm reversion ports.";
+      list inverse-port {
+        key "port-position";
+        description
+          "Configure the alarm reversion port.";
+        leaf port-position {
+          type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+          }
+          must "((../../../global/inverse-mode='forbid-reverse' and ../state='off') or (../../../global/inverse-mode!='forbid-reverse') )";
+          description
+            "Name of a physical port.";
+        }
+        leaf state {
+          type inverse-status;
+          default "off";
+          description
+            "Reversion status.";
+        }
+      }
+    }
+    container traps {
+      description
+        "List of the settings of the NMS host.";
+      list trap {
+        ext:generated-by "system";
+        key "trap-name feature-name";
+        description
+          "Configure the trap.";
+        ext:operation-exclude create;
+        leaf trap-name {
+          type string {
+            length "1..63";
+          }
+          description
+            "Name of a trap.";
+        }
+        leaf feature-name {
+          type string {
+            length "1..32";
+          }
+          description
+            "Module to which a trap belongs.";
+        }
+          leaf trap-cfg-status {
+          type trap-status;
+          ext:dynamic-default;
+          description
+            "Configured trap enabling status.";
+        }
+      }
+    }
+    container alarms {
+      description
+        "List of alarm configuration query.";
+      list alarm {
+	    ext:generated-by "system";
+        ext:operation-exclude create;
+        key "alarm-name";
+        description
+          "Configure the alarm."; 
+        leaf alarm-name {
+          type string {
+            length "1..63";
+          }
+          description
+            "Name of an alarm, it is case sensitive.";
+        }
+        leaf level {
+          type severity-level;
+          description
+            "Severity of an alarm.";
+          ext:support-filter "true";
+          ext:dynamic-default;
+        }
+        leaf clear-suppress-time {
+          type uint32 {
+            range "0..600";
+          }
+          units s;
+          description
+            "Suppression period after which an alarm is cleared.";
+          ext:dynamic-default;
+        }
+        leaf cause-suppress-time {
+          type uint32 {
+            range "0..600";
+          }
+          units s;
+          description
+            "Suppression period after which an alarm is generated.";
+         ext:dynamic-default;
+        }
+        leaf module-name {
+          type string {
+            length "1..31";
+          }
+          config false;
+          description
+            "Module to which an alarm belongs.";
+          ext:support-filter "true";
+        }
+      }
+    }
+    container active-alarms {
+      config false;
+      description
+        "List of active alarms.";
+      list active-alarm {
+        key "sequence";
+        config false;
+        description
+          "Statistics of information about an active alarm.";
+        leaf sequence {
+          type uint32;
+          config false;
+          description
+            "Sequence number of an active alarm.";
+        }
+        leaf alarm-name {
+          ext:support-filter "true";
+          type leafref {
+            path "../../../alarms/alarm/alarm-name";
+          }
+          config false;
+          description
+            "Name of an active alarm.";
+        }
+        leaf alarm-id {
+          type uint32;
+          config false;
+          description
+            "ID of an active alarm.";
+        }
+        leaf level {
+          type severity-level;
+          config false;
+          description
+            "Severity of an active alarm.";
+          ext:support-filter "true";
+        }
+        leaf generated-time {
+          type yang:date-and-time;
+          config false;
+          description
+            "Time when an active alarm is generated.";
+        }
+        leaf rootkind-flag {
+          type rootcause-indication;
+          config false;
+          description
+            "Flag indicating a root or correlative alarm.";
+          ext:support-filter "true";
+        }
+        leaf rootalarm-sequence {
+          type uint32;
+          config false;
+          description
+            "Sequence number of a root alarm.";
+        }
+        leaf vsname {
+          type string {
+            length "1..32";
+          }
+          config false;
+          description
+            "Name of the source VS where an active alarm resides.";
+        }
+        leaf reason {
+          type uint32;
+          config false;
+          description
+            "Reason ID of an active alarm.";
+        }
+        leaf description {
+          type string {
+            length "1..1024";
+          }
+          description
+            "The detail information of active alarm.";
+        }
+        leaf type {
+          type alarm-type;
+          description
+            "Alarm type of an active alarm.";
+          ext:support-filter "true";
+        }
+        leaf object-type {
+          type alarm-object-type;
+          description
+            "Alarm object type of an active alarm.";
+          ext:support-filter "true";
+        }
+      }
+    }
+    container history-alarms {
+      config false;
+      description
+        "List of historical alarms.";
+      list history-alarm {
+        key "alarm-sequence";
+        config false;
+        description
+          "Statistics of information about a historical alarm.";
+        leaf alarm-sequence {
+          type uint32;
+          config false;
+          description
+            "Sequence number of a historical alarm.";
+        }
+        leaf alarm-name {
+          ext:support-filter "true";
+          type leafref {
+            path "../../../alarms/alarm/alarm-name";
+          }
+          config false;
+          description
+            "Name of a historical alarm.";
+        }
+        leaf alarm-id {
+          type uint32;
+          config false;
+          description
+            "ID of a historical alarm.";
+        }
+        leaf level {
+          type severity-level;
+          config false;
+          description
+            "Severity of a historical alarm.";
+          ext:support-filter "true";
+        }
+        leaf generated-time {
+          type yang:date-and-time;
+          config false;
+          description
+            "Time when a historical alarm is generated.";
+        }
+        leaf cleared-time {
+          type yang:date-and-time;
+          config false;
+          description
+            "Time when a historical alarm is cleared.";
+        }
+        leaf reason {
+          type uint32;
+          config false;
+          description
+            "Reason ID of a historical alarm.";
+        }
+        leaf vsname {
+          type string {
+            length "1..32";
+          }
+          config false;
+          description
+            "Name of the source VS where a historical alarm resides.";
+          ext:support-filter "true";
+        }
+        leaf description {
+          type string {
+            length "1..1024";
+          }
+          description
+            "The detail information of historical alarm.";
+        }
+      }
+    }
+  }
+  rpc clear-all-history-alarm {
+    description
+      "Clear all historical alarms.";
+  }
+  rpc clear-history-alarm {
+    description
+      "Clear historical alarms by sequence.";
+    ext:node-ref "/fm:fm/fm:history-alarms/fm:history-alarm";
+    input {
+      leaf alarm-sequence {
+        type uint32 {
+          range "1..4294967295";
+        }
+        mandatory true;
+        description
+          "Sequence number of a historical alarm.";
+      }
+    }
+  }
+  
+  rpc clear-all-active-alarm {
+    description
+      "Clear all active alarms.";  
+  }
+  rpc clear-active-alarm {
+    description
+      "Clear active alarms by sequence.";
+    ext:node-ref "/fm:fm/fm:active-alarms/fm:active-alarm";
+    input {
+      leaf alarm-sequence {
+        type uint32 {
+          range "1..4294967295";
+        }
+        mandatory true;
+        description
+          "Sequence number of an active alarm.";
+      }
+    }
+  }
+  rpc clear-active-alarm-by-range {
+    description
+      "Clear active alarms by the range of sequence numbers.";
+    ext:node-ref "/fm:fm/fm:active-alarms/fm:active-alarm";
+    input{
+      leaf begin-alarm-sequence {
+        type uint32 {
+          range "1..4294967295";
+        }
+        mandatory true;
+        description
+          "Starting sequence number of an active alarm.";
+      }
+      leaf end-alarm-sequence {
+        type uint32 {
+          range "1..4294967295";
+        }
+        must "(../end-alarm-sequence > ../begin-alarm-sequence) and (../end-alarm-sequence - ../begin-alarm-sequence < 2000) ";
+        mandatory true;
+        description
+          "Ending sequence number of an active alarm.";
+      }
+    }
+  }
+  rpc reset-all-alarm-statistic {
+    description
+      "Clear all alarm statistics.";
+  }
+  augment "/snmp:snmp/snmp:target-hosts/snmp:target-host" {
+    description
+      "The NMS host for configuration.";
+        container host-alarm {
+            description
+             "Configure of the NMS host.";
+            leaf enable-alarm {
+                type host-enable-flag;
+                default "true";
+                description
+                "Report alarms to a host.";
+            }
+        }
+    }
+}
+
+  

@@ -1,0 +1,81 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-unicast-fwd-srv6-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-unicast-fwd-srv6-deviations-NE8000-F1A";
+  prefix unicast-fwd-srv6-devs-NE8000-F1A;
+
+  import huawei-unicast-fwd-srv6 {
+    prefix unicast-fwd-srv6;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  import huawei-devm {
+    prefix devm;
+  }
+
+  import huawei-srv6 {
+    prefix srv6;
+  }
+
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-unicast-fwd-srv6 module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/unicast-fwd-srv6:unicast-fwd-srv6/unicast-fwd-srv6:global-attribute" {
+    deviate not-supported;
+  }
+  deviation "/unicast-fwd-srv6:unicast-fwd-srv6/unicast-fwd-srv6:rpfc-statistics-infos" {
+    deviate not-supported;
+  }
+  deviation "/unicast-fwd-srv6:reset-flex-channel-statistics/unicast-fwd-srv6:output" {
+    deviate not-supported;
+  }
+  deviation "/unicast-fwd-srv6:reset-spfc-statistics-infos/unicast-fwd-srv6:output" {
+    deviate not-supported;
+  }
+  deviation "/unicast-fwd-srv6:reset-pfc-statistics-infos/unicast-fwd-srv6:output" {
+    deviate not-supported;
+  }
+  deviation "/unicast-fwd-srv6:reset-rpfc-statistics-infos" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/unicast-fwd-srv6:global-ipv6uc-attribute/unicast-fwd-srv6:forward-mode-through" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/unicast-fwd-srv6:unicast-fwd-srv6" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/unicast-fwd-srv6:spfc" {
+    deviate not-supported;
+  }
+  deviation "/devm:devm/devm:lpu-boards/devm:lpu-board/unicast-fwd-srv6:spfc" {
+    deviate not-supported;
+  }
+
+}
+  

@@ -1,0 +1,48 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-spfc-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-spfc-deviations-NE8000-F1A";
+  prefix spfc-devs-NE8000-F1A;
+
+  import huawei-spfc {
+    prefix spfc;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-spfc module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/spfc:spfc/spfc:rpfc" {
+    deviate not-supported;
+  }
+  deviation "/spfc:spfc/spfc:rpfc-statistics-reports" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/spfc:rpfc" {
+    deviate not-supported;
+  }
+
+}
+  

@@ -1,0 +1,603 @@
+/*
+Copyright (C) 2019-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-evpn-ext {
+  namespace "urn:huawei:yang:huawei-evpn-ext";
+  prefix evpn-ext;
+  import huawei-evpn {
+    prefix evpn;
+  }
+  import huawei-license {
+    prefix lcs;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-qos {
+    prefix qos;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Evpn ext configuration.";
+    revision 2026-06-04 {
+    description
+      "Modify the type of position.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-10-12 {
+    description
+      "Modify the description of lcs-active-status-type.";
+    reference
+      "Huawei private.";
+  } 
+  revision 2024-04-15 {
+    description
+      "Modify the enumerated values of flow-label-hash.";
+    reference
+      "Huawei private.";
+  } 
+  revision 2024-01-15 {
+    description
+      "Delete the when condition of containers: lcs-port-evpns and lcs-port-evpns.";
+    reference
+      "Huawei private.";
+  } 
+  revision 2023-10-28 {
+    description
+      "Add container:flow-label-hash.";
+    reference
+      "Huawei private.";
+  } 
+  revision 2022-12-19 {
+    description
+      "Modify the name of etree drop.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-11-15 {
+    description
+      "Modify the type of position.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-08-30 {
+    description
+      "Add leaf:chip-number.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-08-23 {
+    description
+      "Add container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-06-10 {
+    description
+      "Modify the must condition.";
+    reference
+      "Huawei private.";
+  }
+  revision 2021-12-09 {
+    description
+      "Modify the must condition.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-03-06 {
+    description
+      "Add pipe type.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-01-13 {
+    description
+      "Modify description.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-10-26 {
+    description
+      "Add container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-04-23 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  typedef lcs-active-type {
+    type enumeration {
+      enum "deactive" {
+        value 0;
+        description
+          "Specify the license active type as deactivate.";
+      }
+      enum "active" {
+        value 1;
+        description
+          "Specify the license active type as activate.";
+      }
+    }
+    description
+      "License active type.";
+  }
+  typedef lcs-active-status-type {
+    type enumeration {
+      enum "unallocated" {
+        value 0;
+        description
+          "Specify the license active status as unallocated.";
+      }
+      enum "allocated" {
+        value 1;
+        description
+          "Specify the license active status as allocated.";
+      }
+      enum "activated" {
+        value 2;
+        description
+          "Specify the license active status as activated.";
+      }
+    }
+    description
+      "License active status type.";
+  }
+  typedef evpn-pipe-mode {
+    type enumeration {
+      enum "pipe" {
+        value 1;
+        description
+          "Evpn pipe mode.";
+      }
+      enum "shortpipe" {
+        value 2;
+        description
+          "Evpn Short Pipe mode.";
+      }
+      enum "uniform" {
+        value 3;
+        description
+          "Evpn uniform mode.";
+      }
+    }
+    description
+      "Evpn pipe mode.";
+  }
+  typedef evpn-service-class {
+    type enumeration {
+      enum "be" {
+        value 0;
+        description
+          "Specify the CoS as BE.";
+      }
+      enum "af1" {
+        value 1;
+        description
+          "Specify the CoS as AF1.";
+      }
+      enum "af2" {
+        value 2;
+        description
+          "Specify the CoS as AF2.";
+      }
+      enum "af3" {
+        value 3;
+        description
+          "Specify the CoS as AF3.";
+      }
+      enum "af4" {
+        value 4;
+        description
+          "Specify the CoS as AF4.";
+      }
+      enum "ef" {
+        value 5;
+        description
+          "Specify the CoS as EF.";
+      }
+      enum "cs6" {
+        value 6;
+        description
+          "Specify the CoS as CS6.";
+      }
+      enum "cs7" {
+        value 7;
+        description
+          "Specify the CoS as CS7.";
+      }
+    }
+    description
+      "Description of CoS.";
+  }
+  typedef evpn-color {
+    type enumeration {
+      enum "green" {
+        value 0;
+        description
+          "Specify the packet color as green.";
+      }
+      enum "yellow" {
+        value 1;
+        description
+          "Specify the packet color as yellow.";
+      }
+      enum "red" {
+        value 2;
+        description
+          "Specify the packet color as red.";
+      }
+    }
+    description
+      "Description of packet color.";
+  }
+  typedef evpn-trust-type {
+    type enumeration {
+      enum "outpri" {
+        value 0;
+        description
+          "Specify the trust type as OUTTER-VLAN-8021P.";
+      }
+      enum "inpri" {
+        value 1;
+        description
+          "Specify the trust type as INNER-VLAN-8021P.";
+      }
+      enum "ipdscp" {
+        value 2;
+        description
+          "Specify the trust type as IP-DSCP.";
+      }
+    }
+    description
+      "Description of trust type.";
+  }
+  typedef flow-label-type {
+    type enumeration {
+      enum "L3" {
+        value 1;
+        description
+          "Specify the EVPN SRv6 flow label hash mode as L3.";
+      }
+      enum "L4" {
+        value 2;
+        description
+          "Specify the EVPN SRv6 flow label hash mode as L4.";
+      }
+    }
+    description
+      "Description of flow label hash type.";
+  }
+  ext:task-name "forwarding";
+  augment "/evpn:evpn" {
+    description "EVPN configuration.";
+    container system {
+      description
+        "Configure the system configuration of evpn.";
+      container port-select {
+        description
+          "Configure the port selection abort EVPN accessing VLL.";
+        leaf flag{
+          type boolean;
+          default "true";
+          description
+            "Enable/disable the coupling flag in the EVPN-accessing-VLL direction.";
+        }
+      }
+      container self-board {
+        description
+          "Configure evpn reserve-interface enhancement.";
+        leaf flag {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable the flag to use the internal GRE reserved interfaces to implement public-network-and-private-network decoupling in the BUM forwarding process.";
+        }
+      }
+      container evpn-udp-port {
+        description
+          "Configure the UDP port.";
+        leaf port-id {
+          type uint32 {
+            range "1025..65535";
+          }
+          description
+            "Specifies a port number for a UDP interface.";
+        }
+      }
+      container flow-label-hash {
+        description
+          "Configure the EVPN SRv6 flow label hash fields.";
+        leaf hash-fields {
+          type flow-label-type;
+          description
+            "The EVPN SRv6 flow label hash type.";
+        }
+      }
+    }
+    container etree-traffic-discards {
+      config false;
+      description
+        "List of the etree traffic discard statistics.";
+      list  etree-traffic-discard {
+        key "slot chip-number";
+        description
+          "Statistics of the etree traffic discard.";
+        leaf slot {
+          type string {
+            length "1..15";
+          }
+          description
+            "Slot ID.";
+        }
+        leaf chip-number {
+          type uint32 {
+            range "0..7";
+          }
+          description
+            "Chip number.";
+        }
+        leaf etree-unicastdrop-packets {
+          type uint64;
+          units packet;
+          description
+            "Number of packets dropped by EVPN E-Tree unicast traffic prune.";
+        }
+        leaf etree-bumdrop-packets {
+          type uint64;
+          units packet;
+          description
+            "Number of packets dropped by EVPN E-Tree BUM traffic prune.";
+        }
+      }
+    }
+  }
+  augment "/evpn:evpn/evpn:instances/evpn:instance/evpn:normal-evpn" {
+    description "Normal evpn pipe configuration.";
+    container pipe {
+      description
+        "Configure the diffserv mode of evpn.";
+      leaf split-mode {
+        type boolean;
+        must "((../split-mode='false') or (../split-mode='true' and not(../ingress-pipe-mode='uniform' and ../egress-pipe-mode='uniform')))";
+        default "false";
+        description
+          "Enable/disable split mode.";
+      }
+      leaf pipe-mode {
+        when "../split-mode='false'";
+        type evpn-pipe-mode;
+        default "uniform";
+        description
+          "Specify the pipe mode.";
+      }
+      leaf ingress-pipe-mode  {
+        when "../split-mode='true'";
+        type evpn-pipe-mode;
+        default "uniform";
+        description
+          "Specify the ingress pipe mode.";
+      }
+      leaf egress-pipe-mode {
+        when "../split-mode='true'";
+        type evpn-pipe-mode;
+        default "uniform";
+        description
+          "Specify the egress pipe mode.";
+      }
+      leaf service-class {
+        when "(../pipe-mode='pipe' or ../pipe-mode='shortpipe' or ../ingress-pipe-mode='pipe' or ../ingress-pipe-mode='shortpipe')";
+        type evpn-service-class;
+        default "be";
+        description
+          "Specify the CoS.";
+      }
+      leaf color {
+        when "(../pipe-mode='pipe' or ../pipe-mode='shortpipe' or ../ingress-pipe-mode='pipe' or ../ingress-pipe-mode='shortpipe')";
+        type evpn-color;
+        default "green";
+        description
+          "Specify the color of packets.";
+      }
+      leaf domain-name  {
+        when "(../pipe-mode='shortpipe' or ../egress-pipe-mode='shortpipe')";
+        type leafref {
+          path "/qos:qos/qos:classifier-template/qos:diffserv-domains/qos:diffserv-domain/qos:name";
+        }
+        default "default";
+        description
+          "DS domain name.";
+      }
+      leaf trust-type {
+        when "../egress-pipe-mode='shortpipe'";
+        type evpn-trust-type;
+        default "outpri";
+        description
+          "Specify the trust type.";
+      }
+    }
+    container reserve-if-switch {
+      description
+        "Configure EVPN broadcast fast switching.";
+      leaf enable {
+        type boolean;
+        default "false";
+        description
+          "Enable/disable the flag of EVPN broadcast fast switching.";
+      }
+    }
+  }
+  augment "/evpn:evpn/evpn:instances/evpn:instance/evpn:bd-evpn" {
+    description "BD evpn pipe configuration.";
+    container pipe {
+      description
+        "Configure the diffserv mode of evpn.";
+      leaf split-mode {
+        type boolean;
+        must "((../split-mode='false') or (../split-mode='true' and not(../ingress-pipe-mode='uniform' and ../egress-pipe-mode='uniform')))";
+        default "false";
+        description
+          "Enable/disable split mode.";
+      }
+      leaf pipe-mode {
+        when "../split-mode='false'";
+        type evpn-pipe-mode;
+        default "uniform";
+        description
+          "Specify the pipe mode.";
+      }
+      leaf ingress-pipe-mode  {
+        when "../split-mode='true'";
+        type evpn-pipe-mode;
+        default "uniform";
+        description
+          "Specify the ingress pipe mode.";
+      }
+      leaf egress-pipe-mode {
+        when "../split-mode='true'";
+        type evpn-pipe-mode;
+        default "uniform";
+        description
+          "Specify the egress pipe mode.";
+      }
+      leaf service-class {
+        when "(../pipe-mode='pipe' or ../pipe-mode='shortpipe' or ../ingress-pipe-mode='pipe' or ../ingress-pipe-mode='shortpipe')";
+        type evpn-service-class;
+        default "be";
+        description
+          "Specify the CoS.";
+      }
+      leaf color {
+        when "(../pipe-mode='pipe' or ../pipe-mode='shortpipe' or ../ingress-pipe-mode='pipe' or ../ingress-pipe-mode='shortpipe')";
+        type evpn-color;
+        default "green";
+        description
+          "Specify the color of packets.";
+      }
+      leaf domain-name  {
+        when "(../pipe-mode='shortpipe' or ../egress-pipe-mode='shortpipe')";
+        type leafref {
+          path "/qos:qos/qos:classifier-template/qos:diffserv-domains/qos:diffserv-domain/qos:name";
+        }
+        default "default";
+        description
+          "DS domain name.";
+      }
+      leaf trust-type {
+        when "../egress-pipe-mode='shortpipe'";
+        type evpn-trust-type;
+        default "outpri";
+        description
+          "Specify the trust type.";
+      }
+    }
+  }
+  augment "/lcs:license/lcs:license-items/lcs:license-item" {
+    status deprecated;
+    description "License resource usage.";
+    container lcs-port-evpns {
+      status deprecated;
+      ext:advised-node "../../../evpn-ext:lcs-port-evpns";
+      description
+        "List of evpn port license information.";
+      list lcs-port-evpn {
+        key "position";
+        status deprecated;
+        ext:advised-node "../../../../evpn-ext:lcs-port-evpns/evpn-ext:lcs-port-evpn";
+        description
+          "Configure evpn port license.";
+        leaf position {
+          type string {
+            length "1..32";
+          }
+          status deprecated;
+          ext:advised-node "../../../../../evpn-ext:lcs-port-evpns/evpn-ext:lcs-port-evpn/evpn-ext:position";
+          description
+            "Port position.";
+        }
+      }
+    }
+    container lcs-port-vxlans {
+      status deprecated;
+      ext:advised-node "../../../evpn-ext:lcs-port-vxlans";
+      description
+        "List of vxlan port license information.";
+      list lcs-port-vxlan {
+        key "position";
+        status deprecated;
+        ext:advised-node "../../../../evpn-ext:lcs-port-vxlans/evpn-ext:lcs-port-vxlan";
+        description
+          "Configure vxlan port license.";
+        leaf position {
+          type string {
+            length "1..32";
+          }
+          status deprecated;
+          ext:advised-node "../../../../../evpn-ext:lcs-port-vxlans/evpn-ext:lcs-port-vxlan/evpn-ext:position";
+          description
+            "VXLAN port license interface position, the format is slotid/cardid/portid.";
+        }
+      }
+    }
+  }
+  augment "/lcs:license" {
+    description "License resource usage.";
+    container lcs-port-evpns {
+      description
+        "List of evpn port license information.";
+      list lcs-port-evpn {
+        key "position";
+        description
+          "Configure evpn port license.";
+        leaf position {
+          type string {
+            length "1..32";
+          }
+          description
+            "Port position.";
+        }
+        leaf active-status {
+          type lcs-active-status-type;
+          config false;
+          description
+            "Activated state.";
+        }
+      }
+    }
+    container lcs-port-vxlans {
+      description
+        "List of vxlan port license information.";
+      list lcs-port-vxlan {
+        key "position";
+        description
+          "Configure vxlan port license.";
+        leaf position {
+          type string {
+            length "1..32";
+          }
+          description
+            "VXLAN port license interface position, the format is slotid/cardid/portid.";
+        }
+        leaf active-status {
+          type lcs-active-status-type;
+          config false;
+          description
+            "Activated state.";
+        }
+      }
+    }
+  }
+}
+
+  

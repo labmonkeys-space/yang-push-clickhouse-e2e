@@ -1,0 +1,48 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ietf-sub-notif-recv-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ietf-sub-notif-recv-deviations-NE8000-F1A";
+  prefix snr-devs-NE8000-F1A;
+
+  import ietf-subscribed-notif-receivers {
+    prefix snr;
+  }
+  import ietf-subscribed-notifications {
+    prefix sn;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for ietf-subscribed-notif-receivers module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/sn:subscriptions/snr:receiver-instances/snr:receiver-instance/snr:name" {
+    deviate replace {
+      type string {
+        length "1..64";
+        pattern '[A-Za-z0-9]+';
+      }
+    }
+  }
+  deviation "/sn:subscriptions/snr:receiver-instances/snr:receiver-instance/snr:transport-type" {
+    deviate replace {
+      mandatory false;
+    }
+  }
+}
+
+  

@@ -1,0 +1,35 @@
+/*
+Copyright (C) 2024 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-bras-web-authen-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-bras-web-authen-deviations-NE8000-F1A";
+  prefix bras-web-authen-devs-NE8000-F1A;
+
+  import huawei-bras-web-authen {
+    prefix bras-web-authen;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-bras-web-authen module.";
+
+  revision 2024-10-27 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/bras-web-authen:bras-web-authen/bras-web-authen:global/bras-web-authen:disaster-recovery" {
+    deviate not-supported;
+  }
+}
+
+  

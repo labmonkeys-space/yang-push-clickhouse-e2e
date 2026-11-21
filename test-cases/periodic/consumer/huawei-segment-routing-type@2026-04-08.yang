@@ -1,0 +1,120 @@
+/*
+Copyright (C) 2019-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+submodule huawei-segment-routing-type {
+  belongs-to huawei-segment-routing {
+    prefix sr;
+  }
+  
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Segment routing type defined file.";
+  revision 2026-04-08 {
+    description
+      "Add the type of label-advertise.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-02-04 {
+    description
+      "Modify the description.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-04-04 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  typedef bfd-type {
+    type enumeration {
+      enum "seamless-bfd" {
+        value 1;
+        description
+          "The BFD type is seamless BFD.";
+      }
+      enum "bfd" {
+        value 2;
+        description
+          "The BFD type is BFD.";
+      }
+    }
+    description
+      "Segment routing bfd session type.";
+  }
+  typedef bfd-session-mode-type {
+    type enumeration {
+      enum "tunnel" {
+        value 1;
+        description
+          "The type of session mode is tunnel.";
+      }
+    }
+    description
+      "Segment routing type for bfd.";
+  }
+  typedef segr-lsp-type {
+    type enumeration {
+      enum "ingress" {
+        value 1;
+        description
+          "Ingress.";
+      }
+      enum "transit" {
+        value 2;
+        description
+          "Transit.";
+      }
+      enum "ingress-transit" {
+        value 3;
+        description
+          "Ingress and transit.";
+      }
+      enum "egress" {
+        value 4;
+        description
+          "Egress.";
+      }
+      enum "bud" {
+        value 5;
+        description
+          "Bud.";
+      }
+    }
+    description
+      "LSR type.";
+  }
+  typedef label-advertise {
+    type enumeration {
+      enum "explicit-null" {
+        value 0;
+        description
+          "Allocates the label 0 to the penultimate hop by the end node.";
+      }
+      enum "implicit-null" {
+        value 1;
+        description
+          "Allocates the label 3 to the penultimate hop by the end node.";
+      }
+      enum "non-null" {
+        value 2;
+        description
+          "Indicates that the end node does not allocate a null label to the penultimate hop.";
+      }
+    }
+    description
+      "Label Advertise.";
+  }
+
+}
+
+  

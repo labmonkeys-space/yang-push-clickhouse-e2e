@@ -1,0 +1,45 @@
+/*
+Copyright (C) 2024 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-xsec-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-xsec-deviations-NE8000-F1A";
+  prefix xsec-devs-NE8000-F1A;
+
+  import huawei-xsec {
+    prefix xsec;
+  }
+
+  import huawei-license {
+    prefix lcs;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-xsec module.";
+
+  revision 2024-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/xsec:xsec/xsec:set-service-types" {
+    deviate not-supported;
+  }
+  deviation "/lcs:license/xsec:active-xsec-bandwidths" {
+    deviate not-supported;
+  }
+
+}
+  

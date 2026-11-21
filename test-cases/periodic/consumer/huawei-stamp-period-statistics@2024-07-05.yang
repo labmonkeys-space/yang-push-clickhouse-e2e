@@ -1,0 +1,139 @@
+/*
+Copyright (C) 2024 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-stamp-period-statistics {
+  namespace "urn:huawei:yang:huawei-stamp-period-statistics";
+  prefix stamp-period-statistics;
+
+  import huawei-stamp {
+    prefix stamp;
+  }
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  import huawei-extension {
+    prefix ext;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "STAMP statistics.";
+  revision 2024-07-05 {
+    description
+      "Init revision.";
+    reference
+      "Huawei private.";
+  }
+  typedef address-family {
+    type enumeration {
+      enum "ipv4" {
+        value 0;
+        description
+          "IPv4 address family.";
+      }
+      enum "ipv6" {
+        value 1;
+        description
+          "IPv6 address family.";
+      }
+    }
+    description
+      "The type of IP address family.";
+  }
+  ext:task-name "twampclient";
+
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface/stamp:stamp-multi" {
+    description
+      "STAMP augment.";
+    container period-statistics {
+      config false;
+      description
+        "List of STAMP period statistics.";
+      list period-statistic {
+        key "nexthop-ip address-family ref-port";
+        description
+          "Statistics of STAMP sender session.";
+        leaf nexthop-ip {
+          type inet:ip-address-no-zone;
+          description
+            "The nexthop IP address of STAMP session.";
+        }
+        leaf address-family {
+          type address-family;
+          description
+            "The IP address family.";
+        }
+        leaf ref-port {
+          type uint16;
+          description
+            "The reflector port of configuration session.";
+        }
+        leaf send-port {
+          type uint16;
+          description
+            "The sender port of configuration session.";
+        }
+        leaf send-ip-addr {
+          type inet:ip-address-no-zone;
+          description
+            "The sender IP address of configuration session.";
+        }
+        leaf vrf-name {
+          type leafref {
+            path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+          }
+          description
+            "The VRF name of configuration session.";
+        }
+        leaf dscp-value {
+          type uint32 {
+              range "0..63";
+          }
+          description
+            "The DSCP value of configuration session.";
+        }
+        leaf avg-delay {
+          type uint32;
+          units "us";
+          description
+            "The average delay.";
+        }
+        leaf avg-jitter {
+          type uint32;
+          units "us";
+          description
+            "The average jitter.";
+        }
+        leaf loss-count {
+          type uint32;
+          description
+            "The loss count.";
+        }
+        leaf send-count {
+          type uint32;
+          description
+            "The send count.";
+        }
+      }
+    }
+  }
+}
+  

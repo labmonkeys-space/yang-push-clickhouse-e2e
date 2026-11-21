@@ -1,0 +1,217 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-nqa-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-nqa-deviations-NE8000-F1A";
+  prefix nqa-devs-NE8000-F1A;
+
+  import huawei-nqa {
+    prefix nqa;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-mpls-te {
+    prefix mpls-te;
+  }
+  import huawei-tunnel-management {
+    prefix tnlm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-nqa module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/nqa:nqa/nqa:global/nqa:vxlan-echo-v6" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:testflows/nqa:test-flow/nqa:color-mode/nqa:color-blind" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:testflows/nqa:test-flow/nqa:range-type/nqa:dest-mac/nqa:dest-mac-range-type/nqa:increment-dest-mac" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:testflows/nqa:test-flow/nqa:range-type/nqa:source-mac/nqa:src-mac-range-type/nqa:increment-src-mac" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:testflows/nqa:test-flow/nqa:range-type/nqa:dest-ipv4/nqa:dest-ipv4-range-type/nqa:increment-dest-ipv4" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:testflows/nqa:test-flow/nqa:range-type/nqa:source-ipv4/nqa:src-ipv4-range-type/nqa:increment-src-ipv4" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:testflows/nqa:test-flow/nqa:range-type/nqa:color-blind-8021p" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:testflows/nqa:test-flow/nqa:range-type/nqa:color-blind-dscp" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:icmp/nqa:icmp-input/nqa:address/nqa:ipv4-address/nqa:ipv4-dest-url" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:icmp/nqa:icmp-input/nqa:sdwan-site-id" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:icmp/nqa:icmp-input/nqa:sdwan-system-id" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:icmp/nqa:icmp-input/nqa:result-telemetry-mode" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:icmp/nqa:icmp-input/nqa:record-out-interface" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:http" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:tcp/nqa:tcp-input/nqa:destination/nqa:ipv4-url" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:tcp/nqa:tcp-input/nqa:source-if-name" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:tcp/nqa:tcp-input/nqa:sdwan-site-id" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:tcp/nqa:tcp-input/nqa:sdwan-system-id" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:tcp/nqa:tcp-input/nqa:record-out-interface" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:arp-ping-ip" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:ethernet-service/nqa:ethernet-service-input/nqa:test-packet-size-mode/nqa:profile" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:general-flow/nqa:general-flow-input/nqa:fail-percent/nqa:fail-ratio-billionth" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:general-flow/nqa:general-flow-input/nqa:rate-class" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:nqa-execution-policy" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:record/nqa:results/nqa:result/nqa:sdwan-site-id" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:record/nqa:results/nqa:result/nqa:out-interfaces" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:record/nqa:results/nqa:result/nqa:jitter-average" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:record/nqa:arp-ping-ip-results" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:record/nqa:ethernet-service-results/nqa:ethernet-service-result/nqa:test-steps/nqa:test-step/nqa:unavail-count" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:record/nqa:ethernet-service-results/nqa:ethernet-service-result/nqa:test-steps/nqa:test-step/nqa:avail-ratio" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:record/nqa:general-flow-results/nqa:gflow-result/nqa:rate-class" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:record/nqa:http-results" {
+    deviate not-supported;
+  }
+  deviation "/nqa:nqa/nqa:testflows/nqa:test-flow" {
+    deviate delete {
+      must '(end-color-blind-8021p        and end-color-blind-8021p        > color-blind-8021p)        or not(end-color-blind-8021p)';
+    }
+    deviate delete {
+      must '(end-color-blind-dscp         and end-color-blind-dscp         > color-blind-dscp)         or not(end-color-blind-dscp)';
+    }
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:icmp/nqa:icmp-input" {
+    deviate delete {
+      must 'not(ipv4-dest-url and ipv4-dest-address)';
+    }
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:icmp/nqa:icmp-input/nqa:send-trap-bits" {
+    deviate replace {
+      type bits {
+        bit resultchange {
+          position 23;
+          description
+            "Indicates that a trap is sent when the result status changes.";
+        }
+        bit rtd {
+          position 28;
+          description
+            "Indicates that a trap is sent when the RTD exceeds the threshold.";
+        }
+        bit testcomplete {
+          position 29;
+          description
+            "Indicates that a trap is sent when a test succeeds.";
+        }
+        bit testfailure {
+          position 30;
+          description
+            "Indicates that a trap is sent when the number of test failures reaches the threshold.";
+        }
+        bit probefailure {
+          position 31;
+          description
+            "Indicates that a trap is sent when the OWD from the source to the destination exceeds the threshold.";
+        }
+      }
+    }
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:trace/nqa:trace-input" {
+    deviate add {
+      must "not(ni-name != '_public_' and (ipv6-next-hop or ipv4-next-hop))";
+    }
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:icmp-jitter/nqa:icmp-jitter-input/nqa:fwd-if-name" {
+    deviate delete {
+      must "not(../out-if-name or ../hardware-enable='true')";
+    }
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:lsp-ping/nqa:lsp-ping-input/nqa:lsp-protocol/nqa:te/nqa:te-lsp-ping/nqa:tunnel-name" {
+    deviate add {
+      must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/tnlm:tunnel-protocol/mpls-te:te-tunnel/mpls-te:common-attributes/mpls-te:signal-protocol='rsvp-te' or /ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/tnlm:tunnel-protocol/mpls-te:te-tunnel/mpls-te:common-attributes/mpls-te:signal-protocol='cr-static'";
+    }
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:lsp-ping/nqa:lsp-ping-input/nqa:lsp-protocol/nqa:srte/nqa:srte-lsp-ping/nqa:tunnel-name" {
+    deviate add {
+      must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/tnlm:tunnel-protocol/mpls-te:te-tunnel/mpls-te:common-attributes/mpls-te:signal-protocol='segment-routing'";
+    }
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:lsp-trace/nqa:lsp-trace-input/nqa:lsp-protocol/nqa:te/nqa:te-lsp-trace/nqa:tunnel-name" {
+    deviate add {
+      must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/tnlm:tunnel-protocol/mpls-te:te-tunnel/mpls-te:common-attributes/mpls-te:signal-protocol='rsvp-te' or /ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/tnlm:tunnel-protocol/mpls-te:te-tunnel/mpls-te:common-attributes/mpls-te:signal-protocol='cr-static'";
+    }
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:lsp-trace/nqa:lsp-trace-input/nqa:lsp-protocol/nqa:srte/nqa:srte-lsp-trace/nqa:tunnel-name" {
+    deviate add {
+      must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/tnlm:tunnel-protocol/mpls-te:te-tunnel/mpls-te:common-attributes/mpls-te:signal-protocol='segment-routing'";
+    }
+  }
+  deviation "/nqa:nqa/nqa:instances/nqa:instance/nqa:type/nqa:lsp-jitter/nqa:lsp-jitter-input/nqa:lsp-protocol/nqa:te/nqa:te-lsp-jitter/nqa:tunnel-name" {
+    deviate add {
+      must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/tnlm:tunnel-protocol/mpls-te:te-tunnel/mpls-te:common-attributes/mpls-te:signal-protocol='rsvp-te' or /ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/tnlm:tunnel-protocol/mpls-te:te-tunnel/mpls-te:common-attributes/mpls-te:signal-protocol='cr-static'";
+    }
+  }
+}
+
+  

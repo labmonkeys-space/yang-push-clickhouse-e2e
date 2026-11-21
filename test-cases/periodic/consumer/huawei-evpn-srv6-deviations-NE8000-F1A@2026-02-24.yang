@@ -1,0 +1,51 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-evpn-srv6-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-evpn-srv6-deviations-NE8000-F1A";
+  prefix evpn-srv6-devs-NE8000-F1A;
+
+  import huawei-evpn-srv6 {
+    prefix evpn-srv6;
+  }
+  import huawei-evpn {
+    prefix evpn;
+  }
+  import huawei-bd {
+    prefix bd;
+  }
+  import huawei-mac {
+    prefix mac;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-evpn-srv6 module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/bd:bd/bd:instances/bd:instance/evpn:evpn/evpn-srv6:srv6-static-macs/evpn-srv6:srv6-static-mac" {
+    deviate add {
+      must "not(../../../mac:sticky-mac/mac:enable='true')";
+    }
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/evpn:evpn/evpn-srv6:srv6-static-macs/evpn-srv6:srv6-static-mac/evpn-srv6:mac-address" {
+    deviate add {
+      must 'not(../../../../mac:mac-addresss/mac:mac-address[mac:address=current()])';
+    }
+  }
+}
+
+  

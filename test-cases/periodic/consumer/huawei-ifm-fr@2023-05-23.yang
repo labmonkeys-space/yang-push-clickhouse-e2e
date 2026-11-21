@@ -1,0 +1,220 @@
+/*
+Copyright (C) 2019-2023 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ifm-fr {
+  namespace "urn:huawei:yang:huawei-ifm-fr";
+  prefix ifm-fr;
+  
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Frame relay protocol.";
+  revision 2023-05-23 {
+    description
+      "Modify the when condition of fr-encapsulation.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-01-11 {
+    description
+      "Add fr-attribute node.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-12-25 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "fr";
+  typedef encapsulation-format {
+    type enumeration {
+      enum "ietf" {
+        value 19;
+        description
+          "IETF.";
+      }
+      enum "nonstandard" {
+        value 20;
+        description
+          "Nonstandard.";
+      }
+    }
+    description
+      "FR interface encapsulation format.";
+  }
+  typedef lmi-type {
+    type enumeration {
+      enum "q933a" {
+        value 0;
+        description
+          "LMI Q933A.";
+      }
+      enum "ansi" {
+        value 1;
+        description
+          "LMI ANSI.";
+      }
+      enum "nonstandard" {
+        value 2;
+        description
+          "LMI nonstandard.";
+      }
+    }
+    description
+      "FR interface LMI type.";
+  }
+  typedef fr-type {
+    type enumeration {
+      enum "dte" {
+        value 1;
+        description
+          "FR DTE.";
+      }
+      enum "dce" {
+        value 2;
+        description
+          "FR DCE.";
+      }
+      enum "nni" {
+        value 3;
+        description
+          "FR NNI.";
+      }
+    }
+    description
+      "FR interface type.";
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface" {
+    description "Configure extend attributes on the interface.";
+    container fr-encapsulation {
+      when "../ifm:class='main-interface' and ../ifm:link-protocol='fr'"; 
+      description "Configure frame relay interface encapsulation format.";
+      leaf encapsulation {
+        type encapsulation-format;
+        default "ietf";
+        description
+          "FR interface encapsulation format.";
+      }
+    }
+    container fr-attribute {
+      when "../ifm:link-protocol='fr'";
+      description "Configure FR attribute on the interface.";
+      container fr-main-interface {
+        when "../../ifm:class='main-interface'";
+        description "Configure FR attribute on the main interface.";
+        leaf lmi-type {
+          type lmi-type;
+          default "q933a";
+          description
+            "LMI type.";
+        }
+        leaf fr-type {
+          type fr-type;
+          default "dte";
+          description
+            "FR interface type.";
+        }
+        leaf n391-dte {
+          when "../fr-type='dte' or ../fr-type='nni'";
+          type uint8 {
+            range "1..255";
+          }
+          default "6";
+          description
+            "The value of full-state polling counter on DTE.";
+        }
+        leaf n392-dce {
+          when "../fr-type='dce' or ../fr-type='nni'";
+          type uint8 {
+            range "1..10";
+          }
+          default "3";
+          description
+            "The value of LMI error threshold on DCE.";
+        }
+        leaf n392-dte {
+          when "../fr-type='dte' or ../fr-type='nni'";
+          type uint8 {
+            range "1..10";
+          }
+          default "3";
+          description
+            "The value of LMI error threshold on DTE.";
+        }
+        leaf n393-dce {
+          when "../fr-type='dce' or ../fr-type='nni'";
+          type uint8 {
+            range "1..10";
+          }
+          default "4";
+          description
+            "The value of LMI monitoring event counter on DCE.";
+        }
+        leaf n393-dte {
+          when "../fr-type='dte' or ../fr-type='nni'";
+          type uint8 {
+            range "1..10";
+          }
+          default "4";
+          description
+            "The value of LMI monitoring event counter on DTE.";
+        }
+        leaf t392-dce {
+          when "../fr-type='dce' or ../fr-type='nni'";
+          type uint8 {
+            range "5..30";
+          }
+          units "s";
+          default "15";
+          description
+            "The link integrity detection timer on DCE.";
+        }
+        container interface-link {
+         description
+          "Configure FR polling interval.";
+          leaf time-interval {
+            type uint32 {
+              range "0..32767";
+            }
+            units "s";
+            default "10";
+            description
+              "FR polling interval.";
+          }
+        }
+      }
+      container fr-sub-interface {
+        when "../../ifm:class='sub-interface'";
+        description
+          "Configure FR attribute on the sub interface.";
+        container fr-dlci {
+          description
+          "Configure FR DLCI.";
+          leaf dlci {
+            type uint16 {
+              range "16..1007";
+            }
+            description
+              "FR DLCI.";
+          }
+        }
+      }
+    }
+  }
+}
+  

@@ -1,0 +1,1302 @@
+/******************************************************
+* Copyright (C) 2021-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*******************************************************/
+module huawei-cgn-nat444 {
+  namespace "urn:huawei:yang:huawei-cgn-nat444";
+  prefix cgn-nat444;
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-cgn-common {
+    prefix cgn-common;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-l3vpn {
+    prefix l3vpn;
+  }
+  import huawei-qos {
+    prefix qos;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-acl {
+    prefix acl;
+  }
+  import huawei-cgn {
+    prefix cgn;
+  }
+  import huawei-vsm {
+    prefix vsm;
+  }
+  import huawei-bras-cu-agent {
+    prefix bras-cu-agent;
+  }
+  import huawei-ip {
+    prefix ip;
+  }
+  import huawei-nqa {
+    prefix nqa;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+
+  description
+    "This module contains a collection of YANG definitions for Configurations of cgn NAT444.";
+  revision 2026-06-15 {
+    description
+      "Add container nat-session-aging.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-04-24 {
+    description
+      "Add container log-mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-03-03 {
+    description
+      "Add leaf new-end-address.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-01-27 {
+    description
+      "Add container five-tuple-port-reuse. Delete host must condition.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-12-03 {
+    description
+      "Change leaf track-nqa-admin-name, track-nqa-test-name must condition.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-10-28 {
+    description
+      "Add leaf track-nqa-admin-name, track-nqa-test-name.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-08-04 {
+    description
+      "Delete the must condition for container port-limit. Delete the when condition for container redirect-with-ids. Add leaf period-value.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-02-08 {
+    description
+      "Add container redirect-with-ids.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-11-22 {
+    description
+      "Add container elog-version.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-08-14 {
+    description
+      "Modify the must condition for container warm-backup-profiles.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-08-02 {
+    description
+      "Add unique for list easyip-mapping, add the must condition for leaf global-interface.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-08-01 {
+    description
+      "Modify the must condition for container nat-instances.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-07-26 {
+    description
+      "Add container warm-backup-profiles.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-07-16 {
+    description
+      "Add container bind-nat-statistics, rpc get-nat-outif-statistics, reset-nat-outif-statistics.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-07-03 {
+    description
+      "Add container alarm.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-06-19 {
+    description
+      "Modify the must condition for leaf mapping-address-group.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-05-25 {
+    description
+      "Add some nodes.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-05-19 {
+    description
+      "Add container dns-alg-dynamic.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-02-19 {
+    description
+      "Modify the must condition to when condition for leaf interface.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-11-17 {
+    description
+      "Add the when and mandatory condition for choice inside-end-ip.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-10-17 {
+    description
+      "Modify the must condition to when condition for container user-migration.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-10-10 {
+    description
+      "Add container user-migration.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-09-04 {
+    description
+      "Delete the when condition for container send-mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-08-04 {
+    description
+      "Modify the when condition for container bind-service-instance-group.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-07-24 {
+    description
+      "Add the when condition for container port-range, nat-translate, nat-translate, filter-mode, user-log, fast-forwarding, inter-chassis-distributing, port-reuse.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-02-09 {
+    description
+      "Modify the must condition of inside-port in container server-mappings, delete presence container of easyip-mappings.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-01-30 {
+    description
+      "Modify the must condition in container server-mappings.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-01-17 {
+    description
+      "Add container server-mappings and easyip-mappings.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-15 {
+    description
+      "Modify using-address-group-ip default value.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-13 {
+    description
+      "Add container port-reuse.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-09-22 {
+    description
+      "Add container address-groups, statistics-enable, nat-server, nat-translate.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-06-17 {
+    description
+      "Add container statistics.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-03-09 {
+    description
+      "Fix the must condition of leaf acl in container bind-nat.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-01-29 {
+    description
+      "Add container send-mode. Add use log-host.";
+    reference
+      "Huawei private.";
+  }
+  revision 2021-11-05 {
+    description
+      "Add container inter-chassis-distributing, port-range, filter-mode, bind-nat. Add augment to qos and ifm.";
+    reference
+      "Huawei private.";
+  }
+  revision 2021-10-11 {
+    description
+      "Add container bind-service-instance-group and nat-server.";
+    reference
+      "Huawei private.";
+  }
+  revision 2021-07-31 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  typedef nat444-session-log-type {
+    type enumeration {
+      enum "elog" {
+          value 1;
+          description "Elog format.";
+      }
+      enum "syslog" {
+          value 2;
+          description "Syslog format.";
+      }
+      enum "netstream" {
+          value 3;
+          description "Netstream format.";
+      }
+    }
+    description
+      "NAT session log type.";
+  }
+  typedef nat444-user-log-type {
+    type enumeration {
+      enum "syslog" {
+          value 2;
+          description "Syslog format.";
+      }
+      enum "netstream" {
+          value 3;
+          description "Netstream format.";
+      }
+    }
+    description
+      "NAT user log type.";
+  }
+  container cgn-nat444 {
+    description
+      "NAT444.";
+    container nat-instances {
+      must "count(/cgn-nat444:cgn-nat444/cgn-nat444:nat-instances/cgn-nat444:nat-instance/cgn-nat444:warm-backup-profiles/cgn-nat444:warm-backup-profile)<=64";
+      description
+        "List of nat-instance.";
+      list nat-instance {
+        key "instance-name instance-id";
+        unique "instance-id";
+        unique "instance-name";
+        description
+          "Configure nat instance, used to translate network address.";
+        leaf instance-name {
+          type string {
+            length "1..31";
+          }
+          description
+            "Specify the name of a NAT instance.";
+        }
+        leaf instance-id {
+          type uint16 {
+            range "1..4095";
+          }
+          description
+            "Specify the id of a NAT instance.";
+        }
+        container bind-service-instance-group {
+          uses cgn-common:bind-serv-inst-group;
+          description "Configure the binded service-instance-group for nat instance.";
+        }
+        container port-range {
+          when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+          presence "Enable/Disable the port-range configuration for the nat instance."; 
+          uses cgn-common:port-range-set;
+          description
+            "Configure NAT port-range initial and extend.";
+        }
+        container redirect-with-ids {
+          description "List of redirect ip strategies.";
+          list redirect-with-id {
+            key "id direction";
+            description "Configure the redirect ip strategy.";
+            leaf id {
+              type uint8 {
+                range 1..128;
+              }
+              description "Redirect-id.";
+            }
+            leaf direction {
+              type enumeration {
+                enum "inbound" {
+                  value 1;
+                  description "Inbound direction.";
+                }
+                enum "outbound" {
+                  value 2;
+                  description "Outbound direction.";
+                }
+              }
+              description "Specifies the direction of Redirect policy.";
+            }
+            leaf ip-nexthop {
+              type inet:ipv4-address-no-zone;
+              mandatory true;
+              description "Specifies the IP address for redirect nexthop.";
+            }
+            leaf protocol {
+              type uint16 {
+                range 1..255;
+              }
+              description "Protocol, tcp is 6, udp is 17.";
+            }
+            leaf source-vpn {
+              when "../source-ip";
+              type leafref {
+                path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+              }
+              must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+              description "Source VPN instance name.";
+            }
+            leaf source-ip {
+              type inet:ipv4-address-no-zone;
+              description "Display server-map entry information with a specified source IP address.";
+            }
+            leaf source-port {
+              type uint16 {
+                range "0..65535";
+              }
+              description "Source port.";
+            }
+            leaf source-ip-mask {
+              when "../source-ip";
+              type inet:ipv4-address-no-zone;
+              mandatory true;
+              description
+                "Specifies the mask of the source IP address.";
+            }
+            leaf destination-vpn {
+              when "../destination-ip";
+              type leafref {
+                path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+              }
+              must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+              description "Destination VPN instance name.";
+            }
+            leaf destination-ip {
+              type inet:ipv4-address-no-zone;
+              description "Display server-map entry information with a specified destination IP address.";
+            }
+            leaf destination-port {
+              type uint16 {
+                range "0..65535";
+              }
+              description "Destination port.";
+            }
+            leaf destination-ip-mask {
+              when "../destination-ip";
+              type inet:ipv4-address-no-zone;
+              mandatory true;
+              description
+                "Specifies the mask of the destination IP address.";
+            }
+          }
+        }
+        container address-groups {
+          description
+            "List of address-group.";
+          list address-group {
+            key "group-name group-id";
+            unique "group-name";
+            unique "group-id";
+            description
+              "Configure nat address-group, used to set public address.";
+            leaf group-name {
+              type string {
+                length "1..31";
+              }
+              description
+                "Address group name.";
+            }
+            leaf group-id {
+              type uint8 {
+                range "0..127";
+              }
+              description
+                "Address group id.";
+            }
+            leaf no-pat {
+              type boolean;
+              default "false";
+              description
+                "Enable/disable not use address translation with PAT.";
+            }
+            leaf vpn-name {
+              type leafref {
+                path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+              }
+              must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+              description
+                "VPN instance name.";
+            }
+            choice address {
+              description
+                "Specify address parameters.";
+              case address-segment {
+                description
+                  "Specify address segment.";
+                leaf start-address {
+                  type inet:ipv4-address-no-zone;
+                  mandatory true;
+                  description
+                    "Specify the start address of the section.";
+                }
+                choice end {
+                  mandatory true;
+                  description
+                    "Specify the end in a address segment.";
+                  case address {
+                    description
+                          "Specify the end address.";
+                    leaf end-address {
+                      type inet:ipv4-address-no-zone;
+                      description
+                        "Specify the end address of the section.";
+                    }
+                  }
+                  case mask {
+                    description
+                      "Specify the mask.";
+                    leaf mask-length {
+                      type uint8 {
+                          range "1..32";
+                      }
+                      description
+                        "Specifies the mask length of public IP addresses.";
+                    }
+                  }
+                }
+              }
+              case easy-ip {
+                description
+                  "Configure public address by unnumbered the ip address of interface.";
+                leaf interface {
+                  when "(not(../no-pat) or ../no-pat='false') and not(../vpn-name)";
+                  type leafref {
+                    path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+                  }
+                  must "(/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Ethernet') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Pos') or  (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Eth-Trunk') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Ip-Trunk') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Serial') or  (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='ATM') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='GigabitEthernet')  or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='100GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='10GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='25GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='40GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Vlanif') or  (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Mp-group') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='LoopBack') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='XGigabitEthernet') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='FlexE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='50|100GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='50GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='400GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='200GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='FlexE-50-100G')";
+                  description
+                    "Specifies the unnumbered interface name.";
+                }
+              }
+              case bind-ip-pool {
+                description
+                  "Bind global nat ip pool.";
+                leaf ip-pool {
+                  when "(not(../no-pat) or ../no-pat='false') and not(../vpn-name)";
+                  type leafref {
+                    path "/cgn:cgn/cgn:nat-ip-pools/cgn:nat-ip-pool/cgn:pool-name";
+                  }
+                  description
+                    "Specifies NAT ip pool name.";
+                }
+              }
+              case multi-sections {
+                description "Multiple sections for nat address-group.";
+                container sections {
+                  description "List of section.";
+                  list section {
+                    must "count(/cgn-nat444:cgn-nat444/cgn-nat444:nat-instances/cgn-nat444:nat-instance/cgn-nat444:address-groups/cgn-nat444:address-group/cgn-nat444:sections/cgn-nat444:section/cgn-nat444:interface)<=1";
+                    key "section-id";
+                    description "Configure public address in a section.";
+                    leaf section-id {
+                      type uint8 {
+                        range "0..15";
+                      }
+                      description "Specify the id of a section.";
+                    }
+                    choice address {
+                      mandatory true;
+                      description "Specify address parameters.";
+                      case address-segment {
+                        description "Specify address segment.";
+                        leaf start-address {
+                          type inet:ipv4-address-no-zone;
+                          mandatory true;
+                          description "Specify the start address of the section.";
+                        }
+                        choice end {
+                          mandatory true;
+                          description "Specify the end in a address segment.";
+                          case address {
+                            description "Specify the end address of the section.";
+                            leaf end-address {
+                              type inet:ipv4-address-no-zone;
+                              description "Specify the end address of the section.";
+                            }
+                          }
+                          case mask {
+                            description "Specify the mask.";
+                            leaf mask-length {
+                              type uint8 {
+                                  range "20..32";
+                              }
+                              description "Specifies the mask length of public IP addresses.";
+                            }
+                          }
+                        }
+                        leaf new-end-address {
+                          type inet:ipv4-address-no-zone;
+                          config false;
+                          description "Specify the end address of the section.";
+                        }
+                      }
+                      case easy-ip {
+                        description "Configure public address by unnumbered the ip address of interface.";
+                        leaf interface {
+                          when "not(../../../no-pat) or ../../../no-pat='false'";
+                          type leafref {
+                            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+                          }
+                          must "(/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Ethernet') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Pos') or  (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Eth-Trunk') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Ip-Trunk') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Serial') or  (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='ATM') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='GigabitEthernet')  or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='100GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='10GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='25GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='40GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Vlanif') or  (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Mp-group') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='LoopBack') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='XGigabitEthernet') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='FlexE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='50|100GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='50GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='400GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='200GE') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='FlexE-50-100G')";
+                          must "(not(../../../vpn-name) and /ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:vrf-name = '_public_') or ../../../vpn-name = /ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:vrf-name";
+                          description "Specifies the unnumbered interface name.";
+                        }
+                      }
+                    }
+                    leaf lock {
+                      type boolean;
+                      default "false";
+                      description "Enable/disable lock section.";
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        container nat-translate {
+          when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+          description
+            "Configure the translation policy of a NAT address pool.";
+          choice rule-type {
+            description
+              "Specifies ACL.";
+            case acl-rule {
+              description "Basic or advanced ACL.";
+              container bind-acls {
+                description "List of binded acls.";
+                list bind-acl {
+                  key "acl-number address-group-name";
+                  unique "acl-number";
+                  unique "address-group-name";
+                  description "Configure ACL.";
+                  leaf acl-number {
+                    type leafref {
+                      path "/acl:acl/acl:groups/acl:group/acl:identity";
+                    }
+                    must "(/acl:acl/acl:groups/acl:group[acl:identity=current()][acl:type='basic']) or (/acl:acl/acl:groups/acl:group[acl:identity=current()][acl:type='advance'])";
+                    description
+                      "Specifies the number of a basic or advanced ACL.";
+                  }
+                  leaf address-group-name {
+                    type leafref {
+                      path "../../../../address-groups/address-group/group-name";
+                    }
+                    description 
+                      "Specifies the name of a public IP address pool.";
+                  }
+                }
+              }
+            }
+            case any-rule {
+              description
+                "Ignore ACL rules.";
+              container address-group {
+                description "Configure any acl rule of a NAT address pool.";
+                leaf address-group-name {
+                  type leafref {
+                    path "../../../address-groups/address-group/group-name";
+                  }
+                  description 
+                    "Specifies the name of a public IP address pool.";
+                }
+              }
+            }
+          }
+        }
+        uses cgn-common:alg;
+        container dns-alg-dynamic {
+          description "Configure the the DNS alg dynamic for nat444.";
+          leaf mapping-address-group {
+            type leafref {
+              path "../../address-groups/address-group/group-name";
+            }
+            must "../../address-groups/address-group[group-name=current()]/no-pat='true'";
+            description
+              "Specify the address-group name from which the DNS ALG obtains the public IP address, must be no-pat address-group.";
+          }
+          leaf server-map-aging-time {
+            type uint16 {
+              range "600..40000";
+            }
+            units "s";
+            default "600";
+            description
+              "Specify the dns servermap aging-time.";
+          }
+        }
+        uses cgn-common:pcp-common;
+        container filter-mode {
+          when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+          description "Configure the filter mode for nat444.";
+          leaf mode {
+            type enumeration {
+              enum "symmetric" {
+                value 0;
+                description "Symmetric mode.";
+              }
+              enum "full-cone" {
+                value 1;
+                description "Full-cone mode.";
+              }
+              enum "full-cone-with-5-tuple-session" {
+                value 2;
+                description "Full-cone and 5-tuple-session mode.";
+              }
+            }
+            must "not (../../pcp/pcp-enable/enable='true' and ../mode='full-cone-with-5-tuple-session')";
+            default "symmetric";
+            description "NAT filter mode.";
+          }
+        }
+        container log {
+          description "Configure nat log.";
+          uses cgn-common:log-host;
+          container send-mode {
+            description "Configure nat session log send mode.";
+            uses cgn-common:session-log-send-mode;
+          }
+          container session-log {
+            must "not(./period-value) or (./period-value=0) or (/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board' and ./period-value>=360) or (/vsm:vsm/vsm:on-board-mode/vsm:mode='on-board' and ./period-value>=20)";
+            description "Configure NAT session log.";
+            leaf enable {
+              type boolean;
+              default "false";
+              description
+                "Enable/disable session log.";
+            }
+            leaf primary-log-type {
+              when "../enable='true'";
+              type nat444-session-log-type;
+              default "elog";
+              description "Specify the format of primary session log.";
+            }
+            leaf secondary-log-type {
+              when "../primary-log-type";
+              type nat444-session-log-type;
+              description "Specify the format of secondary session log.";
+            }
+            leaf period-value {
+              when "../enable='true'";
+              type uint16 {
+                range "0..3600";
+              }
+              units min;
+              description "Specify the period value of session log cycle.";
+            }
+            leaf netstream-start-time-enable {
+              type boolean;
+              default "false";
+              description "Enable/disable netstream template log start-time field.";
+            }
+            leaf netstream-end-time-enable {
+              type boolean;
+              default "false";
+              description "Enable/disable netstream template log end-time field.";
+            }
+          }
+          container user-log {
+            when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+            description "Configure NAT user log.";
+            leaf enable {
+              type boolean;
+              default "false";
+              description
+                "Enable/disable user log.";
+            }
+            leaf primary-log-type {
+              when "../enable='true'";
+              type nat444-user-log-type;
+              default "syslog";
+              description "Specify the format of primary user log.";
+            }
+            leaf secondary-log-type {
+              when "../primary-log-type";
+              type nat444-user-log-type;
+              description "Specify the format of secondary user log.";
+            }
+          }
+          container log-mode {
+            description "Configure NAT session log mode.";
+            uses cgn-common:session-log-create-mode;
+          }
+        }
+        container statistics-enable{
+          description "Configure NAT statistics.";
+          container usage-statistics-enable {
+            description "Configure NAT usage statistics.";
+            leaf port-usage {
+              when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+              type boolean;
+              default "false";
+              description
+                "Enable/disable port-usage statistics.";
+            }
+            leaf session-usage {
+              when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+              type boolean;
+              default "false";
+              description
+                "Enable/disable session-usage statistics.";
+            }
+            leaf address-pool-usage {
+              type boolean;
+              default "false";
+              description
+                "Enable/disable address-pool statistics.";
+            }
+          }
+          container fast-forwarding {
+              when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+              description "Configure the fast-forwarding statistics enable of the instance.";
+              uses cgn-common:fast-forwarding-statistics;
+          }
+        }
+        container nat-server {
+          must "not(./attribute/using-address-group-ip='false' and count(./server-mappings/server-mapping[extendable='true'])>0)";
+          must "not(./attribute/using-address-group-ip='false' and count(./easyip-mappings/easyip-mapping[extendable='true'])>0)";
+          description
+            "Configure nat server.";
+          container attribute {
+            description
+              "Configure nat server attribute.";
+            leaf using-address-group-ip {
+              type boolean;
+              default "true";
+              description
+                "Enable/disable the feature that nat server can use the public IP address in the address group.";
+            }
+          }
+          container server-mappings {
+            description
+              "List of server-mapping.";
+            list server-mapping {
+              must "not(./extendable='true' and ./outbound='true')";
+              must "(./track-nqa-test-name and ./track-nqa-admin-name) or (not(./track-nqa-test-name) and not(./track-nqa-admin-name))";
+              key "protocol global-ip global-port global-vpn";
+              unique "inside-address inside-port inside-vpn";
+              description "Configure server-mapping.";
+              leaf protocol {
+                type uint8 {
+                  ext:value-meaning {
+                    ext:item 0 {
+                      ext:meaning any;
+                      description "Value 6 means any protocol.";
+                    }
+                    ext:item 6 {
+                      ext:meaning tcp;
+                      description "Value 6 means TCP protocol.";
+                    }
+                    ext:item 17 {
+                      ext:meaning udp;
+                      description "Value 17 means UDP protocol.";
+                    }
+                  }
+                }
+                description "Protocol type.";
+              }
+              leaf global-ip {
+                type inet:ipv4-address-no-zone;
+                description "Specify the external IP address of the server.";
+              }
+              leaf global-port {
+                type inet:port-number;
+                must "(../protocol=6 or ../protocol=17) or ../global-port=0";
+                description "Indicate global port of NAT Server, Value 0 means any port.";
+              }
+              leaf global-vpn {
+                type leafref {
+                  path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+                }
+                must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+                description
+                  "Specify the name of VPN instance of the external side, the name of public network is _public_.";
+              }
+              choice global-end-ip {
+                description "Specifies the end address of global addresses.";
+                case address {
+                  description "End IP address in ip format.";
+                  leaf global-end-address {
+                    type inet:ipv4-address-no-zone;
+                    description "Specify the global end address.";
+                  }
+                }
+                case mask-ip {
+                  description "End IP address in mask ip format.";
+                  leaf global-mask-ip {
+                    type inet:ipv4-address-no-zone;
+                    description "Specify the global end address by mask ip.";
+                  }
+                }
+                case mask-length {
+                  description "End IP address in mask length format.";
+                  leaf global-mask-length {
+                    type uint8 {
+                      range "16..31";
+                    }
+                    description "Specifies the global end address by mask length.";
+                  }
+                }
+              }
+              leaf inside-address {
+                type inet:ipv4-address-no-zone;
+                mandatory true;
+                description "Indicate inside IP address.";
+              }
+              choice inside-end-ip {
+                when "global-end-address or global-mask-ip or global-mask-length";
+                mandatory true;
+                description "Specifies the end address of inside addresses.";
+                case address {
+                  description "End IP address in ip format.";
+                  leaf inside-end-address {
+                    type inet:ipv4-address-no-zone;
+                    description "Specify the inside end address.";
+                  }
+                }
+                case mask-ip {
+                  description "End IP address in mask ip format.";
+                  leaf inside-mask-ip {
+                    type inet:ipv4-address-no-zone;
+                    description "Specifies the inside mask ip.";
+                  }
+                }
+                case mask-length {
+                  description "End IP address in mask length format.";
+                  leaf inside-mask-length {
+                    type uint8 {
+                      range "16..31";
+                    }
+                    description "Specifies the inside mask length.";
+                  }
+                }
+              }
+              leaf inside-port {
+                when "../global-port!=0";
+                type uint16 {
+                  range "1..65535";
+                }
+                mandatory true;
+                description "Indicate inside port of NAT Server.";
+              }
+              leaf inside-vpn {
+                type leafref {
+                  path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+                }
+                must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+                description
+                  "Specify the name of VPN instance of the inside, the name of public network is _public_.";
+              }
+              leaf extendable {
+                type boolean;
+                must "not((../global-end-address or ../global-mask-ip or ../global-mask-length) and ../extendable='true')";
+                default false;
+                description "Enable/disable the extendable function, public network users can access internal servers only when intranet users go online.";
+              }
+              leaf outbound {
+                type boolean;
+                must "not((../global-end-address or ../global-mask-ip or ../global-mask-length) and ../outbound='true')";
+                default false;
+                description "Enable/disable the outbound function, the same private IP address can correspond to different public IP addresses.";
+              }
+              leaf track-nqa-admin-name {
+                type leafref {
+                  path "/nqa:nqa/nqa:instances/nqa:instance/nqa:admin-name";
+                }
+                description "NQA test administrator name.";
+              }
+              leaf track-nqa-test-name {
+                type leafref {
+                  path "/nqa:nqa/nqa:instances/nqa:instance/nqa:test-name";
+                }
+                description "Name of an NQA test instance.";
+              }
+            }
+          }
+          container easyip-mappings {
+            description "List of easy-ip mappings.";
+            list easyip-mapping {
+              key "protocol global-interface global-port";
+              unique "global-interface";
+              description "Configure easyip mapping.";
+              leaf protocol {
+                type enumeration {
+                  enum "tcp" {
+                    value 6;
+                    description "TCP protocol.";
+                  }
+                  enum "udp" {
+                    value 17;
+                    description "UDP protocol.";
+                  }
+                }
+                description "Protocol type.";
+              }
+              leaf global-interface {
+                type leafref {
+                    path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+                }
+                must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ip:ipv4/ip:addresses/ip:address/ip:ip";
+                description "Specify the ingress interface of internet users.";
+              }
+              leaf global-port {
+                type uint16 {
+                  range "1..65535";
+                }
+                description "Indicate global port of NAT Server.";
+              }
+              leaf inside-address {
+                type inet:ipv4-address-no-zone;
+                mandatory true;
+                description "Indicate inside IP address.";
+              }
+              leaf inside-port {
+                type uint16 {
+                  range "1..65535";
+                }
+                mandatory true;
+                description "Indicate inside port of NAT Server.";
+              }
+              leaf inside-vpn {
+                type leafref {
+                    path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+                }
+                must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+                description
+                    "Specify the name of VPN instance of the inside.";
+              }
+              leaf extendable {
+                type boolean;
+                default "false";
+                description
+                  "Enable/disable extendable feature. When extendable, public network users can access an internal server only after private network users get online.";
+              }
+            }
+          }
+        }
+        container inter-chassis-distributing {
+          when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+          presence "Configure the IP address for distributing traffic to the master and slave chassis.";
+          description
+            "Configure the IP address for distributing traffic to the master and slave chassis.";
+          leaf ip-address {
+            type inet:ipv4-address-no-zone;
+            mandatory true;
+            description
+              "Specifies the IP address for distributing traffic to the master and slave chassis.";
+          }
+          leaf mask-length {
+            type uint8 {
+              range "16..32";
+            }
+            mandatory true;
+            description
+              "Specifies the mask length of the IP address.";
+          }
+          leaf vpn-name {
+            type leafref {
+              path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+            }
+            must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+            description
+              "VPN instance name.";
+          }
+        }
+        container port-reuse {
+            when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+            description "Configure the port reuse for nat instance.";
+            uses cgn-common:port-reuse;
+        }
+        container user-migration {
+          when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+          description "Configure the user migration parameter.";
+          leaf migration {
+            type boolean;
+            default "false";
+            description "Enable/disable user migration for distributed-nat.";
+          }
+          leaf recover {
+            when "../migration='true'";
+            type boolean;
+            default "true";
+            description "Enable/disable user migration recover for distributed-nat.";
+          }
+          leaf delay-time {
+            when "../migration='true'";
+            type uint16 {
+              range "120..3600";
+            }
+            units "s";
+            default "360";
+            description "Specifies the recover delay time of user migration.";
+          }
+        }
+        container warm-backup-profiles {
+          description
+            "List of the warm backup profile.";
+          list warm-backup-profile {
+            must "/bras-cu-agent:bras-cu-agent/bras-cu-agent:cu-agent";
+            key "name";
+            max-elements 64;
+            description
+              "Configure the warm backup profile.";
+            leaf name {
+              type string {
+                length "1..32";
+              }
+              description
+                "Warm backup profile name.";
+            }
+          }
+        }
+        container security {
+          description "Configure security configuration of the nat instance.";
+          container port-limit {
+            description "Configure the port limit for nat instance.";
+            uses cgn-common:port-limit;
+          }
+        }
+        container alarm {
+          description "Configure alarm configuration of the nat instance.";
+          container access-user-limit {
+            when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+            description "Configure the access user limit for nat instance.";
+            uses cgn-common:alarm-access-user-limit;
+          }
+        }
+        container elog-version {
+          description "Configure session elog version of the nat instance.";
+          uses cgn-common:elog-version;
+        }
+        container centralized-backup {
+          when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+          must "../cgn-nat444:bind-service-instance-group/cgn-nat444:name and count(/vsm:vsm/vsm:service-instance-groups/vsm:service-instance-group[vsm:group-name=current()/../cgn-nat444:bind-service-instance-group/cgn-nat444:name]/vsm:binded-service-locations/vsm:binded-service-location)>0";
+          presence "Configure centralized-backup of the nat instance.";
+          description "Configure centralized-backup of the nat instance.";
+          leaf enable {
+            type boolean;
+            default "false";
+            description "Enable/disable centralized-backup in the instance.";
+          }
+          leaf down-number {
+            type uint8 {
+              range "1..32";
+            }
+            must "../enable='true'";
+            default "1";
+            description "Specifies down-number for centralized-backup in the instance.";
+          }
+        }
+        container five-tuple-port-reuse {
+          when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+          description "Configure the five tuple port reuse for ds-lite instance.";
+          uses cgn-common:five-tuple-port-reuse;
+        }
+        uses cgn-common:nat-session-aging;
+      }
+    }
+  }
+  rpc get-nat-outif-statistics {
+    description "Get the match statistics of the ACL which is bound to nat on an interface.";
+    input {
+      leaf interface {
+        type leafref {
+          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        mandatory true;
+        description
+          "Specifies the name of the interface.";
+      }
+      leaf acl-group {
+        type leafref {
+          path "/acl:acl/acl:groups/acl:group/acl:identity";
+        }
+        mandatory true;
+        description
+          "Specifies the number of a basic or advanced ACL.";
+      }
+    }
+    output {
+      container acl-rule-matched-infos {
+        description "List of ACL rule matched information.";
+        list acl-rule-matched-info {
+          key "acl-rule-id";
+          description "ACL rule matched information.";
+          leaf acl-rule-id {
+          type uint32;
+          description
+            "Specifies the ACL rule ID.";
+          }
+          leaf matched-packets {
+          type uint64;
+          description
+            "Specifies the number of matched packets.";
+          }
+          leaf matched-bytes {
+          type uint64;
+          description
+            "Specifies the number of matched bytes.";
+          }
+          leaf invalid-statistics {
+          type boolean;
+          default "false";
+          description
+            "Indicates that no statistics resource is obtained.";
+          }
+        }
+      }
+    }
+  }
+  rpc reset-nat-outif-statistics {
+    description "Reset the match statistics of the ACL which is bound to nat on an interface.";
+    input {
+      leaf interface {
+        type leafref {
+          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        mandatory true;
+        description
+          "Specifies the name of the interface.";
+      }
+      leaf acl-group {
+        type leafref {
+          path "/acl:acl/acl:groups/acl:group/acl:identity";
+        }
+        mandatory true;
+        description
+          "Specifies the number of a basic or advanced ACL.";
+      }
+    }
+  }
+  augment "/qos:qos/qos:classifier-template/qos:traffic-behaviors/qos:traffic-behavior" {
+    description "Configure binding a traffic behavior to a NAT instance.";
+    container bind-nat {
+      description
+        "Configure binding a traffic behavior to a NAT instance.";
+      leaf nat-instance {
+        type leafref {
+          path "/cgn-nat444:cgn-nat444/cgn-nat444:nat-instances/cgn-nat444:nat-instance/cgn-nat444:instance-name";
+        }
+        description
+          "Specifies the name of a NAT instance.";
+      }
+    }
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface" {
+    description
+        "Configure binding an address pool to an ACl on a specified interface in the simplified NAT scenario for NAT traffic distribution on an outbound interface.";
+    container bind-nat {
+      presence "Enable/Disable the bind-nat configuration for the interface.";
+      description
+        "Configure binding an address pool to an ACl on a specified interface in the simplified NAT scenario for NAT traffic distribution on an outbound interface.";
+      leaf acl {
+        type leafref {
+          path "/acl:acl/acl:groups/acl:group/acl:identity";
+        }
+        must "(/acl:acl/acl:groups/acl:group[acl:identity=current()]/acl:type='basic') or (/acl:acl/acl:groups/acl:group[acl:identity=current()]/acl:type='advance')";
+        mandatory true;
+        description
+          "Specifies the number of a basic or advanced ACL.";
+      }
+      leaf nat-instance {
+        type leafref {
+          path "/cgn-nat444:cgn-nat444/cgn-nat444:nat-instances/cgn-nat444:nat-instance/cgn-nat444:instance-name";
+        }
+        mandatory true;
+        description
+          "Specifies the name of a NAT instance.";
+      }
+      leaf deny-action {
+        type enumeration {
+          enum "drop" {
+            value 0;
+            description
+              "Traffic matching the ACL deny rule is discarded.";
+          }
+          enum "forward" {
+            value 1;
+            description
+              "Traffic matching the ACL deny rule is transparently transmitted.";
+          }
+        }
+        default "drop";
+        description "Configure the action for the traffic matching the ACL deny rule.";
+      }
+      leaf precedence {
+        type uint16 {
+          range "0..8191";
+        }
+        default "0";
+        description
+          "Specifies a precedence index.";
+      }
+    }
+    container bind-nat-statistics {
+      description
+        "Configure the ACL statistics function which is bind to NAT on an interface.";
+      leaf enable {
+        type boolean;
+        default "false";
+        description "Enable/disable the ACL statistics function which is bind to NAT on an interface.";
+      }
+    }
+  }
+  ext:task-name "nat";
+}
+
+  

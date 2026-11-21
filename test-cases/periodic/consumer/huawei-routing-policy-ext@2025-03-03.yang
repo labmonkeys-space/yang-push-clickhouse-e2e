@@ -1,0 +1,257 @@
+/*
+Copyright (C) 2019-2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-routing-policy-ext {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-routing-policy-ext";
+  prefix rtp-ext;
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-qos {
+    prefix qos;
+  }
+  import huawei-routing-policy {
+    prefix rtp;
+  }
+  import huawei-mpls {
+    prefix mpls;
+  }
+  import huawei-mpls-te {
+    prefix mpls-te;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-l3vpn {
+    prefix l3vpn;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+  description
+    "Routing policies are used to filter routes and control the receiving and advertising of routes. By changing the route attributes, such as reachability, you can change the path through which the traffic passes.";
+  revision 2025-03-03 {
+    description
+      "Add route-exist list.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-10 {
+    description
+      "The node behavior name is obsolete.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-09-03 {
+    description
+      "Modify the description of the leaf.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-04-03 {
+    description
+      "Modify the description of the container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-03-03 {
+    description
+      "Modify the description of the container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-12-14 {
+    description
+      "Add container:apply-stitch-pmsi.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-04-27 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "route-base";
+  augment "/rtp:routing-policy/rtp:policy-definitions/rtp:policy-definition/rtp:nodes/rtp:node/rtp:actions/rtp:apply-qos-parameter/rtp:set-qos-parameter" {
+    description
+      "Augment the huawei-routing-policy model to add apply behavior configuration.";
+    case behavior {
+        status obsolete;
+        description
+          "Set behavior. The case node behavior is obsolete.";
+        leaf name {
+        type leafref {
+          path "/qos:qos/qos:classifier-template/qos:traffic-behaviors/qos:traffic-behavior/qos:name";
+        }
+        status obsolete;
+        description
+          "Name of traffic behavior.";
+      }
+    }
+  }
+  augment "/rtp:routing-policy/rtp:policy-definitions/rtp:policy-definition/rtp:nodes/rtp:node/rtp:actions" {
+    description
+      "Augment the huawei-routing-policy model to add actions configuration.";
+    container apply-stitch-pmsi {
+      must "(pmsi-type='incoming' and p2mp-template) or (pmsi-type='mldp' and not(p2mp-template)) or (pmsi-type='rsvp-te' and not(root-ip) and p2mp-template)";
+      presence "Create parameters of apply stitch-pmsi.";
+      description
+        "Enable/disable the PMSI attribute.";
+      leaf pmsi-type {
+          type enumeration {
+            enum "mldp" {
+              value 0;
+              description
+                "MLDP type.";
+            }
+            enum "rsvp-te" {
+              value 1;
+              description
+                "RSVP-TE type.";
+            }
+            enum "incoming" {
+              value 2;
+              description
+                "Incoming type.";
+            }
+          }
+          mandatory true;
+          description
+            "PMSI attribute type.";
+      }
+      leaf root-ip {
+        when "not(../pmsi-type='rsvp-te')";
+        type inet:ipv4-address-no-zone;
+        must "(../pmsi-type='incoming' and ../p2mp-template) or (../pmsi-type='mldp' and not(../p2mp-template))";
+        description
+          "MLDP root IP address.";
+      }
+      leaf p2mp-template {
+        when "not(../pmsi-type='mldp')";
+        type leafref {
+            path "/mpls:mpls/mpls-te:te/mpls-te:p2mp-templates/mpls-te:p2mp-template/mpls-te:name";
+          }
+        must "../pmsi-type='incoming' or (../pmsi-type='rsvp-te' and not(../root-ip))";
+        description
+          "P2MP TE template.";
+      }
+    }
+  }
+  augment "/rtp:routing-policy" {
+      description
+        "Augment the huawei-routing-policy model to add route exists list.";
+      container route-exists-lists {
+        description
+          "List of conditional routes.";
+        list route-exists-list {
+          must "count(ipv4-prefixs/ipv4-prefix) + count(ipv6-prefixs/ipv6-prefix) <= 128" {
+            description "The total number of IPv4 prefix lists and IPv6 prefix lists must be less than 128.";
+          }
+          key "name";
+          max-elements 1024;
+          description
+            "Configure a conditional route list.";
+          leaf name {
+            type string {
+            length "1..63";
+            }
+            description
+            "Configure a conditional route list name.";
+          }
+          container ipv4-prefixs {
+            description
+              "List of IPv4 prefixes.";
+            list ipv4-prefix {
+              key "instance-name ipv4-address masklength";
+              max-elements 128;
+              description
+                "Configure an IPv4 address and mask length for the specified VPN instance.";      
+              leaf instance-name {
+                type leafref {
+                path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+                }
+               must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+                description
+                "Name of a VPN instance.";
+              }
+              leaf ipv4-address {
+                type inet:ipv4-address;
+                description
+                "IPv4 address.";
+              }
+              leaf masklength {
+                type uint8 {
+                range "0..32";
+                }
+                description
+                "Mask length.";
+              }
+            }
+          }
+          container ipv6-prefixs {
+            description
+              "List of IPv6 Prefixes.";  
+            list ipv6-prefix {
+              key "instance-name ipv6-address masklength";
+              max-elements 128;
+              description
+                "Configure an IPv6 address and mask length for the specified VPN instance.";      
+              leaf instance-name {
+                type leafref {
+                path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+                }
+                must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv6-unicast']";
+                description
+                "Name of a VPN instance.";
+              }
+              leaf ipv6-address {
+                type inet:ipv6-address;
+                description
+                "IPv6 address.";
+              }
+              leaf masklength {
+                type uint8 {
+                range "0..128";
+                }
+                description
+                "Mask length.";
+              }
+            }
+          }
+        }
+      }
+  }
+  augment "/rtp:routing-policy/rtp:policy-definitions/rtp:policy-definition/rtp:nodes/rtp:node/rtp:conditions" {
+    description
+      "Augment the huawei-routing-policy model to add conditional configurations.";
+    container match-route-exists-list {
+    description
+      "Configure a matched conditional route list.";
+    leaf route-exists-list-ref {
+      type leafref {
+      path "/rtp:routing-policy/rtp-ext:route-exists-lists/rtp-ext:route-exists-list/rtp-ext:name";
+      }
+      description
+      "Name of a conditional route list.";
+    }
+    leaf matches-all {
+      when "../route-exists-list-ref";
+      type empty;
+      description
+        "All the prefixes must exist.";
+      }
+    }
+  }
+}
+  

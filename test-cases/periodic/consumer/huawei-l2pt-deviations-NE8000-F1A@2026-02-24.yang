@@ -1,0 +1,184 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-l2pt-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-l2pt-deviations-NE8000-F1A";
+  prefix l2pt-devs-NE8000-F1A;
+
+  import huawei-l2pt {
+    prefix l2pt;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-ethernet {
+    prefix ethernet;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-l2pt module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef protocol-type-deviations {
+    type enumeration {
+      enum EOAM3AH {
+        value 1;
+        description
+          "Ethernet in the First mile OAM.";
+      }
+      enum LLDP {
+        value 2;
+        description
+          "Link Layer discovery protocol.";
+      }
+      enum GMRP {
+        value 3;
+        description
+          "GARP multicast registration protocol.";
+      }
+      enum GVRP {
+        value 4;
+        description
+          "GARP VLAN registration protocol.";
+      }
+      enum DLDP {
+        value 5;
+        description
+          "Device link detection protocol.";
+      }
+      enum HGMP {
+        value 6;
+        description
+          "HUAWEI group management protocol.";
+      }
+      enum VTP {
+        value 7;
+        description
+          "VLAN trunking protocol.";
+      }
+      enum DTP {
+        value 8;
+        description
+          "Dynamic trunking protocol.";
+      }
+      enum CDP {
+        value 9;
+        description
+          "Cisco discovery protocol.";
+      }
+      enum UDLD {
+        value 10;
+        description
+          "Unidirectional link detection.";
+      }
+      enum PAGP {
+        value 11;
+        description
+          "Port aggregation protocol.";
+      }
+      enum PVST-PLUS {
+        value 12;
+        description
+          "Per VLAN spanning tree plus.";
+      }
+      enum STP {
+        value 13;
+        description
+          "Spanning tree protocol.";
+      }
+      enum LACP {
+        value 14;
+        description
+          "Link aggregation control protocol.";
+      }
+      enum MVRP {
+        value 15;
+        description
+          "Multiple VLAN registration protocol.";
+      }
+      enum MMRP {
+        value 16;
+        description
+          "Multiple MAC registration protocol.";
+      }
+      enum E-LMI {
+        value 17;
+        description
+          "Ethernet local management interface.";
+      }
+      enum 802.1X {
+        value 18;
+        description
+          "802.1X protocol.";
+      }
+      enum SSTP {
+        value 19;
+        description
+          "Shared spanning tree protocol.";
+      }
+    }
+    description
+      "Protocol Type.";
+  }
+
+  deviation "/l2pt:l2pt/l2pt:bpdu-attribute/l2pt:tagged-packet-enable" {
+    deviate not-supported;
+  }
+  deviation "/l2pt:l2pt/l2pt:user-defined-protocols" {
+    deviate not-supported;
+  }
+  deviation "/l2pt:reset-well-known-protocol-statistics" {
+    deviate not-supported;
+  }
+  deviation "/l2pt:reset-user-defined-protocol-statistics" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/ethernet:main-interface/ethernet:l2-attribute/l2pt:l2pt/l2pt:user-defined-protocols" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/l2pt:l2pt/l2pt:user-defined-protocols" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/l2pt:bpdu-tunnel" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/l2pt:bpdu-tunnel" {
+    deviate not-supported;
+  }
+  deviation "/l2pt:l2pt/l2pt:well-known-protocol/l2pt:group-macs/l2pt:group-mac/l2pt:protocol-type" {
+    deviate replace {
+      type l2pt-devs-NE8000-F1A:protocol-type-deviations;
+    }
+  }
+  deviation "/l2pt:l2pt/l2pt:well-known-protocol/l2pt:protocols/l2pt:protocol/l2pt:protocol-type" {
+    deviate replace {
+      type l2pt-devs-NE8000-F1A:protocol-type-deviations;
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/ethernet:main-interface/ethernet:l2-attribute/l2pt:l2pt/l2pt:well-known-protocols/l2pt:well-known-protocol/l2pt:protocol-type" {
+    deviate replace {
+      type l2pt-devs-NE8000-F1A:protocol-type-deviations;
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/l2pt:l2pt/l2pt:well-known-protocols/l2pt:well-known-protocol/l2pt:protocol-type" {
+    deviate replace {
+      type l2pt-devs-NE8000-F1A:protocol-type-deviations;
+    }
+  }
+}
+
+  

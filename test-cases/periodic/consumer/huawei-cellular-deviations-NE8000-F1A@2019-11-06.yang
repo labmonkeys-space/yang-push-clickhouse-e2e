@@ -1,0 +1,281 @@
+/*
+Copyright (C) 2019 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-cellular-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-cellular-deviations-NE8000-F1A";
+  prefix cellular-devs-NE8000-F1A;
+
+  import huawei-cellular {
+    prefix cellular;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-cellular module.";
+
+  revision 2019-11-06 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef connection-mode-type-nr-lte-deviations {
+    type enumeration {
+      enum auto {
+        value 0;
+        description
+          "Auto mode.";
+      }
+      enum lte-only {
+        value 2;
+        description
+          "LTE-only mode.";
+      }
+      enum nr-only {
+        value 4;
+        description
+          "NR-only mode.";
+      }
+      enum nr-lte {
+        value 5;
+        description
+          "NR-LTE mode.";
+      }
+    }
+    description
+      "Connection mode type.";
+  }
+
+  typedef lte-frequency-type-router-deviations {
+    type enumeration {
+      enum band1 {
+        value 1;
+        description
+          "Indicates that the frequency band of the LTE network is Band 1 (transmit: 1920 MHz to 1980 MHz; receive: 2110 MHz to 2170 MHz).";
+      }
+      enum band3 {
+        value 3;
+        description
+          "Indicates that the frequency band of the LTE network is Band 3 (transmit: 1710 MHz to 1785 MHz; receive: 1805 MHz to 1880 MHz).";
+      }
+      enum band5 {
+        value 5;
+        description
+          "Indicates that the frequency band of the LTE network is Band 5 (transmit: 824 MHz to 849 MHz; receive: 869 MHz to 894 MHz).";
+      }
+      enum band7 {
+        value 7;
+        description
+          "Indicates that the frequency band of the LTE network is Band 7 (transmit: 2500 MHz to 2570 MHz; receive: 2620 MHz to 2690 MHz).";
+      }
+      enum band8 {
+        value 8;
+        description
+          "Indicates that the frequency band of the LTE network is Band 8 (transmit: 880 MHz to 915 MHz; receive: 925 MHz to 960 MHz).";
+      }
+      enum band18 {
+        value 18;
+        description
+          "Indicates that the frequency band of the LTE network is Band 18 (transmit: 815 MHz to 830 MHz; receive: 860 MHz to 875 MHz).";
+      }
+      enum band19 {
+        value 19;
+        description
+          "Indicates that the frequency band of the LTE network is Band 19 (transmit: 830 MHz to 845 MHz; receive: 875 MHz to 890 MHz).";
+      }
+      enum band20 {
+        value 20;
+        description
+          "Indicates that the frequency band of the LTE network is Band 20 (transmit: 832 MHz to 862 MHz; receive: 791 MHz to 821 MHz).";
+      }
+      enum band26 {
+        value 26;
+        description
+          "Indicates that the frequency band of the LTE network is Band 26 (transmit: 814 MHz to 849 MHz; receive: 859 MHz to 894 MHz).";
+      }
+      enum band28 {
+        value 28;
+        description
+          "Indicates that the frequency band of the LTE network is Band 28 (transmit: 703 MHz to 748 MHz; receive: 758 MHz to 803 MHz).";
+      }
+      enum band32 {
+        value 32;
+        description
+          "Indicates that the frequency band of the LTE network ranges from 2010 MHz to 2025 MHz.";
+      }
+      enum band34 {
+        value 34;
+        description
+          "Indicates that the frequency band of the LTE network ranges from 2010 MHz to 2025 MHz.";
+      }
+      enum band38 {
+        value 38;
+        description
+          "Indicates that the frequency band of the LTE network ranges from 2570 MHz to 2620 MHz.";
+      }
+      enum band39 {
+        value 39;
+        description
+          "Indicates that the frequency band of the LTE network ranges from 1880 MHz to 1920 MHz.";
+      }
+      enum band40 {
+        value 40;
+        description
+          "Indicates that the frequency band of the LTE network ranges from 2300 MHz to 2400 MHz.";
+      }
+      enum band41 {
+        value 41;
+        description
+          "Indicates that the frequency band of the LTE network ranges from 2496 MHz to 2690 MHz.";
+      }
+      enum band42 {
+        value 42;
+        description
+          "Indicates that the frequency band of the LTE network ranges from 3400 MHz to 3600 MHz.";
+      }
+      enum band43 {
+        value 43;
+        description
+          "Indicates that the frequency band of the LTE network ranges from 3600 MHz to 3800 MHz.";
+      }
+    }
+    description
+      "Lte frequency type.";
+  }
+
+  deviation "/cellular:cellular/cellular:apn-profiles/cellular:apn-profile/cellular:sim-id" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:nr-mode" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:bridge-mode" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:apn-default-bearers" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:band/cellular:band-manually/cellular:network/cellular:wcdma" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:plmn-select" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:sim-wait-restore" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:modem-event/cellular:icmpv6-unreachable" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:modem-event/cellular:packet-service-detached" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:permit-imsis" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:pin-pre-verifications" {
+    deviate not-supported;
+  }
+  deviation "/cellular:modem-reboot" {
+    deviate not-supported;
+  }
+  deviation "/cellular:module-upgrade" {
+    deviate not-supported;
+  }
+  deviation "/cellular:sim-switch" {
+    deviate not-supported;
+  }
+  deviation "/cellular:modify-sim-pin" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular/cellular:bridge-mode" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular/cellular:dial-on-demand" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular/cellular:apn-profiles/cellular:apn-profile/cellular:priority" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular/cellular:modem-event/cellular:detect-event/cellular:ipv4-address" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular/cellular:modem-event/cellular:detect-event/cellular:ipv6-addresses" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular/cellular:default-route" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular-state/cellular:current-apns" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular-state/cellular:hardware/cellular:modem-name" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular-state/cellular:hardware/cellular:firmware-version" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular-state/cellular:sims/cellular:sim/cellular:network/cellular:band" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular-state/cellular:sims/cellular:sim/cellular:network/cellular:ber" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular-state/cellular:sims/cellular:sim/cellular:network/cellular:arfcn" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular-state/cellular:sims/cellular:sim/cellular:radio/cellular:rscp" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular-state/cellular:sims/cellular:sim/cellular:radio/cellular:ecio" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:cellular-info" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:sim-traffic-statistics" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/cellular:modem-location" {
+    deviate not-supported;
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:connection-mode" {
+    deviate replace {
+      type cellular-devs-NE8000-F1A:connection-mode-type-nr-lte-deviations;
+    }
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:band/cellular:band-manually/cellular:network/cellular:lte" {
+    deviate replace {
+      type cellular-devs-NE8000-F1A:lte-frequency-type-router-deviations;
+    }
+  }
+  deviation "/cellular:cellular/cellular:cellular-profiles/cellular:cellular-profile/cellular:modem-event/cellular:services-unavailable/cellular:action" {
+    deviate replace {
+      type enumeration {
+        enum none {
+          value 1;
+          description
+            "Take no action.";
+        }
+        enum modem-reboot {
+          value 2;
+          description
+            "Specify modem reboot.";
+        }
+      }
+    }
+  }
+}
+
+  

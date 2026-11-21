@@ -1,0 +1,54 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-igmp-mld-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-igmp-mld-deviations-NE8000-F1A";
+  prefix igmp-mld-devs-NE8000-F1A;
+
+  import huawei-igmp-mld {
+    prefix igmp-mld;
+  }
+  import huawei-rbs {
+    prefix rbs;
+  }
+  import huawei-multicast {
+    prefix mc;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-igmp-mld module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ni:network-instance/ni:instances/ni:instance/igmp-mld:igmp/igmp-mld:interfaces/igmp-mld:interface/igmp-mld:explicit-tracking" {
+    deviate not-supported;
+  }
+  deviation "/mc:multicast/igmp-mld:igmp/igmp-mld:disable-dhcp-stb-packet-copys/igmp-mld:disable-dhcp-stb-packet-copy/igmp-mld:rbp-name" {
+    deviate add {
+      must "/rbs:rbs/rbs:profiles/rbs:profile[rbs:name=current()]/rbs:service-types/rbs:service-type[rbs:type='multicast']";
+    }
+    deviate replace {
+      type leafref {
+        path "/rbs:rbs/rbs:profiles/rbs:profile/rbs:name";
+      }
+    }
+  }
+}
+
+  

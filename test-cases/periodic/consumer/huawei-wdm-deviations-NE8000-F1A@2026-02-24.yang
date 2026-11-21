@@ -1,0 +1,44 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-wdm-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-wdm-deviations-NE8000-F1A";
+  prefix wdm-devs-NE8000-F1A;
+
+  import huawei-wdm {
+    prefix wdm;
+  }
+  import huawei-driver {
+    prefix driver;
+  }
+  import huawei-pic {
+    prefix pic;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-wdm module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/wdm:wdm/wdm:wdms/wdm:wdm/wdm:map-path" {
+    deviate not-supported;
+  }
+  deviation "/driver:driver/driver:global-attribute/pic:global/wdm:source-pm-measurement" {
+    deviate not-supported;
+  }
+}
+
+  

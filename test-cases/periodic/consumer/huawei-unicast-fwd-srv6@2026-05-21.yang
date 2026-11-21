@@ -1,0 +1,1042 @@
+/*
+Copyright (C) 2020-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-unicast-fwd-srv6 {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-unicast-fwd-srv6";
+  prefix unicast-fwd-srv6;
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+   import huawei-srv6 {
+    prefix srv6;
+  }
+  import huawei-license {
+    prefix lcs;
+  }
+  import huawei-qos {
+    prefix qos;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-devm {
+    prefix devm;
+  }
+  import huawei-net-slice {
+    prefix net-slice;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import huawei-pub-type {
+    prefix pub-type;
+  }
+  import huawei-qos-pfc {
+    prefix qos-pfc;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+  description
+    "Unicast forward SRv6 configuration.";
+  revision 2026-05-21 {
+    description
+      "Add RPFC statistics node and set units.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-08-20 {
+    description
+      "Add lcs-usage-spfc-items node.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-03-14 {
+    description
+      "Add spfc and afr node.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-08-01 {
+    description
+      "The type of slotid is fixed.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-08-30 {
+    description
+      "Edit node-ref.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-07-11 {
+    description
+      "Add srv6-compatible and network-slice-bandwidth-usages node.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-03-07 {
+    description
+      "Modify default value.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-01-03 {
+    description
+      "Change node status.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-10 {
+    description
+      "Add srv6-te-policy-forwarding-sids node.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-08-30 {
+    description
+      "Modify lcs-network-slices node.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-04-16 {
+    description
+      "Add remark-network-slice node.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-03-19 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  typedef srv6-ttl-mode-type {
+    type enumeration {
+      enum "pipe" {
+        value 1;
+        description
+          "Pipe mode.";
+      }
+      enum "uniform" {
+        value 3;
+        description
+          "Uniform mode.";
+      }
+    }
+    description
+      "SRv6 TTL mode type.";
+  }
+  typedef lcs-slice-rtu-type {
+    type enumeration {
+      enum "data-plane" {
+        value 1;
+        description
+          "License type for data-plane.";
+      }
+      enum "flex-channel" {
+        value 2;
+        description
+          "License type for flex-channel.";
+      }
+    }
+    description
+      "Network-slice license type.";
+  }
+  typedef flex-chan-service-class {
+    type enumeration {
+      enum "be" {
+        value 0; 
+        description
+          "BE service-class.";
+      }
+      enum "af1" {
+        value 1; 
+        description
+          "AF1 service-class.";
+      }
+      enum "af2" {
+        value 2; 
+        description
+          "AF2 service-class.";
+      }
+      enum "af3" {
+        value 3; 
+        description
+          "AF3 service-class.";
+      }
+      enum "af4" {
+        value 4; 
+        description
+          "AF4 service-class.";
+      }
+      enum "ef" {
+        value 5; 
+        description
+          "EF service-class.";
+      }
+      enum "cs6" {
+        value 6; 
+        description
+          "CS6 service-class.";
+      }
+      enum "cs7" {
+        value 7; 
+        description
+          "CS7 service-class.";
+      }
+    }
+    description
+      "Queue type.";
+  }
+  typedef sub-interface-type {
+    type enumeration {
+      enum "common" {
+        value 0; 
+        description
+          "Common sub-interface.";
+      }
+      enum "slice" {
+        value 1; 
+        description
+          "Slice sub-interface.";
+      }
+    }
+    description
+      "Type of the channelized sub-interface.";
+  }
+  typedef forwarding-lossless-type {
+    type enumeration {
+      enum "convergence" {
+        value 1;
+        description
+          "Convergence mode.";
+      }
+      enum "long-distance" {
+        value 2;
+        description
+          "Long-distance mode.";
+      }
+    }
+    description
+      "Board mode.";
+  }
+
+  ext:task-name "forwarding";
+  container unicast-fwd-srv6 {
+    description "Unicast forward SRv6.";
+    container global-attribute {
+      description "Configure global attribute.";
+      leaf srv6-compatible {
+        type empty;
+        description "Enable/disable SRv6 compatibility.";
+      }
+    }
+    container srv6-te-policy-forwarding-sids {
+      config false;
+      description "List of SRv6-te policy forwarding sid.";
+      list srv6-te-policy-forwarding-sid {
+        key "slot-id endpoint-ip color-value";
+        description "Statistics of SRv6-te policy forwarding sid.";
+        leaf slot-id {
+          type string {
+            length "1..32";
+          }
+          description "Indicates the slot ID of a board.";
+        }
+        leaf endpoint-ip {
+          type inet:ipv6-address-no-zone;
+          description "Endpoint IP.";
+        }
+        leaf color-value {
+          type uint32;
+          description "Color value.";
+        }
+        container primary-paths {
+          description "List of primary path.";
+          list primary-path {
+            key "sidlist-xcindex";
+            description "Statistics of SRv6-te policy forwarding sid's primary path.";
+            leaf sidlist-xcindex {
+              type uint32;
+              description "SID list xcindex.";
+            }
+            leaf-list sid-address {
+                type inet:ipv6-address-no-zone;
+                max-elements  "10";
+                description "Statistics of SID address.";
+            }
+          }
+        }
+        container backup-paths {
+          description "List of backup path.";
+          list backup-path {
+            key "sidlist-xcindex";
+            description "Statistics of SRv6-te policy forwarding sid's backup path.";
+            leaf sidlist-xcindex {
+              type uint32;
+              description "SID list xcindex.";
+            }
+            leaf-list sid-address {
+                type inet:ipv6-address-no-zone;
+                max-elements  "10";
+                description "Statistics of SID address.";
+            }
+          }
+        }
+      }
+    }
+    container network-slice-bandwidth-usages {
+      config false;
+      description "List of SRv6 network slice bandwidth usage on interfaces.";
+      list network-slice-bandwidth-usage {
+        key "interface-name";
+        description "Statistics of SRv6 network slice bandwidth usage on interfaces.";
+        leaf interface-name {
+          type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+          }
+          description "Interface name.";
+        }
+        leaf sub-interface-type {
+          type sub-interface-type;
+          description "Type of the channelized sub-interface.";
+        }
+        leaf trunk-member-interface {
+          type boolean;
+          description "Whether the interface is a trunk member interface.";
+        }
+        leaf total-bandwidth {
+          type uint32;
+          units "Mbit/s";
+          description "Total interface bandwidth.";
+        }
+        leaf slice-usage-bandwidth {
+          type uint32;
+          units "Mbit/s";
+          description "Network slice bandwidth usage.";
+        }
+        leaf channelization-usage-bandwidth {
+          type uint32;
+          units "Mbit/s";
+          description "Channelized interface bandwidth usage.";
+        }
+        leaf remaining-bandwidth {
+          type uint32;
+          units "Mbit/s";
+          description "Remaining interface bandwidth.";
+        }
+      }
+    }
+    container afr-flow-infos {
+      config false;
+      description "List of flow information for AFR.";
+      list afr-flow-info {
+        key "slot top-numbers source-ip destination-ip flow-label color-value endpoint-ip";
+        description "Statistics of flow information for AFR.";
+        leaf slot {
+          type string {
+            length "1..32";
+          }
+          description "Slot ID of a board.";
+        }
+        leaf top-numbers {
+          type uint32;
+          description "Number of data records at the top.";
+        }
+        leaf source-ip {
+          type inet:ipv6-address-no-zone;
+          description "Source IP address of the flow table.";
+        }
+        leaf destination-ip {
+          type inet:ipv6-address-no-zone;
+          description "Destination IP address of the flow table.";
+        }
+        leaf flow-label {
+          type uint32;
+          description "Flow label.";
+        }
+        leaf color-value {
+          type uint32;
+          description "Flow color value.";
+        }
+        leaf endpoint-ip {
+          type inet:ipv6-address-no-zone;
+          description "Endpoint IP address of the flow.";
+        }
+        leaf segmentlist-id {
+          type uint32;
+          description "Segment list ID of the flow.";
+        }
+        leaf speed-bps {
+          type uint64;
+          units "bit/s";
+          description
+            "Number of AFR flow information bits per second.";
+        }
+        leaf speed-pps {
+          type uint32;
+          units "packet";
+          description
+            "Number of AFR flow information packets per second.";
+        }
+        leaf report-time {
+          type yang:date-and-time;
+          description
+            "Time when the flow table was reported.";
+        }
+        leaf forwarding-table-index {
+          type uint32;
+          description
+            "Forwarding table index information.";
+        }
+        leaf inner-source-address {
+          type string {
+            length "1..63";
+          }
+          description "Source IP address or MAC address of inner packets.";
+        }
+        leaf inner-destination-address {
+          type string {
+            length "1..63";
+          }
+          description "Destination IP address or MAC address of inner packets.";
+        }
+        leaf inner-protocol {
+          type string {
+            length "1..31";
+          }
+          description "Protocol number of inner packets.";
+        }
+        leaf inner-source-port {
+          type uint16;
+          description "Source port number of inner packets.";
+        }
+        leaf inner-destination-port {
+          type uint16;
+          description "Destination port number of inner packets.";
+        }
+        leaf inner-roce-qp {
+          type uint32;
+          description
+            "ROCE QP information of inner packets.";
+        }
+      }
+    }
+    container spfc-statistics-infos {
+      config false;
+      description "List of SPFC Statistics Information.";
+      list spfc-statistics-info {
+        key "interface-name slice-id";
+        description "Statistics of SPFC information.";
+        leaf interface-name {
+          type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+          }
+          description "Interface Name.";
+        }
+        leaf slice-id {
+          type uint32;
+          description "Network Slice ID.";
+        }
+        leaf service-class {
+          type flex-chan-service-class;
+          description "Class of Service.";
+        }
+        leaf receive-packet {
+          type uint64;
+          description "Number of Received Packets.";
+        }
+        leaf receive-rate {
+          type uint64;
+          description "Receive Rate.";
+        }
+        leaf receive-time {
+          type yang:date-and-time;
+          description "Last time when packets were received.";
+        }
+        leaf transmit-packet {
+          type uint64;
+          description "Number of Transmitted Packets.";
+        }
+        leaf transmit-rate {
+          type uint64;
+          description "Transmission Rate.";
+        }
+        leaf transmit-interface {
+          type string{
+            length "1..63";
+          }
+          description "Transmission Interface.";
+        }
+        leaf transmit-time {
+          type yang:date-and-time;
+          description "Last time when packets were transmitted.";
+        }
+      }
+    }
+    container pfc-statistics-infos {
+      config false;
+      description "List of PFC Statistics Information.";
+      list pfc-statistics-info {
+        key "interface-name";
+        description "Statistics of PFC Information.";
+        leaf interface-name {
+          type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+          }
+          description "Interface Name.";
+        }
+        leaf receive-packet {
+          type uint64;
+          description "Number of Received Packets.";
+        }
+        leaf receive-rate {
+          type uint64;
+          description "Receive Rate.";
+        }
+        leaf receive-time {
+          type yang:date-and-time;
+          description "Last time when packets were received.";
+        }
+        leaf transmit-packet {
+          type uint64;
+          description "Number of Transmitted Packets.";
+        }
+        leaf transmit-rate {
+          type uint64;
+          description "Transmission Rate.";
+        }
+        leaf transmit-time {
+          type yang:date-and-time;
+          description "Last time when packets were transmitted.";
+        }
+      }
+    }
+        container rpfc-statistics-infos {
+      config false;
+      description "List of RPFC Statistics Information.";
+      list rpfc-statistics-info {
+        key "interface-name";
+        description "Statistics of RPFC information.";
+        leaf interface-name {
+          type pub-type:if-name;
+          description "Interface name.";
+        }
+        leaf receive-packet {
+          type uint64;
+          description "Number of received packets.";
+        }
+        leaf receive-rate {
+          type uint64;
+          units "pps";
+          description "Reception rate.";
+        }
+        leaf receive-time {
+          type yang:date-and-time;
+          description "Last time when packets were received.";
+        }
+        leaf transmit-total-packet {
+          type uint64;
+          description "Number of transmitted packets.";
+        }
+        leaf transmit-total-rate {
+          type uint64;
+          units "pps";
+          description "Transmission rate.";
+        }
+        leaf transmit-total-time {
+          type yang:date-and-time;
+          description "Last time when packets were transmitted.";
+        }
+        container transmit-details {
+          description "List of transmitted details.";
+          list transmit-detail {
+            key "destination-ip";
+            description
+              "Statistics of transmitted information.";
+            leaf destination-ip {
+              type inet:ipv4-address-no-zone;
+              description
+                "Destination IP address.";
+            }
+            leaf transmit-packet {
+              type uint64;
+              description "Transmitted packets of an IP address.";
+            }
+            leaf transmit-rate {
+              type uint64;
+              units "pps";
+              description "Transmitted rate of an IP address.";
+            }
+            leaf transmit-time {
+              type yang:date-and-time;
+              description "Last time when packets were transmitted.";
+            }
+          } 
+        }
+      }
+    }
+  }
+  rpc reset-flex-channel-statistics {
+    description
+      "Reset flex-channel statistics.";
+    ext:node-ref "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice/unicast-fwd-srv6:flex-channel-statisticss/unicast-fwd-srv6:flex-channel-statistics";
+    input {
+      leaf slice-id {
+        type uint32 {
+        range "1 .. 4294967295";
+        }
+        description
+          "Net-slice instance.";
+      }
+      leaf interface-name {
+        type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        description
+          "Interface name.";
+      }
+    }
+  }
+  rpc reset-spfc-statistics-infos {
+    description
+      "Reset SPFC Statistics Information.";
+    ext:node-ref "/unicast-fwd-srv6:unicast-fwd-srv6/unicast-fwd-srv6:spfc-statistics-infos/unicast-fwd-srv6:spfc-statistics-info";
+    input {
+      leaf interface-name {
+        type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        description
+          "Interface Name.";
+      }
+      leaf slice-id {
+        type uint32;
+        description
+          "Network Slice ID.";
+      }
+    }
+  }
+  rpc reset-pfc-statistics-infos {
+    description
+      "Reset PFC Statistics Information.";
+    ext:node-ref "/unicast-fwd-srv6:unicast-fwd-srv6/unicast-fwd-srv6:pfc-statistics-infos/unicast-fwd-srv6:pfc-statistics-info";
+    input {
+      leaf interface-name {
+        type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        description
+          "Interface Name.";
+      }
+    }
+  }
+  rpc reset-rpfc-statistics-infos {
+    description
+      "Reset RPFC Statistics Information.";
+    ext:node-ref "/unicast-fwd-srv6:unicast-fwd-srv6/unicast-fwd-srv6:rpfc-statistics-infos/unicast-fwd-srv6:rpfc-statistics-info";
+    input {
+      leaf interface-name {
+        type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        description
+          "Interface Name.";
+      }
+    }
+  }
+  augment "/ni:network-instance/ni:instances/ni:instance/srv6:srv6" {
+    description
+      "Unicast forward configuration to the SRv6 module.";
+    container global-ipv6uc-attribute {
+      when "../srv6:enable = 'true'";
+      description
+        "Configure global IPv6 unicast attributes.";
+      leaf forward-mode-through {
+        type boolean;
+        ext:dynamic-default;
+        description
+          "Enable/disable the forwarding mode of an SRv6 Tunnel to software loopback.";
+      }
+      leaf srv6-ttl-mode{
+        type srv6-ttl-mode-type;
+        default "pipe";
+        description
+          "Set SRv6 tunnel-encapsulated mode.";
+      }
+    }
+  }
+
+  augment "/lcs:license" {
+    description
+      "Network slice license.";
+    container lcs-network-slices {
+      status obsolete;
+      description
+        "List of license information about all boards network-slice resources.";
+      list lcs-network-slice {
+        key "slot-id license-type";
+        status obsolete;
+        description
+          "Configure license information about a board to active network-slice resources.";
+        leaf slot-id {
+          type pub-type:position;
+          status obsolete;
+          description
+            "Indicates the slot ID of a board.";
+        }
+        leaf license-type {
+          type lcs-slice-rtu-type;
+          status obsolete;
+            description
+              "Network slice license type.";
+        }
+        leaf resource-size {
+          type uint32 {
+            range "1..65535";
+          }
+          mandatory true;
+          status obsolete;
+          description
+            "The number of network-slice resources is related to a specific board.";
+        }
+      }
+    }
+    container lcs-usage-slice-items {
+      config false;
+      description
+        "List of network slice license resource usage information.";
+      list lcs-usage-slice-item {
+        key "feature-name";
+        description
+          "Statistics of network slice license resource usage information.";
+        leaf feature-name {
+          type string {
+            length "1..31";
+          }
+          description
+            "Name of the control item corresponding to the network license.";
+        }
+        leaf feature-description {
+          type string {
+            length "1..255";
+          }
+          description
+            "Description of the control item corresponding to the network license.";
+        }
+        leaf activated-total {
+          type uint32;
+          description
+            "Number of activated resources.";
+        }
+        leaf available-total {
+          type uint32;
+          description
+            "Number of remaining available resources.";
+        }
+        leaf total {
+          type uint32;
+          description
+            "Total number of resources.";
+        }
+        container lcs-info-boards {
+		status obsolete;
+        description
+          "List of board network slice license information.";
+          list lcs-info-board {
+            key "position";
+			status obsolete;
+            description
+              "Statistics of network slice license usage information on a board.";
+            leaf position {
+              type string {
+                length "1..32";
+              }
+			  status obsolete;
+              description
+                "Board position.";
+            }
+            leaf barcode {
+              type string {
+                length "1..128";
+              }
+			  status obsolete;
+              description
+                "Bar code in the electronic label of a board.";
+            }
+            leaf usage-on-board {
+              type uint32;
+			  status obsolete;
+              description
+              "Number of used resources on a board.";
+            }
+            leaf available-on-board {
+              type uint32;
+			  status obsolete;
+              description
+                "Number of remaining available resources on a board.";
+            }
+            leaf activated-on-board {
+              type uint32;
+			  status obsolete;
+              description
+                "Total number of resources on a board.";
+            }
+          }
+        }
+      }
+    }
+    container lcs-usage-spfc-items {
+      config false;
+      description
+        "List of spfc license resource usage information.";
+      list lcs-usage-spfc-item {
+        key "feature-name";
+        description
+          "Statistics of spfc license resource usage information.";
+        leaf feature-name {
+          type string {
+            length "1..31";
+          }
+          description
+            "Name of the control item corresponding to the spfc.";
+        }
+        leaf feature-description {
+          type string {
+            length "1..255";
+          }
+          description
+            "Description of the control item corresponding to the spfc.";
+        }
+        leaf activated-total {
+          type uint32;
+          description
+            "Number of activated resources.";
+        }
+        leaf available-total {
+          type uint32;
+          description
+            "Number of remaining available resources.";
+        }
+        leaf total {
+          type uint32;
+          description
+            "Total number of resources.";
+        }
+      }
+    }
+    container lcs-usage-afr-items {
+      config false;
+      description
+        "List of afr license resource usage information.";
+      list lcs-usage-afr-item {
+        key "feature-name";
+        description
+          "Statistics of afr license resource usage information.";
+        leaf feature-name {
+          type string {
+            length "1..31";
+          }
+          description
+            "Name of the control item corresponding to the afr.";
+        }
+        leaf feature-description {
+          type string {
+            length "1..255";
+          }
+          description
+            "Description of the control item corresponding to the afr.";
+        }
+        leaf activated-total {
+          type uint32;
+          description
+            "Number of activated resources.";
+        }
+        leaf available-total {
+          type uint32;
+          description
+            "Number of remaining available resources.";
+        }
+        leaf total {
+          type uint32;
+          description
+            "Total number of resources.";
+        }
+      }
+    }
+  }
+  augment "/qos:qos/qos:classifier-template/qos:traffic-behaviors/qos:traffic-behavior" {
+    description
+      "Unicast forward configuration to the traffic-behavior module.";
+    container unicast-fwd-srv6 {
+      description
+        "Configure traffic behavior.";
+      container remark-te-class {
+        description
+          "Configure te-class ID.";
+        leaf te-class-id {
+          type uint16 {
+              range "1..65535";
+            }
+          description
+            "Set te-class ID.";
+        }
+      }
+      container remark-network-slice {
+        description
+          "Configure network-slice ID.";
+        leaf network-slice-id {
+          type leafref {
+            path "/net-slice:net-slice/net-slice:instances/net-slice:instance/net-slice:id";
+          }
+          must "../network-slice-id!=0";
+          description
+            "Set network-slice ID.";
+        }
+      }
+    }
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice" {
+    description
+      "Unicast forward configuration to the net-slice module.";
+    container flex-channel-statisticss {
+      config false;
+      description
+        "List of flex-channel statistics.";
+      list flex-channel-statistics {
+        key "service-class";
+        description
+        "Statistics of flex-channel.";
+        leaf service-class {
+          type flex-chan-service-class;
+          description
+            "Class of service.";
+        }
+        leaf passed-packets {
+          type uint64;
+          units "packet";
+          description
+            "Passed packets.";
+        }
+        leaf passed-bytes {
+          type uint64;
+          units "Byte";
+          description
+            "Passed bytes.";
+        }
+        leaf dropped-packets {
+          type uint64;
+          units "packet";
+          description
+            "Dropped packets.";
+        }
+        leaf dropped-bytes {
+          type uint64;
+          units "Byte";
+          description
+            "Dropped bytes.";
+        }
+        leaf passed-pps {
+          type uint64;
+          units "pps";
+          description
+            "Passed pps.";
+        }
+        leaf passed-bps {
+          type uint64;
+          units "bit/s";
+          description
+            "Passed bps.";
+        }
+        leaf dropped-pps {
+          type uint64;
+          units "pps";
+          description
+            "Dropped pps.";
+        }
+        leaf dropped-bps {
+          type uint64;
+          units "bit/s";
+          description
+            "Dropped bps.";
+        }
+      }
+    }
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice/net-slice:mode/net-slice:spfc-mode/net-slice:spfc" {
+    description
+      "Unicast forward configuration to the SPFC queue policy.";
+    container spfc-templates {
+      description
+        "Configure SPFC queue policy.";
+        leaf policy-name {
+          type leafref {
+            path "/qos-pfc:qos-pfc/qos-pfc:spfc-templates/qos-pfc:spfc-template/qos-pfc:name";
+          }
+          description
+            "Set SPFC queue policy name.";
+      }
+    }
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface" {
+    description
+      "Unicast forward configuration for the IFM module.";
+    container unicast-fwd-srv6 {
+      description
+        "Configure SRv6 forwarding.";
+      leaf srv6-loopback {
+          when "../../ifm:type = 'GigabitEthernet' or ../../ifm:type = 'XGigabitEthernet' or ../../ifm:type = 'Eth-Trunk' or ../../ifm:type = 'Ethernet' or ../../ifm:type = '100GE' or ../../ifm:type = '1200GE' or ../../ifm:type = '400GE' or ../../ifm:type = '40GE' or ../../ifm:type = '50|100GE' or ../../ifm:type = '50-100GE' or ../../ifm:type = '50GE' or ../../ifm:type = '25GE' or ../../ifm:type = '200GE' or ../../ifm:type = '10GE' or ../../ifm:type = 'FlexE' or ../../ifm:type = '4x10GE' or ../../ifm:type = '10x10GE' or ../../ifm:type = '3x40GE' or ../../ifm:type = '4x25GE' or ../../ifm:type = '800GE'";
+          type empty;
+          description
+            "Enable/disable SRv6 loopback.";
+      }
+    }
+    container spfc {
+      when "../ifm:type = 'GigabitEthernet' or ../ifm:type = 'XGigabitEthernet' or ../ifm:type = 'Eth-Trunk' or ../ifm:type = 'Ethernet' or ../ifm:type = '100GE' or ../ifm:type = '1200GE' or ../ifm:type = '400GE' or ../ifm:type = '40GE' or ../ifm:type = '50|100GE' or ../ifm:type = '50-100GE' or ../ifm:type = '50GE' or ../ifm:type = '25GE' or ../ifm:type = '200GE' or ../ifm:type = '10GE' or ../ifm:type = 'FlexE' or ../ifm:type = '4x10GE' or ../ifm:type = '10x10GE' or ../ifm:type = '3x40GE' or ../ifm:type = '4x25GE' or ../ifm:type = '800GE'";
+      description
+        "Configure Spfc Type configuration.";
+      leaf queue-policy-name {
+        when "../forwarding-lossless-mode and ../forwarding-lossless-mode='convergence'";
+        type leafref {
+          path "/qos-pfc:qos-pfc/qos-pfc:spfc-templates/qos-pfc:spfc-template/qos-pfc:name";
+        }
+        description
+          "Set SPFC queue policy name.";
+      }
+      leaf forwarding-lossless-mode {
+        type forwarding-lossless-type;
+        description
+          "Forwarding-lossless type.";
+      }
+    }
+  }
+  augment "/devm:devm/devm:lpu-boards/devm:lpu-board" {
+    description
+      "Configure Spfc Mode.";
+    container spfc {
+      description
+        "Configure Spfc Board Mode to the devm module.";
+      leaf forwarding-lossless-mode {
+        type forwarding-lossless-type;
+          description
+            "Forwarding-lossless type.";
+      }
+    }
+  }
+}
+
+  

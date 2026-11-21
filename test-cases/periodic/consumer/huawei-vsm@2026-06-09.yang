@@ -1,0 +1,901 @@
+/******************************************************
+* Copyright (C) 2021-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*******************************************************/
+module huawei-vsm {
+  namespace "urn:huawei:yang:huawei-vsm";
+  prefix vsm;
+
+  import huawei-extension {
+    prefix ext;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import huawei-devm {
+    prefix devm;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-pub-type {
+    prefix pub-type;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  } 
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+
+  description
+    "This module contains a collection of YANG definitions for Configurations of value-added service management module.";
+  revision 2026-06-09 {
+    description
+      "Add container service-location-infos and leaf backup-type.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-05-21 {
+    description
+      "Add container binded-service-location.";
+    reference "Huawei private.";
+  }
+  revision 2026-05-15 {
+    description
+      "Add container nat-session-agings.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-02-11 {
+    description
+      "Add leaf delay-time.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-01-27 {
+    description
+      "Add container nat-tcp-mss-values.";
+    reference "Huawei private.";
+  }
+  revision 2025-06-11 {
+    description
+      "Modify the engine-id range.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-06-10 {
+    description
+      "Modify for when condition for the container backup-channel.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-10-31 {
+    description
+      "Modify for service-type and add container bind-container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-11-05 {
+    description
+      "Modify the when condition for container inter-chassis-backup, remote-backup-service, ha.";
+    reference
+      "Huawei private.";
+  }  
+  revision 2023-07-24 {
+    description
+      "Add the when condition for container backup-channel, remote-backup-service, ha.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-05-29 {
+    description
+      "Modify leaf type for rbs-name.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-05-15 {
+    description
+      "Modify leaf type for rbs-name.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-12-28 {
+    description
+      "Modify for service-type.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-11-11 {
+    description
+      "Add container inter-chassis-backup.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-18 {
+    description
+      "Modify when statement for backup-location.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-09-13 {
+    description
+      "Add weight-info.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-07-13 {
+    description
+      "Add must for backup-slot.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-02-11 {
+    description
+      "Add container monitor-location-groups.";
+    reference
+      "Huawei private.";
+  }
+  revision 2021-10-11 {
+    description
+      "Add container remote-backup-service.";
+    reference
+      "Huawei private.";
+  }
+  revision 2021-07-20 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  identity service-type {
+    description
+      "The service type.";
+  }
+
+  identity cgn-ipsec {
+    base service-type;
+    description
+      "Set service type CGN and IPSEC.";
+  }
+
+  identity ecgw-container {
+    base service-type;
+    description
+      "Set service type container.";
+  }
+
+  typedef engine-id {
+    type enumeration {
+      enum "engine0" {
+        value 1;
+        description
+          "Engine ID 0.";
+      }
+      enum "engine1" {
+        value 2;
+        description
+          "Engine ID 1.";
+      }
+      enum "engine2" {
+        value 3;
+        description
+          "Engine ID 2.";
+      }
+      enum "engine3" {
+        value 4;
+        description
+          "Engine ID 3.";
+      }
+      enum "engine4" {
+        value 5;
+        description
+          "Engine ID 4.";
+      }
+      enum "engine5" {
+        value 6;
+        description
+          "Engine ID 5.";
+      }
+      enum "engine6" {
+        value 7;
+        description
+          "Engine ID 6.";
+      }
+      enum "engine7" {
+        value 8;
+        description
+          "Engine ID 7.";
+      }
+    }
+    description
+      "CGN engine ID.";
+  }
+  typedef nat-session-type { // NAT session protocol type
+    type enumeration {
+      enum "tcp" {
+        value 0;
+        description "Tcp session type.";
+      }
+    }
+    description
+      "Session type.";
+  }
+  typedef card-id {
+    type enumeration {
+      enum "card0" {
+        value 1;
+        description
+          "Card ID 0.";
+      }
+      enum "card1" {
+        value 2;
+        description
+          "Card ID 1.";
+      }
+    }
+    description
+      "CGN card ID.";
+  }
+
+  typedef engine {
+    type enumeration {
+      enum "NA" {
+        value 0;
+        description
+          "No engine.";
+      }
+      enum "engine0" {
+        value 1;
+        description
+          "Engine ID 0.";
+      }
+      enum "engine1" {
+        value 2;
+        description
+          "Engine ID 1.";
+      }
+      enum "engine2" {
+        value 3;
+        description
+          "Engine ID 2.";
+      }
+      enum "engine3" {
+        value 4;
+        description
+          "Engine ID 3.";
+      }
+      enum "engine4" {
+        value 5;
+        description
+          "Engine ID 4.";
+      }
+      enum "engine5" {
+        value 6;
+        description
+          "Engine ID 5.";
+      }
+      enum "engine6" {
+        value 7;
+        description
+          "Engine ID 6.";
+      }
+      enum "engine7" {
+        value 8;
+        description
+          "Engine ID 7.";
+      }
+    }
+    description
+      "CGN engine ID.";
+  }
+  typedef card {
+    type enumeration {
+      enum "NA" {
+        value 0;
+        description
+          "No card.";
+      }
+      enum "card0" {
+        value 1;
+        description
+          "Card ID 0.";
+      }
+      enum "card1" {
+        value 2;
+        description
+          "Card ID 1.";
+      }
+    }
+    description
+      "CGN card ID.";
+  }
+  typedef address-pool-type {
+    type enumeration {
+      enum "static-mapping-extend" {
+        value 1;
+        description
+          "Static mapping address pool.";
+      }
+    }
+    description
+      "Address pool type.";
+  }
+
+  typedef backup-type-value {
+    type enumeration {
+      enum "load-balance" {
+        value 1;
+        description
+          "Load balance.";
+      }
+      enum "hot-backup" {
+        value 2;
+        description
+          "Hot backup.";
+      }
+      enum "inter-chassis-load-balance" {
+        value 3;
+        description
+          "Inter-chassis load balance.";
+      }
+    }
+    description
+      "Specify HA backup type.";
+  }
+  typedef cpu-status-value {
+    type enumeration {
+      enum "DOWN" {
+        value 0;
+        description
+          "The CPU status is abnormal.";
+      }
+      enum "UP" {
+        value 1;
+        description
+          "The CPU status is normal.";
+      }
+    }
+    description
+      "The status of CPU.";
+  }
+  typedef cpu-role-value {
+    type enumeration {
+      enum "Master" {
+        value 0;
+        description
+          "The CPU role is master.";
+      }
+      enum "Slave" {
+        value 1;
+        description
+          "The CPU role is slave.";
+      }
+    }
+    description
+      "The role of CPU.";
+  }
+  typedef switchover-reason-value {
+    type enumeration {
+      enum "Faulty" {
+        value 0;
+        description
+          "The CPU is faulty.";
+      }
+      enum "Switch-back" {
+        value 1;
+        description
+          "The CPU has been switched back.";
+      }
+    }
+    description
+      "The reason of switchover.";
+  }
+  typedef switch-back-fail-reason-value {
+    type enumeration {
+      enum "Faulty" {
+        value 0;
+        description
+          "The CPU is faulty.";
+      }
+      enum "Switching-back" {
+        value 1;
+        description
+          "The CPU is waiting for a delayed switchback.";
+      }
+    }
+    description
+      "Cause of the failback failure.";
+  }
+  container vsm {
+    description
+      "Value-added service management.";
+    container service-locations {
+      description
+        "List of service-location.";
+      list service-location {
+        key "service-id";
+        description
+          "Configure service location.";
+        leaf service-id {
+          type uint16{
+            range "1..255";
+          }
+          description
+            "Service location Id.";
+        }
+        container location {
+          presence "Enable/Disable the location configuration for the service.";
+          description
+            "Configure location.";
+          leaf slot {
+            type string{
+              length "1..16";
+            }
+            mandatory true;
+            description
+              "Slot ID. If the slot is a VSU, you must specify the engine or card. If backup-slot is configured, backup-slot must be a VSU and backup-engine or backup-card must be specified. If the slot is a LPU, the engine and card cannot be specified. If backup-slot is configured, backup-slot must be a LPU and backup-engine and backup-card cannot be specified.";
+          }
+          choice location {
+            description "Location on slot.";
+            case engine {  
+              description "Engine type.";
+              leaf engine-id {
+                type engine-id;
+                description
+                  "Engine ID.";
+              }
+            }
+            case card {
+              description "Card type.";
+              leaf card-id {
+                type card-id;
+                description
+                  "Card ID.";
+              }
+            }
+          }
+          leaf backup-slot {
+            type string{
+              length "1..16";
+            }
+            must "../backup-slot != ../slot";
+            description
+              "Backup Slot ID.";
+          }
+          choice backup-location{
+            when "backup-slot";
+            description "Location on backup slot.";
+            case engine {
+              description "Engine type.";
+              leaf backup-engine-id {
+                type engine-id;
+                description
+                  "Backup engine ID.";
+              }
+            }
+            case card {
+              description "Card type.";
+              leaf backup-card-id {
+                type card-id;
+                description
+                  "Backup card ID.";
+              }
+            }
+          }
+        }
+        container inter-chassis-backup {
+          description
+            "Configure inter-chassis backup channel and binding vrrp.";
+          container backup-channel {
+            when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+            presence "Configure inter-chassis backup channel.";
+            description
+              "Configure an interface of an inter-chassis backup channel and a peer IP address and enables backup tunnel authentication.";
+            leaf local-interface {
+              type leafref {
+                path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+              }
+              mandatory true;
+              description
+                "Specifies the name of the local interface of an inter-chassis backup channel.";
+            }
+            choice peer-address {
+              mandatory true;
+              description "Specifies the peer address of an inter-chassis backup channel.";
+              case ipv4 {
+                description "Specifies the peer IPv4 address of an inter-chassis backup channel.";
+                leaf address {
+                  type inet:ipv4-address-no-zone;
+                  description
+                    "Specifies the peer IPv4 address.";
+                }
+              }
+            }
+            leaf password {
+              type pub-type:password-extend {
+                length "8..16 | 48";
+              }
+              description
+                "Authentication-password for an inter-chassis backup channel. The simple password length ranges from 8 to 16, and the cipher password length is 48.";
+            }
+            leaf hash-algorithm {
+              when "../password";
+              type enumeration {
+                enum "hmac-sha1" {
+                  value 0;
+                  description
+                    "HMAC-sha1.";
+                }
+                enum "hmac-sha256" {
+                  value 1;
+                  description
+                    "HMAC-sha256.";
+                }
+              }
+              mandatory true;
+              description
+                "Specifies the hash algorithm.";
+            }
+          }
+        }
+      }
+    }
+    container service-instance-groups {
+      description
+        "List of service instance group.";
+      list service-instance-group {
+        key "group-name";
+        description
+          "Configure service-instance-group, used to bind VSMHA and remote-backup-service.";
+        leaf group-name {
+          type string {
+            length "1..31";
+          }
+          description
+            "Service-instance-group name.";
+        }
+        container remote-backup-service {
+          description
+            "Configure remote backup service.";
+          leaf rbs-name {
+            type string {
+              length "1..32";
+              pattern '[0-9a-z_.\-]+';
+            }
+            must "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+            description
+              "Remote-backup-service name.";
+          }
+        }
+        container binded-service-locations {
+          description
+            "List of service-location binded.";
+          list binded-service-location {
+            key "service-id";
+            description
+              "Configure service-location binded.";
+            leaf service-id {
+              type leafref {
+                path "/vsm:vsm/vsm:service-locations/vsm:service-location/vsm:service-id";
+              }
+              must "/vsm:vsm/vsm:service-locations/vsm:service-location[vsm:service-id=current()]/vsm:location/vsm:slot";
+              description
+                "Service location Id.";
+            }
+            leaf weight {
+              when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+              type uint8 {
+                range "1..40";
+              }
+              description
+                "Service location weight.";
+            }
+            container weight-info {
+              when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+              config false;
+              description
+                "Operational state of the service-location weight.";
+              leaf active-weight {
+                type uint16;
+                description
+                  "The displayed value is 10 times of the active weight of the service location.";
+              }
+              leaf weight-mode {
+                type string {
+                  length "1..31";
+                }
+                description 
+                  "Show the method of obtaining the weight.";
+              }
+            }
+          }
+        }
+      }
+    }
+    container monitor-location-groups {
+      when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+      description
+        "List of monitor-location-group.";
+      list monitor-location-group {
+        key "group-name";
+        description
+          "Configure monitor-location-group.";
+        leaf group-name {
+          type string {
+            length "1..31";
+          }
+          description
+            "Specify the name of a monitor-location-group.";
+        }
+        leaf down-number {
+          type uint8 {
+            range "1..64";
+          }
+          default 1;
+          description
+            "Configure a status change threshold for an HA status monitoring group.";
+        }
+        container binded-service-locations {
+          description
+            "List of service-location binded.";
+          list binded-service-location {
+            key "service-id";
+            description
+              "Configure service-location binded.";
+            leaf service-id {
+              type leafref {
+                path "/vsm:vsm/vsm:service-locations/vsm:service-location/vsm:service-id";
+              }
+              must "/vsm:vsm/vsm:service-locations/vsm:service-location[vsm:service-id=current()]/vsm:location/vsm:slot";
+              description
+                "Service location Id.";
+            }
+          }
+        }
+      }
+    }
+    container on-board-mode {
+      description "Configure vsm-on-board mode.";
+      leaf mode {
+        type enumeration {
+          enum "centralized-board" {
+            value 0;
+            description
+              "Centralized-board.";
+          }
+          enum "on-board" {
+            value 1;
+            description
+              "On-board.";
+          }
+        }
+        default "centralized-board";
+        description
+          "Specify vsm mode.";
+      }
+    }
+    container ha {
+      description "Configure ha.";
+      leaf hot-backup {
+        type enumeration {
+          enum "warm-backup" {
+            value 0;
+            description
+              "Warm backup.";
+          }
+          enum "hot-backup" {
+            value 1;
+            description
+              "Hot backup.";
+          }
+        }
+        default "warm-backup";
+        description
+          "Specify HA backup mode in the inter-board or inter-chassis hot backup scenario.";
+      }
+      leaf preempt-time {
+        type uint16 {
+          range "120..3600";
+        }
+        units "s";
+        default "360";
+        description
+          "Specifies the switchback period for inter-board backup.";
+      }
+      leaf delay-time {
+        type uint32 {
+          range "1..300";
+        }
+        units "s";
+        default "1";
+        description
+          "Specifies the delay time of service-location backup.";
+      }
+      leaf backup-type {
+       type backup-type-value;
+       description
+         "Specify HA backup type.";
+     }
+    }
+    container set-service-types {
+      description
+        "List of service type on the mother board or subcard of a VSUF.";
+      list set-service-type {
+        must "(./engine != 'NA' and ./card = 'NA') or (./engine = 'NA' and ./card != 'NA')";
+        key "slot engine card";
+        description
+          "Configure service type on the mother board or subcard of a VSUF.";
+        ext:generated-by system {
+          description "The subcard or mother board are generated by the system.";
+        }
+        ext:operation-exclude create {
+          description "The subcard or mother board cannot be created.";
+        }
+        leaf slot {
+          type leafref {
+            path "/devm:devm/devm:lpu-boards/devm:lpu-board/devm:position";
+          }
+          description
+            "ID of an available slot.";
+        }
+        leaf engine {
+          type engine;
+          description
+            "Engine ID.";
+        }
+        leaf card {
+          type card;
+          description
+            "Card ID.";
+        }
+        leaf service-type {
+          type identityref {
+            base service-type;
+          }
+          default "cgn-ipsec";
+          description
+            "Service type.";
+        }
+        leaf extend-address-pool-type {
+          when "../service-type = 'vsm:cgn-ipsec'";
+          type address-pool-type;
+          description
+            "Type of the extended address pool.";
+        }
+      }
+    }
+    container nat-session-agings {
+      description "List of session aging.";
+      list nat-session-aging {
+        key "session-type";
+        description "Configure session aging type for instance.";
+        leaf session-type {
+          type nat-session-type;
+          description "Session-type for instance.";
+        }
+        leaf rst-defense-mode {
+          type enumeration {
+            enum "disable" {
+              value 0;
+              description
+                "Disable the rst defense mode.";
+            }
+            enum "enable" {
+              value 1;
+              description
+                "Enable the rst defense mode.";
+            }
+          }
+          default "disable";
+          description "Enable/disable the rst defense mode.";
+        }
+      }
+    }
+    container nat-tcp-mss-values {
+      description "Configure nat tcp mss.";
+      leaf nat-tcp-mss-value {
+        type uint16 {
+          range "536..1460";
+        }
+        description
+          "Specifies the nat tcp mss value.";
+      }
+    }
+    container service-location-infos {
+      config false;
+      description
+        "List of service location information.";
+      list service-location-info {
+        key "service-id";
+        description
+          "Information of service location.";
+        leaf service-id {
+          type uint16{
+            range "1..255";
+          }
+          description
+            "Service location Id.";
+        }
+        leaf slot {
+          type string {
+            length "1..16";
+          }
+          description
+            "Slot ID.";
+        }
+        leaf engine {
+          type engine-id;
+          description
+            "The value is NA when the service is based on slot or card.";
+        }
+        leaf card {
+          type card-id;
+          description
+            "The value is NA when the service is based on slot or engine.";
+        }
+        leaf cpu-status {
+          type cpu-status-value;
+          description
+            "Cpu status.";
+        }
+        leaf cpu-role {
+          type cpu-role-value;
+          description
+            "Cpu role.";
+        }
+        leaf backup-slot {
+          type string {
+            length "1..16";
+          }
+          description
+            "Backup slot ID.";
+        }
+        leaf backup-engine {
+          type engine-id;
+          description
+            "The value is NA when the service is based on slot or card.";
+        }
+        leaf backup-card {
+          type card-id;
+          description
+            "The value is NA when the service is based on slot or engine.";
+        }
+        leaf backup-cpu-status {
+          type cpu-status-value;
+          description
+            "Backup cpu status.";
+        }
+        leaf backup-cpu-role {
+          type cpu-role-value;
+          description
+            "Backup cpu role.";
+        }
+        leaf switchover-time {
+          type yang:date-and-time;
+          description
+            "Switchover time.";
+        }
+        leaf switchover-reason {
+          type switchover-reason-value;
+          description
+            "Reason for the switchover.";
+        }
+        leaf switch-back-fail-reason {
+          type switch-back-fail-reason-value;
+          description
+            "Reason for unable to switch back.";
+        }
+      }
+    }
+  }
+  ext:task-name "nat";
+}
+  

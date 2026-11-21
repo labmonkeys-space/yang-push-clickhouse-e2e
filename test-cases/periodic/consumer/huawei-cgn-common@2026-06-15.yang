@@ -1,0 +1,667 @@
+
+/******************************************************
+* Copyright (C) 2021-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*******************************************************/
+module huawei-cgn-common {
+  namespace "urn:huawei:yang:huawei-cgn-common";
+  prefix cgn-common;
+  import huawei-extension {
+    prefix ext;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-l3vpn {
+    prefix l3vpn;
+  }
+  import huawei-vsm {
+    prefix vsm;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+
+  description
+    "This module contains a collection of YANG definitions for Configurations of cgn common element.";
+  revision 2026-06-15 {
+    description
+      "Add grouping nat-session-aging.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-04-08 {
+    description
+      "Add grouping session-log-create-mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-03-26 {
+    description
+      "Add on-board log concurrency functionality.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-01-27 {
+    description
+      "Add grouping five-tuple-port-reuse. Add the leaf secondary-mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-08-09 {
+    description
+      "Modify the port extension times in semi-dynamic mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-02-14 {
+    description
+      "Add container elog-version.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-07-03 {
+    description
+      "Add container alarm-access-user-limit.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-06-08 {
+    description
+      "Add grouping port-limit.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-09-04 {
+    description
+      "Add the must condition for container send-mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-07-24 {
+    description
+      "Add the when condition for container pcp.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-04-26 {
+    description
+      "Add typedef ip-address-type.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-11-01 {
+    description
+      "Add enum http and fix indent for typedef alg-protocol-type.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-31 {
+    description
+      "Modify default value for statistics-enable.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-25 {
+    description
+      "Modify the description of leaf end-port in container port-reservation.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-15 {
+    description
+      "Delete presence for pcp-enable.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-13 {
+    description
+      "Add grouping port-reuse.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-10-09 {
+    description
+      "Modify pcp-common.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-09-22 {
+    description
+      "Add grouping bind-serv-inst-group, nat-filter-mode and pcp-common.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-06-17 {
+    description
+      "Add grouping fast-forwarding-statistics.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-02-11 {
+    description
+      "Modify session-log-send-mode description.";
+    reference
+      "Huawei private.";
+  }
+  revision 2022-01-29 {
+    description
+      "Add grouping log-host and session-log-send-mode.";
+    reference
+      "Huawei private.";
+  }
+  revision 2021-11-05 {
+    description
+      "Add grouping port-range-set.";
+    reference
+      "Huawei private.";
+  }
+  revision 2021-07-31 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  typedef nat-session-type { // NAT session protocol type
+    type enumeration {
+      enum "tcp" {
+        value 8;
+        description "Tcp session type.";
+      }
+    }
+    description
+      "Session type.";
+  }
+  typedef alg-protocol-type {
+    type enumeration {
+      enum "ftp" {
+        value 1;
+        description "Indicate file transfer protocol.";
+      }
+      enum "rtsp" {
+        value 2;
+        description "Indicate real time streaming protocol.";
+      }
+      enum "pptp" {
+        value 4;
+        description "Indicate point-to-point tunnel protocol.";
+      }
+      enum "sip" {
+        value 8;
+        description "Indicate session initiation protocol.";
+      }
+      enum "dns" {
+        value 16;
+        description "Indicate domain name service.";
+      }
+      enum "http" {
+        value 32;
+        description "Indicate hypertext transfer protocol.";
+      }
+    }
+    description
+      "ALG Protocol.";
+  }
+  typedef ip-address-type {
+    type enumeration {
+      enum "ipv4" {
+        value 0;
+        description "IPv4 address type.";
+      }
+      enum "ipv6" {
+        value 1;
+        description "IPv6 address type.";
+      }
+    }
+    description "Indicate the IP address type.";
+  }
+  typedef elog-version-type {
+    type enumeration {
+      enum "v1" {
+        value 0;
+        description "Elog v1 version.";
+      }
+      enum "v2" {
+        value 1;
+        description "Elog v2 version.";
+      }
+      enum "v3" {
+        value 3;
+        description "Elog secoManager version.";
+      }
+    }
+    description "Elog version.";
+  }
+
+  grouping alg {
+    description "Application level gateway.";
+    container algs {
+      description "List of Application level gateway.";
+      list alg {
+        key "protocol";
+        description "Configure application level gateway.";
+        leaf protocol {
+          type alg-protocol-type;
+          description "Protocol.";
+        }
+        leaf rate-threshold {
+          when "../protocol='ftp'";
+          type uint16 {
+            range "64..15000";
+          }
+          units "pps";
+          description
+            "Enables NAT ALG rate limiting for standard FTP protocols.";
+        }
+        leaf separate-translation {
+          when "../protocol='sip'";
+          type boolean;
+          default "false";
+          description
+            "Enable/disable the SIP control channel and data channel match an address-based NAT server separately in the NAT instance for NAT.";
+        }
+      }
+    }
+  }
+  grouping bind-serv-inst-group {
+    description "Configure the binded service-instance-group for NAT instances.";
+    leaf name {
+      type leafref {
+          path "/vsm:vsm/vsm:service-instance-groups/vsm:service-instance-group/vsm:group-name";
+      }
+      description "Specify the name of Service-instance-group.";
+    }
+  }
+  grouping nat-filter-mode {
+    description
+      "Configure the filter mode.";
+    leaf mode {
+      type enumeration {
+        enum "symmetric" {
+          value 0;
+          description
+            "Symmetric mode.";
+        }
+        enum "full-cone" {
+          value 1;
+          description
+            "Full-cone mode.";
+        }
+      }
+      default "symmetric";
+      description
+        "NAT filter mode.";
+    }
+  }
+  grouping pcp-common {
+    description "Configure PCP.";
+    container pcp {
+      when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+      description "Configure PCP.";
+      container pcp-enable {
+        description "Configure PCP enable.";
+        leaf enable {
+          type boolean;
+          default "true";
+          description
+            "Enable/disable PCP of the CGN instance.";
+        }
+      }
+      container pcp-prefer-failure {
+        description "Configure a device to send PCPv1 response packets without the prefer_failure option.";
+        leaf ignore {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable a device to send PCPv1 response packets without the prefer_failure option.";
+        }
+      }
+      container pcp-server {
+        description "Configure the PCP server of the CGN instance.";
+        container ipv4-server {
+          presence "Configure pcp ipv4 server.";
+          description "Configure the PCP IPv4 server of the CGN instance.";
+          leaf ipv4-address {
+            type inet:ipv4-address-no-zone;
+            mandatory true;
+            description "Specifies the IPv4 address of a PCP server.";
+          }
+          leaf mask-length {
+            type uint8 {
+            range "1..32";
+            }
+            mandatory true;
+            description "Specifies the mask length of an IPv4 address of a PCP server.";
+          }
+        }
+      }
+      container port-reservation {
+        presence "Configure pcp port reservation.";
+        description "Configure a range of ports to be reserved for PCP in a CGN instance.";
+        leaf start-port {
+          type uint16 {
+            range "1024..65535";
+          }
+          must "(../start-port) mod 64 = 0";
+          mandatory true;
+          description
+            "Port-reservation start port, the value must be a multiple of 64.";
+        }
+        leaf end-port {
+          type uint16 {
+            range "1024..65535";
+          }
+          must "((../end-port + 1) mod 64 = 0) and ((../end-port) > (../start-port))";
+          mandatory true;
+          description
+            "Port-reservation end port, the value of the end port plus 1 must be an integer multiple of 64.";
+        }
+        leaf using-well-known-port {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable using well-known port segment 1 to 1023 as a reserved PCP port segment.";
+        }
+      }
+    }
+  }
+  grouping port-range-set {
+    description
+      "NAT port-range initial and extend.";
+    leaf initial-number {
+      type uint16 {
+        range "64..64512";
+      }
+      must "(../initial-number) mod 64 = 0";
+      mandatory true;
+      description
+        "Port-range initial number, the value must be a multiple of 64.";
+    }
+    leaf extended-number {
+      type uint16 {
+        range "64..8192";
+      }
+      must "(../extended-number) mod 64 = 0";
+      description
+        "Port-range extended number, the value must be a multiple of 64.";
+    }
+    leaf extended-times {
+      when ../extended-number;
+      type uint8 {
+        range "1..32";
+      }
+      must "(../initial-number + ../extended-number * ../extended-times) <= 64512";
+      mandatory true;
+      description
+        "Specifies the number of extended port allocation times supported by the device.";
+    }
+  }
+  grouping port-reuse {
+    description "Configure port reuse for nat instance.";
+    leaf enable {
+      type boolean;
+      default "false";
+      description "Enable/disable the port reuse.";
+    }
+  }
+  grouping nat-session-aging {
+    description "Session aging.";
+    container session-agings {
+      description "List of session aging.";
+      list session-aging {
+        key "session-type";
+        description "Configure session aging type for instance.";
+        leaf session-type {
+          type cgn-common:nat-session-type;
+          description "Session-type for instance.";
+        }
+        leaf rst-defense-mode {
+          type enumeration {
+            enum "disable" {
+              value 0;
+              description
+                "Disable the rst defense mode.";
+            }
+            enum "enable" {
+              value 1;
+              description
+                "Enable the rst defense mode.";
+            }
+          }
+          default "disable";
+          description "Enable/disable the rst defense mode.";
+        }
+      }
+    }
+  }
+  grouping session-log-send-mode {
+    description
+      "Configure session log send mode is concurrent or polling.";
+    leaf mode {
+      type enumeration {
+        enum "polling" {
+        value 0;
+        description
+          "Polling-Mode.";
+        }
+        enum "concurrent" {
+          value 1;
+          description
+            "Concurrent-Mode.";
+        }
+      }
+      default "polling";
+      description
+        "Specify session log send mode.";
+    }
+    leaf secondary-mode {
+        type enumeration {
+          enum "polling" {
+          value 0;
+          description
+            "Polling-Mode.";
+          }
+          enum "concurrent" {
+            value 1;
+            description
+              "Concurrent-Mode.";
+          }
+        }
+        must "(/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board') or (../secondary-mode='polling')";
+        default "polling";
+        description
+          "Specify session log send mode for secondary group.";
+    }
+  }
+  grouping session-log-create-mode {
+    description
+      "Configure session log create mode is session-start-only or session-end-only or session-period-end or session-start-period-end.";
+    leaf mode {
+      type enumeration {
+        enum "session-start-end" {
+          value 0;
+          description
+            "Session-Start-End.";
+        }
+        enum "session-start-only" {
+          value 1;
+          description
+            "Session-Start-Only.";
+        }
+        enum "session-end-only" {
+          value 2;
+          description
+            "Session-End-Only.";
+        }
+        enum "session-period-end" {
+          value 3;
+          description
+            "Session-Period-End.";
+        }
+        enum "session-start-period-end" {
+          value 4;
+          description
+            "Session-Start-Period-End.";
+        }
+      }
+      default "session-start-end";
+      description
+        "Specify session log create mode.";
+    }
+  }
+  grouping log-host {
+    description "Configure log host.";
+    container hosts {
+      description "List of host.";
+      list host {
+        key "host-ip host-port vpn-name";
+        description "Configure a log host.";
+        leaf  host-ip {
+          type inet:ipv4-address-no-zone;
+          description "Specifies IP address of a log host.";
+        }
+        leaf host-port {
+          type uint16 {
+            range "1..65535";
+          }
+          description "Specifies the port number of a log host.";
+        }
+        leaf vpn-name {
+          type leafref {
+            path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+          }
+          must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+          description
+            "Specify the name of VPN instance of the log host, the name of public network is _public_.";
+        }
+        leaf source-ip {
+          type inet:ipv4-address-no-zone;
+          mandatory true;
+          description "Specifies the source IP address used by a device to communicate with a log host.";
+        }
+        leaf source-port {
+          type uint16 {
+            range "1..65535";
+          }
+          mandatory true;
+          description "Specifies the source port number used by a device to communicate with a log host.";
+        }
+        leaf inside-vpn-name {
+          type leafref {
+            path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+          }
+          must "/ni:network-instance/ni:instances/ni:instance[ni:name=current()]/l3vpn:afs/l3vpn:af[l3vpn:type='ipv4-unicast']";
+          description
+            "Specify the name of VPN instance on the private network side, the name of public network is _public_.";
+        }
+        leaf host-name {
+          type string {
+            length "1..31";
+          }
+          description "Specifies the name of a log host.";
+        }
+        leaf secondary {
+          when "/vsm:vsm/vsm:on-board-mode/vsm:mode='centralized-board'";
+          type boolean;
+          default "false";
+          description
+            "Enable/disable the secondary log host group.";
+        }
+      }
+    }
+  }
+  grouping fast-forwarding-statistics {
+    description
+      "Configure the fast-forwarding statistics enable of the instance.";
+      leaf statistics-enable {
+        type boolean;
+        default "false";
+        description
+          "Enable/disable the fast-forwarding statistics.";
+      }
+  }
+  grouping port-limit {
+    description "Configure the port limit parameter.";
+    leaf enable {
+      type boolean;
+      default "false";
+      description "Enable/disable the user-based port number limit function.";
+    }
+    leaf tcp-limit-value {
+      type uint16 {
+        range "50..65535";
+      }
+      default "10240";
+      description "Specifies the maximum number of available tcp ports for a user.";
+    }
+    leaf udp-limit-value {
+      type uint16 {
+        range "50..65535";
+      }
+      default "10240";
+      description "Specifies the maximum number of available udp ports for a user.";
+    }
+    leaf icmp-limit-value {
+      type uint16 {
+        range "50..65535";
+      }
+      default "512";
+      description "Specifies the maximum number of available icmp ports for a user.";
+    }
+    leaf total-limit-value {
+      type uint16 {
+        range "50..65535";
+      }
+      default "20992";
+      description "Specifies the maximum number of available ports for a user.";
+    }
+  }
+  grouping alarm-access-user-limit {
+    description "Configure the user access limit parameter.";
+    leaf log {
+      type boolean;
+      default "true";
+      description "Enable/disable the log function for user access limit.";
+    }
+    leaf trap {
+      type boolean;
+      default "true";
+      description "Enable/disable the trap function for user access limit.";
+    }
+    leaf threshold {
+      type uint8 {
+        range "60..100";
+      }
+      units "%";
+      default "80";
+      description "Specifies an alarm threshold for the percentage of access users in the instance.";
+    }
+  }
+  grouping elog-version {
+    description "Configure elog version is v1 or v2 or v3.";
+    leaf version {
+      type cgn-common:elog-version-type;
+      default "v1";
+      description "Elog version.";
+    }
+  }
+  grouping five-tuple-port-reuse {
+    description "Configure five tuple port reuse for nat instance.";
+    leaf enable {
+      type boolean;
+      default "false";
+      description "Enable/disable the five tuple port reuse.";
+    }
+  }
+  ext:task-name "nat";
+}
+  

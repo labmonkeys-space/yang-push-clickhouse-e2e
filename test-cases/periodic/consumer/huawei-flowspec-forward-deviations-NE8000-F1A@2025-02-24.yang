@@ -1,0 +1,80 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-flowspec-forward-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-flowspec-forward-deviations-NE8000-F1A";
+  prefix flowspec-forward-devs-NE8000-F1A;
+
+  import huawei-flowspec-forward {
+    prefix flowspec-forward;
+  }
+  import huawei-devm {
+    prefix devm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-flowspec-forward module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/flowspec-forward:flowspec-forward/flowspec-forward:cascading-modes" {
+    deviate not-supported;
+  }
+  deviation "/flowspec-forward:flowspec-forward/flowspec-forward:flowspec-interface-resources" {
+    deviate not-supported;
+  }
+  deviation "/devm:devm/devm:lpu-boards/devm:lpu-board/flowspec-forward:flowspec-forward" {
+    deviate not-supported;
+  }
+  deviation "/flowspec-forward:flowspec-forward/flowspec-forward:packet-match-types/flowspec-forward:packet-match-type/flowspec-forward:type" {
+    deviate replace {
+      type enumeration {
+        enum ipv6-fragment-inner-protocol {
+          value 0;
+          description
+            "Match IPv6 fragment inner protocol.";
+        }
+        enum srv6-inner-ip {
+          value 1;
+          description
+            "Match SRv6 inner IP.";
+        }
+        enum match-rule-enhance {
+          value 2;
+          description
+            "Match rule enhance.";
+        }
+        enum match-rule-ipv6-enhance {
+          value 3;
+          description
+            "Match rule IPv6 enhance.";
+        }
+        enum match-bras-ipv4 {
+          value 4;
+          description
+            "Match bras IPv4.";
+        }
+        enum match-bras-ipv6 {
+          value 5;
+          description
+            "Match bras IPv6.";
+        }
+      }
+    }
+  }
+}
+
+  

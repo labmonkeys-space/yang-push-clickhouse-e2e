@@ -1,0 +1,38 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-stamp-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-stamp-deviations-NE8000-F1A";
+  prefix stamp-devs-NE8000-F1A;
+
+  import huawei-stamp {
+    prefix stamp;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-stamp module.";
+
+  revision 2025-12-09 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/stamp:stamps" {
+    deviate not-supported;
+  }
+}
+
+  

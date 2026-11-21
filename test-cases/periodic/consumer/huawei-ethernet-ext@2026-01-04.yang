@@ -1,0 +1,401 @@
+/*
+Copyright (C) 2019-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ethernet-ext {
+  namespace "urn:huawei:yang:huawei-ethernet-ext";
+  prefix ethernet-ext;
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-ethernet {
+    prefix ethernet;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-pub-type {
+    prefix pub-type;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Ethernet Interface.";
+  revision 2026-01-04 {
+    description
+      "Add global-unknown-protocol to the YANG file.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-04-07 {
+    description
+      "Add link-groups-info to the YANG file.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-03-12 {
+    description
+      "Add rewrite map priority no-change to the YANG file.";
+    reference
+      "Huawei private.";
+  }
+  revision 2020-01-22 {
+    description
+      "The modifications in the schema file are synchronized to the YANG file.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-04-23 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "forwarding";
+  typedef link-port-direction {
+    type enumeration {
+      enum "c2i" {
+        value 0;
+        description
+          "Traffic can be forwarded from c-interface to i-interface.";
+      }
+      enum "i2c" {
+        value 1;
+        description
+          "Traffic can be forwarded from i-interface to c-interface.";
+      }
+      enum "both" {
+        value 2;
+        description
+          "Traffic can be forwarded between c-interface and i-interface.";
+      }
+    }
+    description
+      "Link port direction.";
+  }
+  typedef link-work-state {
+    type enumeration {
+      enum "pass" {
+        value 0;
+        description
+          "Traffic is not transparently transmitted.";
+      }
+      enum "ebypass" {
+        value 1;
+        description
+          "Traffic is transparently transmitted.";
+      }
+    }
+    description
+      "Link working state.";
+  }
+  typedef link-group-state {
+    type enumeration {
+      enum "enable" {
+        value 0;
+        description
+          "Enable link group.";
+      }
+      enum "disable" {
+        value 1;
+        description
+          "Disable link group.";
+      }
+    }
+    description
+      "Link group state.";
+  }
+  typedef forwarding-behavior-type {
+    type enumeration {
+      enum "pass" {
+        value 0;
+        description
+          "Pass unknown protocol packets.";
+      }
+      enum "drop" {
+        value 1;
+        description
+          "Drop unknown protocol packets.";
+      }
+    }
+    description
+      "Forwarding behavior of unknown protocol packets.";
+  }
+  typedef reset-statistics-type {
+    type enumeration {
+      enum "none" {
+        value 0;
+        description
+          "No action.";
+      }
+    enum "pass" {
+        value 1;
+        description
+          "Reset the number of passed unknown protocol packets.";
+      }
+      enum "drop" {
+        value 2;
+        description
+          "Reset the number of dropped unknown protocol packets.";
+      }
+      enum "all" {
+        value 3;
+        description
+          "Reset the number of passed and dropped unknown protocol packets.";
+      }
+    }
+    description
+      "Reset the statistics type of unknown protocol packets.";
+  }
+  typedef global-forwarding-behavior-type {
+    type enumeration {
+      enum "drop" {
+        value 0;
+        description
+          "Drop unknown protocol packets.";
+      }
+      enum "pass" {
+        value 1;
+        description
+          "Pass unknown protocol packets.";
+      }
+    }
+    description
+      "Forwarding behavior of global unknown protocol packets.";
+  }
+  rpc reset-unknown-protocol-statistics {
+    description
+      "Reset statistics of the passed and dropped unknown protocol packets.";
+    ext:node-ref "/ethernet:ethernet/ethernet-ext:link-groups/ethernet-ext:link-group/ethernet-ext:unknown-protocol-statistics";
+    input {
+      leaf link-group-id {
+        type uint32 {
+          range "0..63";
+        }
+        mandatory true;
+        description
+          "Link group ID.";
+      }
+      leaf reset-statistics {
+        type reset-statistics-type;
+        mandatory true;
+        description
+          "Reset statistics of the passed and dropped unknown protocol packets.";
+      }
+    }
+  }
+  rpc reset-global-unknown-protocol-statistics {
+    description
+      "Reset statistics of the passed and dropped global unknown protocol packets.";
+    ext:node-ref "/ethernet:ethernet/ethernet-ext:global-unknown-protocol/ethernet-ext:global-unknown-protocol-statistics";
+    input {
+      leaf reset-statistics {
+        type reset-statistics-type;
+        mandatory true;
+        description
+          "Reset statistics of the passed and dropped global unknown protocol packets.";
+      }
+    }
+  }
+  augment "/ethernet:ethernet" {
+    description
+          "Configure Ethernet attribute.";
+    container priority-no-change {
+      description
+          "Configure rewrite map priority no-change.";
+      leaf map-2to2 {
+        type empty;
+        description
+          "Enable/disable rewrite map 2-to-2 priority no-change.";
+      }
+      leaf map-1to2 {
+        type empty;
+        description
+          "Enable/disable rewrite map 1-to-2 priority no-change.";
+      }
+    }
+    container link-groups-info {
+      description
+        "Configure link groups.";
+      container link-groups {
+        description
+          "List of the link groups.";
+        list link-group {
+          must "c-interface-name!=i-interface-name";
+          key "link-group-id c-interface-name i-interface-name";
+          description
+            "Configure a link group.";
+          leaf link-group-id {
+            type uint32 {
+              range "0..63";
+            }
+            description
+              "Link group ID.";
+          }
+          leaf c-interface-name {
+            type leafref {
+              path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+            }
+            must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:class='main-interface'";
+            must "not(../../ethernet-ext:link-group[ethernet-ext:link-group-id=current()/../ethernet-ext:link-group-id][ethernet-ext:c-interface-name!=current()])";
+            must "not(../../ethernet-ext:link-group[ethernet-ext:link-group-id!=current()/../ethernet-ext:link-group-id][ethernet-ext:c-interface-name=current()][ethernet-ext:direction=current()/../ethernet-ext:direction] or ../../ethernet-ext:link-group[ethernet-ext:link-group-id!=current()/../ethernet-ext:link-group-id][ethernet-ext:c-interface-name=current()][ethernet-ext:direction='both'])";
+            must "not(../../ethernet-ext:link-group[ethernet-ext:link-group-id!=current()/../ethernet-ext:link-group-id][ethernet-ext:i-interface-name=current()][ethernet-ext:direction!=current()/../ethernet-ext:direction])";
+            description
+              "C-interface name.";
+          }
+          leaf i-interface-name {
+            type leafref {
+              path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+            }
+            must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:class='main-interface'";
+            must "not(../../ethernet-ext:link-group[ethernet-ext:link-group-id=current()/../ethernet-ext:link-group-id][ethernet-ext:i-interface-name!=current()])";
+            must "not(../../ethernet-ext:link-group[ethernet-ext:link-group-id!=current()/../ethernet-ext:link-group-id][ethernet-ext:i-interface-name=current()][ethernet-ext:direction=current()/../ethernet-ext:direction] or ../../ethernet-ext:link-group[ethernet-ext:link-group-id!=current()/../ethernet-ext:link-group-id][ethernet-ext:i-interface-name=current()][ethernet-ext:direction='both'])";
+            must "not(../../ethernet-ext:link-group[ethernet-ext:link-group-id!=current()/../ethernet-ext:link-group-id][ethernet-ext:c-interface-name=current()][ethernet-ext:direction!=current()/../ethernet-ext:direction])";
+            description
+              "I-interface name.";
+          }
+          leaf direction {
+            type link-port-direction;
+            mandatory true;
+            description
+              "Link port direction.";
+          }
+          leaf link-work-state {
+            type link-work-state;
+            default "pass";
+            description
+              "Link work state.";
+          }
+          leaf link-group-state {
+            type link-group-state;
+            default "enable";
+            description
+              "Link group state.";
+          }
+          leaf reset-statistics {
+            type reset-statistics-type;
+            default "none";
+            description
+              "Reset statistics of the passed and dropped unknown protocol packets.";
+          }
+          container unknown-protocol-statistics {
+            config false;
+            description
+              "Statistics of the passed and dropped unknown protocol packets.";
+            leaf passed-packets {
+              type uint64;
+              units packet;
+              description
+                "Number of passed unknown protocol packets.";
+            }
+            leaf dropped-packets {
+              type uint64;
+              units packet;
+              description
+                "Number of dropped unknown protocol packets.";
+            }
+          }
+        }
+      }
+      container unknown-protocol-behavior {
+        description
+          "Configure the forwarding behavior of unknown protocol packets.";
+        leaf behavior {
+          type forwarding-behavior-type;
+          default "pass";
+          description
+            "Configure the forwarding behavior of unknown protocol packets.";
+        }
+      }
+    }
+    container global-unknown-protocol {
+      must "(behavior='pass' and source-mac-address and destination-mac-address and group-name) or behavior='drop'";
+      description
+        "Configure information about unknown protocol packets.";
+      leaf behavior {
+          type global-forwarding-behavior-type;
+          default 'drop';
+          description
+            "Configure the forwarding behavior of unknown protocol packets.";
+      }
+      leaf source-mac-address {
+        when "../ethernet-ext:behavior='pass'";
+        type pub-type:mac-address;
+        description
+          "Configure the source MAC address for unknown protocol packets.";
+      }
+      leaf destination-mac-address {
+        when "../ethernet-ext:behavior='pass'";
+        type pub-type:mac-address;
+        description
+          "Configure the destination MAC address for unknown protocol packets.";
+      }
+      leaf group-name {
+        when "../ethernet-ext:behavior='pass'";
+        type leafref {
+          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:type='Eth-Trunk' and /ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:class='main-interface'";
+        description
+          "Configure the group name for unknown protocol packets.";
+      }
+      leaf reset-statistics {
+        type reset-statistics-type;
+        description
+          "Reset statistics of the passed and dropped unknown protocol packets.";
+      }
+      container global-unknown-protocol-statistics {
+        config false;
+        description
+            "Statistics of the passed and dropped unknown protocol packets.";
+        leaf passed-packets {
+            type uint64;
+            units packet;
+            description
+            "Number of passed unknown protocol packets.";
+        }
+        leaf dropped-packets {
+            type uint64;
+            units packet;
+            description
+            "Number of dropped unknown protocol packets.";
+        }
+      }
+    }
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/ethernet:l3-sub-interface/ethernet:flow-type/ethernet:dot1q-termination/ethernet:dot1q-termination" {
+    description "L3 dot1q-termination sub interface attribute.";
+    container termination-mode-enable {
+      description
+        "Configure the dot1q-termination sub interface as single-mode after binding a vsi service in qualify mode.";
+      leaf single-mode-enable {
+        type boolean;
+        default "false";
+        description
+          "Enable/disable single-mode configuration.";
+      }
+    }
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/ethernet:l3-sub-interface/ethernet:flow-type/ethernet:qinq-stacking/ethernet:qinq-stacking" {
+    description "L3 qinq-stacking sub interface attribute.";
+    container stacking-mode-enable {
+      description
+        "Configure the qinq-stacking sub interface as single-mode when binding VSI service.";
+      leaf single-mode-enable {
+        type boolean;
+        must "../single-mode-enable='false' or ../../ethernet:stacking-vid";
+        default "false";
+        description
+          "Enable/disable single-mode configuration.";
+      }
+    }
+  }
+}
+
+  

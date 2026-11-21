@@ -1,0 +1,83 @@
+/*
+Copyright (C) 2023 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-apn-license {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-apn-license";
+  prefix apn-license;
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-license {
+    prefix lcs;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+  description
+    "APN License.";
+  revision 2023-02-22 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "forwarding";
+  augment "/lcs:license" {
+    description
+      "APN6 license resources.";
+    container apn6-resource-usages {
+      config false;
+      description
+        "List of apn6 license resource usage information.";
+      list apn6-resource-usage {
+        key "item-name";
+        description
+          "Statistics of apn6 license resource usage information.";
+        leaf item-name {
+          type string {
+            length "1..31";
+          }
+          description
+            "Name of the control item corresponding to the apn6 license.";
+        }
+        leaf item-description {
+          type string {
+            length "1..255";
+          }
+          description
+            "Description of the control item corresponding to the apn6 license.";
+        }
+        leaf used-num {
+          type uint32;
+          description
+            "Number of activated apn6 license resources.";
+        }
+        leaf total-num {
+          type uint32;
+          description
+            "Total number of apn6 license resources.";
+        }
+        leaf instance-current-use-num {
+          type uint32;
+          description
+            "Number of used apn6 instance resources.";
+        }
+        leaf support-instance-num {
+          type uint32;
+          description
+            "Number of apn6 instance that the license Support.";
+        }
+      }
+    }
+  }
+}
+
+  

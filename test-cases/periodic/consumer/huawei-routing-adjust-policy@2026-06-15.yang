@@ -1,0 +1,574 @@
+/*
+Copyright (C) 2024-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-routing-adjust-policy {
+  namespace "urn:huawei:yang:huawei-routing-adjust-policy";
+  prefix ra-policy;
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-routing-adjust-topo {
+    prefix ra-topo;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-bgp {
+    prefix bgp;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Routing adjust policy.";
+  revision 2026-06-15 {
+    description
+      "Modify default value of leaf node route-validation. Modify must condition of node route-validation. Modify max-elements of list routing-adjust.";
+    reference "Huawei private.";
+  }
+  revision 2026-01-23 {
+    description
+      "Add the leaf of outbound ucmp.";
+    reference "Huawei private.";
+  }
+  revision 2024-03-14 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+  ext:task-name  "routing-adjust";
+
+  typedef std-community-type {
+    type union {
+      type string {
+        length "1..19";
+        pattern '([0-9a-zA-Z\-: ]*)';
+      }
+      type uint32 {
+        range "1..4294967040|4294967044..4294967295";
+      }
+    }
+    description
+      "Type definition for community attributes.";
+  }
+  typedef well-known-community-type {
+    type enumeration {
+      enum "internet" {
+        value 0;
+        description
+          "The basic type of filter.";
+      }
+      enum "no-advertise" {
+        value 1;
+        description
+          "Do not advertise to any peer.";
+      }
+      enum "no-export" {
+        value 2;
+        description
+          "Do not export to external peers.";
+      }
+      enum "no-export-subconfed" {
+        value 3;
+        description
+          "Do not send outside a sub-confederation.";
+      }
+    }
+    description
+      "Type definition for well-known IETF community attribute values.";
+  }
+  typedef community-type {
+    type union { 
+      type well-known-community-type;
+      type std-community-type;
+    }
+    description
+      "Type of the community members.";
+  }
+  typedef adjust-type {
+    type enumeration {
+      enum "positive" {
+        value 0;
+        description
+          "Positive.";
+      }
+      enum "reverse" {
+        value 1;
+        description
+          "Reverse.";
+      }
+      enum "redistribute" {
+        value 2;
+        description
+          "Redistribute.";
+      }
+    }
+    description
+      "Adjust type.";
+  }
+  typedef role-type {
+    type enumeration {
+      enum "primary" {
+        value 1;
+        description
+          "Primary.";
+      }
+      enum "adaptive" {
+        value 2;
+        description
+          "Adaptive.";
+      }
+    }
+    description
+      "Role type.";
+  }
+  container routing-adjust-policy {
+    description
+      "Configure routing adjust policy.";
+    container policys {
+      description
+        "List of routing adjust policys.";
+      list policy {
+        key "name";
+        description
+          "Configure a routing adjust policy.";
+        leaf name {
+          type string {
+            length "1..31";
+          }
+          description
+            "Name of the policy.";
+        }
+        leaf topology {
+          type leafref {
+            path "/ra-topo:routing-adjust-topo/ra-topo:topologys/ra-topo:topology/ra-topo:name";
+          }
+          must "(/ra-topo:routing-adjust-topo/ra-topo:topologys/ra-topo:topology[ra-topo:name=current()]/ra-topo:type='square-shape' and count(/ra-topo:routing-adjust-topo/ra-topo:topologys/ra-topo:topology[ra-topo:name=current()]/ra-topo:partner-nodes/ra-topo:partner-node)=1 and count(/ra-topo:routing-adjust-topo/ra-topo:topologys/ra-topo:topology[ra-topo:name=current()]/ra-topo:remote-nodes/ra-topo:remote-node)=2) or /ra-topo:routing-adjust-topo/ra-topo:topologys/ra-topo:topology[ra-topo:name=current()]/ra-topo:type!='square-shape'";
+          must "(/ra-topo:routing-adjust-topo/ra-topo:topologys/ra-topo:topology[ra-topo:name=current()]/ra-topo:type='v-shape' and count(/ra-topo:routing-adjust-topo/ra-topo:topologys/ra-topo:topology[ra-topo:name=current()]/ra-topo:partner-nodes/ra-topo:partner-node)=1 and count(/ra-topo:routing-adjust-topo/ra-topo:topologys/ra-topo:topology[ra-topo:name=current()]/ra-topo:remote-nodes/ra-topo:remote-node)=2) or /ra-topo:routing-adjust-topo/ra-topo:topologys/ra-topo:topology[ra-topo:name=current()]/ra-topo:type!='v-shape'";
+          description
+            "Specifies the topology name.";
+        }
+        leaf adjust-interval {
+          type uint32 {
+            range "10..600";
+          }
+          units "s";
+          default "60";
+          description
+            "Specifies the adjust interval.";
+        }
+        leaf route-validation {
+          type boolean;
+          must "not (.='true' and ../apply-rpd-policy)";
+          default "false";
+          description
+            "Enable/disable route validation.";
+        }
+        container bandwidth-usage {
+          description
+            "Configure bandwidth usage conditions.";
+          leaf local-threshold {
+            type uint8 {
+              range "0..100";
+            }
+            default "90";
+            description
+              "Specifies the congestion threshold.";
+          }
+          leaf allow-in-difference {
+            type uint8 {
+              range "0..100";
+            }
+            must "../local-threshold >= ../allow-in-difference";
+            default "20";
+            description
+              "Specifies the bandwidth usage allow in difference.";
+          }
+          leaf partner-threshold {
+            type uint8 {
+              range "0..100";
+            }
+            must "not (../../apply-rpd-policy)";
+            must "../partner-threshold >= ../allow-in-difference";
+            description
+              "Specify the congestion threshold.";
+          }
+        }
+        container apply-rpd-policy {
+          description
+            "Configure apply rpd policys.";
+          container med {
+            presence "Configure med values.";
+            description
+              "Configure an MED value.";
+            leaf operation {
+              type enumeration {
+                enum "add" {
+                  value 1;
+                  description
+                    "Add the newly configured attribute to the original ones.";
+                }
+              }
+              mandatory true;
+              description
+                "Mode of setting the med value.";
+            }
+            leaf value {
+              type uint32 {
+                range "1..4294967295";
+              }
+              mandatory true;
+              description
+                "Configure the med add value.";
+            }
+          }
+          choice as-path {
+            description
+              "Configure as path set.";
+            case as-path-prepend-local-as {
+              description
+                "Prepend local as count.";
+              container as-path-prepend-local-as {
+                description
+                  "Configure prepend local as count.";
+                leaf value {
+                  type uint8 {
+                    range "1..63";
+                  }
+                  description
+                    "Count of the local AS number additions.";
+                }
+              }
+            }
+          }
+          container community {
+            presence "Configure community values.";
+            description
+              "Configure community values.";
+            leaf operation {
+              type enumeration {
+                enum "additive" {
+                  value 1;
+                  description
+                    "Add the newly configured attribute to the original ones.";
+                }
+              }
+              mandatory true;
+              description
+                "Mode of setting the community value.";
+            }
+            choice set-community {
+              mandatory true;
+              description
+                "Configure community values.";
+              case inline {
+                description
+                  "Configure community values.";
+                leaf-list communities {
+                  type community-type;
+                  max-elements 1;
+                  description
+                    "Configure the community value.";
+                }
+              }
+            }
+          }
+        }
+        container apply-load-balance {
+          description
+            "Configure SID for load-balancing.";
+            leaf epe-static-sid {
+              type inet:ipv6-address-no-zone;
+              must "not(../../apply-rpd-policy)";
+              must "not(../epe-static-sid='::')";
+              description
+                "SID value.";
+           }
+        }
+      }
+    }
+    container state {
+      config false;
+      description
+        "Statistics of routing adjust state.";
+      container traffic-outbound-adjust-historys {
+        config false;
+        description
+          "List of traffic outbound adjust history.";
+        list traffic-outbound-adjust-history {
+          key "vpn-name policy-name index";
+          description
+            "Statistics of BGP traffic outbound adjust history.";
+          leaf vpn-name {
+            type leafref {
+              path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+            }
+            description
+              "VPN instance name.";
+          }
+          leaf policy-name {
+            type string {
+              length "1..31";
+            }
+            description
+              "Routing adjust policy name.";
+          }
+          leaf index {
+            type uint32;
+            description
+              "Index of record.";
+          }
+          leaf adjust-router-id {
+            type string {
+              length "1..39";
+            }
+            description
+              "Routing adjust router ID.";
+          }
+          leaf adjust-type {
+            type adjust-type;
+            description
+              "Routing adjust type.";
+          }
+          leaf adjust-reason {
+            type string {
+              length "1..70";
+            }
+            description
+              "Routing adjust reason.";
+          }
+          leaf adjust-time {
+            type yang:date-and-time;
+            description
+              "Routing adjust time.";
+          }
+          leaf topology-type {
+            type ra-topo:topo-type;
+            description
+              "Routing adjust topology type.";
+          }
+          leaf local-link-state {
+            type string {
+              length "1..51";
+            }
+            description
+              "Local link state.";
+          }
+          leaf partner-link-state {
+            type string {
+              length "1..51";
+            }
+            description
+              "Partner link state.";
+          }
+          leaf remote-link-state {
+            type string {
+              length "1..51";
+            }
+            description
+              "Remote link state.";
+          }
+          leaf local-ratio-before-adjust {
+            type string {
+              length "1..150";
+            }
+            description
+              "Local ratio before adjust.";
+          }
+          leaf partner-ratio-before-adjust {
+            type string {
+              length "1..150";
+            }
+            description
+              "Partner ratio before adjust.";
+          }
+          leaf remote-ratio-before-adjust {
+            type string {
+              length "1..150";
+            }
+            description
+              "Remote ratio before adjust.";
+          }
+          leaf local-ratio-after-adjust {
+            type string {
+              length "1..150";
+            }
+            description
+              "Local ratio after adjust.";
+          }
+          leaf partner-ratio-after-adjust {
+            type string {
+              length "1..150";
+            }
+            description
+              "Partner ratio after adjust.";
+          }
+          leaf remote-ratio-after-adjust {
+            type string {
+              length "1..150";
+            }
+            description
+              "Remote ratio after adjust.";
+          }
+          leaf adjust-weight-ratio {
+            type string {
+              length "1..150";
+            }
+            description
+              "Adjust weight ratio.";
+          }
+          leaf sid {
+            type inet:ipv6-address-no-zone;
+            description
+              "Sid value.";
+          }
+          leaf congestion-threshold {
+            type uint32;
+            description
+              "Congestion threshold.";
+          }
+          leaf idle-threshold-in-different {
+            type uint32;
+            description
+              "Idle threshold in different.";
+          }
+          leaf partner-congestion-threshold {
+            type uint32;
+            description
+              "Partner congestion threshold.";
+          }
+        }
+      }
+      container traffic-outbound-adjust-infos {
+        config false;
+        description
+          "List of traffic outbound adjust information.";
+        list traffic-outbound-adjust-info {
+          key "vpn-name policy-name";
+          description
+            "Statistics of BGP traffic outbound adjust information.";
+          leaf vpn-name {
+            type leafref {
+              path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+            }
+            description
+              "VPN instance name.";
+          }
+          leaf policy-name {
+            type string {
+              length "1..31";
+            }
+            description
+              "Routing adjust policy name.";
+          }
+          leaf topology-type {
+            type ra-topo:topo-type;
+            description
+              "Routing adjust topology type.";
+          }
+          leaf congestion-threshold {
+            type uint32;
+            description
+              "Congestion threshold.";
+          }
+          leaf idle-threshold-in-different {
+            type uint32;
+            description
+              "Idle threshold in different.";
+          }
+          leaf partner-congestion-threshold {
+            type uint32;
+            description
+              "Partner congestion threshold.";
+          }
+          container adaptive-routing-infos {
+            description
+              "List of adaptive routing informations.";
+            list adaptive-routing-info {
+              key "path-index role";
+              description
+                "Statistics of adaptive routing information.";
+              leaf path-index {
+                type uint32;
+                description
+                  "Path index.";
+              }
+              leaf role {
+                type role-type;
+                description
+                  "Routing adjust role.";
+              }
+              leaf interface-name {
+                type leafref {
+                    path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+                }
+                description
+                  "Interface name.";
+              }
+              leaf weight {
+                type string {
+                  length "1..63";
+                }
+                description
+                  "Weight.";
+              }
+              leaf sid {
+                type inet:ipv6-address-no-zone;
+                description
+                  "Sid value.";
+              }
+              leaf interface-address {
+                type inet:ip-address-no-zone;
+                description
+                  "Interface address.";
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  augment "/ni:network-instance/ni:instances/ni:instance/bgp:bgp/bgp:base-process/bgp:afs/bgp:af/bgp:ipv4-unicast" {
+    description
+      "Configure IPv4 unicast options.";
+    container routing-adjusts {
+      when "../../../../../../ni:name='_public_'";
+      description
+        "List of routing adjust policys.";
+      list routing-adjust {
+        key "traffic-outbound-policy";
+        max-elements "8";
+        description
+          "Configure a routing adjust policy.";
+        leaf traffic-outbound-policy {
+          type leafref {
+            path "/ra-policy:routing-adjust-policy/ra-policy:policys/ra-policy:policy/ra-policy:name";
+          }
+          must "/ra-policy:routing-adjust-policy/ra-policy:policys/ra-policy:policy[ra-policy:name=current()]/ra-policy:topology";
+          must "/ra-policy:routing-adjust-policy/ra-policy:policys/ra-policy:policy[ra-policy:name=current()]/ra-policy:apply-load-balance/ra-policy:epe-static-sid";
+          must "../../../bgp:common/bgp:load-balancing-ucmp='false'";
+          must "../../../bgp:common/bgp:multi-nexthop-convergence='false'";
+          description
+            "Specify traffic outbound policy.";
+        }
+      }
+    }
+  }
+}
+
+  

@@ -1,0 +1,58 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-smartlink-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-smartlink-deviations-NE8000-F1A";
+  prefix smartlink-devs-NE8000-F1A;
+
+  import huawei-smartlink {
+    prefix smartlink;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-ethernet {
+    prefix ethernet;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-smartlink module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/smartlink:smartlink/smartlink:groups" {
+    deviate not-supported;
+  }
+  deviation "/smartlink:smartlink/smartlink:flush-receive" {
+    deviate not-supported;
+  }
+  deviation "/smartlink:manual-switch" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/ethernet:main-interface/ethernet:l2-attribute/smartlink:smartlink/smartlink:auth-mode" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/ethernet:main-interface/ethernet:l2-attribute/smartlink:smartlink/smartlink:auth-info" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/ethernet:main-interface/ethernet:l2-attribute/smartlink:smartlink" {
+    deviate delete {
+      must '(./auth-mode and ./auth-info) or ((not (./auth-mode)) and (not (./auth-info)))';
+    }
+  }
+}
+
+  

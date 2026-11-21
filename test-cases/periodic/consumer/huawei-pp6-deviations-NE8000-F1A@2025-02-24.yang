@@ -1,0 +1,55 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-pp6-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-pp6-deviations-NE8000-F1A";
+  prefix pp6-devs-NE8000-F1A;
+
+  import huawei-pp6 {
+    prefix pp6;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-pp6 module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef app-proto-type-deviations {
+    type enumeration {
+      enum management {
+        value 1;
+        description
+          "Management protocol.";
+      }
+      enum control {
+        value 2;
+        description
+          "Control protocol.";
+      }
+    }
+    description
+      "Application protocol type.";
+  }
+
+  deviation "/pp6:pp6/pp6:ipv6-dscps/pp6:ipv6-dscp/pp6:proto-type" {
+    deviate replace {
+      type pp6-devs-NE8000-F1A:app-proto-type-deviations;
+    }
+  }
+}
+
+  

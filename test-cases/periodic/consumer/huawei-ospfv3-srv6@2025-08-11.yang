@@ -1,0 +1,250 @@
+/*
+Copyright (C) 2019-2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ospfv3-srv6 {
+  namespace "urn:huawei:yang:huawei-ospfv3-srv6";
+  prefix ospfv3-srv6;
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-ospfv3 {
+    prefix ospfv3;
+  }
+  import huawei-srv6 {
+    prefix srv6;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-net-slice {
+    prefix net-slice;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "The YANG module defines generic configuration model for IPv6 Segment Routing (SRv6) OSPFv3 extensions that are common across all of the vendor implementations.";
+  revision 2025-08-11 {
+    description
+      "Add compress container and stack-compress-type.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-01-10 {
+    description
+      "Add auto-sid-advertise container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-10-19 {
+    description
+      "Add srv6 container that augments to interface.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-11-01 {
+    description
+      "Modify the description of slice-source-prefixs.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-08-26 {
+    description
+      "Add slice-source-prefixs container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-07-27 {
+    description
+      "Add container for compatible.";
+    reference
+      "Huawei private.";
+  }
+  revision 2019-12-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name  "ospf";
+  typedef stack-compress-type {
+    type enumeration {
+      enum "compress-32" {
+        value 0;
+        description
+          "32-bit compression.";
+      }
+    }
+    description
+      "Compress type for OSPFv3 SRv6 SID stack.";
+  }
+  augment /ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site {
+    description
+      "This augments OSPFv3 protocol configuration with SRv6.";
+    container srv6 {
+      when "../../../../ni:name='_public_'";
+      description
+        "Configure OSPFv3 IPv6 Segment Routing (SRv6).";
+      container locators {
+      description
+        "List of the information about segment-routing IPv6 locators.";
+          list locator {
+          key "locator-name";
+          description
+          "Configure IPv6 Segment Routing (SRv6) locators.";
+          leaf locator-name {
+            type leafref {
+              path "/ni:network-instance/ni:instances/ni:instance/srv6:srv6/srv6:locators/srv6:locator/srv6:name";
+            }
+            must "../../../../../../../srv6:srv6/srv6:locators/srv6:locator[srv6:name = current()]/srv6:flex-algo=0";
+            description
+              "Enable OSPFv3 IPv6 Segment Routing (SRv6) with a specified locator.";
+          }
+          leaf auto-sid {
+            type boolean;
+            default "true";
+            description
+              "Enable/disable dynamic SID allocation.";
+          }
+        }
+      }
+      container avoid-microloop {
+        when "../locators/locator";
+        description
+          "Configure IPv6 segment routing avoid microloop.";
+        leaf enable {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable IPv6 segment routing avoid microloop.";
+        }
+        leaf delay-value {
+          type uint16 {
+            range "1000..60000";
+          }
+          units "ms";
+          default "5000";
+          description
+            "Set the route delivery delay for IPv6 segment routing avoid microloop.";
+        }
+      }
+      container compatible {
+        description
+          "Configure IPv6 segment routing compatible.";
+        leaf locator-fixed-length {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable IPv6 segment routing compatible locator fixed length.";
+        }
+      }
+      container slice-source-prefixs {
+        description
+        "List of network-slice source-prefixs.";
+        list slice-source-prefix {
+          key "prefix-name";
+          description
+          "Configure network-slice source-prefix.";
+          leaf prefix-name {
+           type leafref {
+             path "/net-slice:net-slice/net-slice:network-slice-source-prefix/net-slice:prefixs/net-slice:prefix/net-slice:name";
+           }
+          must "/net-slice:net-slice/net-slice:network-slice-source-prefix/net-slice:prefixs/net-slice:prefix[net-slice:name=current()]/net-slice:ipv6-prefix";
+          description
+            "Prefix name of network-slice source-prefix.";
+          }
+        }
+      }
+      container auto-sid-advertise {
+        description
+          "Configure SRv6 auto-sid advertised flavor for End and End.X SID.";
+        leaf no-flavor {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable SRv6 auto-sid no-flavor advertise."; 
+        }
+        leaf psp {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable SRv6 auto-sid psp flavor advertise."; 
+        }
+        leaf psp-usp-usd {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable SRv6 auto-sid psp-usp-usd flavor advertise."; 
+        }
+        leaf usp-usd {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable SRv6 auto-sid usp-usd flavor advertise."; 
+        }
+        leaf coc {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable SRv6 auto-sid coc flavor advertise."; 
+        }
+        leaf psp-coc {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable SRv6 auto-sid psp-coc flavor advertise."; 
+        }
+        leaf psp-usp-usd-coc {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable SRv6 auto-sid psp-usp-usd-coc flavor advertise."; 
+        }
+      }
+      container compress {
+        when "../locators/locator";
+        description
+          "Configure compress mode for OSPFv3 SRv6.";
+        leaf enable {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable SRv6 compress mode."; 
+        }
+        leaf compress-type {
+          when "../enable = 'true'";
+          type stack-compress-type;
+          default "compress-32";
+          description
+            "Configure compress type for OSPFv3 SRv6."; 
+        }
+      }
+    }
+  }
+  augment /ni:network-instance/ni:instances/ni:instance/ospfv3:ospfv3/ospfv3:sites/ospfv3:site/ospfv3:areas/ospfv3:area/ospfv3:interfaces/ospfv3:interface {
+    description
+      "Augment OSPFv3 Segment Routing IPv6 to OSPFv3 interface.";
+    container srv6 {
+      when "../../../../../../../../ni:name='_public_'";
+      description
+        "Configure Segment Routing IPv6 (SRv6) for OSPFv3 interface.";
+      leaf auto-endx-disable {
+        when "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()/../../ospfv3:name]/ifm:type!='LoopBack'";
+        type empty;
+        description
+          "Enable/Disable automatic End.X SID advertisement. If there is no SRv6 license authorization for this interface, configure the auto-endx-disable parameter.";
+      }
+    }
+  }
+}
+
+  

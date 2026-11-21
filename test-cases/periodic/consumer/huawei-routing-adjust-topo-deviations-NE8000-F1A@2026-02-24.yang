@@ -1,0 +1,35 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-routing-adjust-topo-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-routing-adjust-topo-deviations-NE8000-F1A";
+  prefix ra-topo-devs-NE8000-F1A;
+
+  import huawei-routing-adjust-topo {
+    prefix ra-topo;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-routing-adjust-topo module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/ra-topo:routing-adjust-topo" {
+    deviate not-supported;
+  }
+}
+
+  

@@ -1,0 +1,2030 @@
+/*
+Copyright (C) 2022-2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-stamp {
+  namespace "urn:huawei:yang:huawei-stamp";
+  prefix stamp;
+  
+  import huawei-extension {
+    prefix ext;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-ethernet {
+    prefix ethernet;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Simple Two-way Active Measurement Protocol.";
+
+  revision 2025-12-10 {
+    description
+      "Modify statistic leaf.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-11-22 {
+    description
+      "Add auto STAMP query container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-11-08 {
+    description
+      "Add disable-auto-measurement leaf and auto-measurements container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-01-24 {
+    description
+      "Add must condition.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-09-06 {
+    description
+      "Add obsolete label.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-08-27 {
+    description
+      "Modify description.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-07-23 {
+    description
+      "Modify STAMP module.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-05-16 {
+    description
+      "Add a leaf node named ptp-compatible-enable.";
+    reference
+      "Huawei private.";
+  }
+  revision 2024-03-12 {
+    description
+      "Add a leaf node named qos-car-disable.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-08-03 {
+    description
+      "Modify description.";
+    reference
+      "Huawei private.";
+  }   
+  revision 2022-11-02 {
+    description
+      "Modify description.";
+    reference
+      "Huawei private.";
+  }    
+  revision 2022-08-08 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  ext:task-name  "twampclient";
+
+  typedef period-type {
+    type enumeration {
+      enum "10ms" {
+        value 10;
+        description
+          "The period of sending packets is 10ms.";
+      }
+      enum "100ms" {
+        value 100;
+        description
+          "The period of sending packets is 100ms.";
+      }
+      enum "1000ms" {
+        value 1000;
+        description
+          "The period of sending packets is 1000ms.";
+      }
+      enum "30000ms" {
+        value 30000;
+        description
+          "The period of sending packets is 30000ms.";
+      }
+    }
+    description
+      "The period of sending packets.";
+  }
+
+  typedef session-state {
+    type enumeration {
+      enum "initial" {
+        value 0;
+        description
+          "Test session state is initial.";
+      }
+      enum "active" {
+        value 2;
+        description
+          "Test session state is active.";
+      }
+      enum "inactive" {
+        value 1;
+        description
+          "Test session state is inactive.";
+      }
+      enum "unknown" {
+        value 3;
+        description
+          "Test session state is unknown.";
+      }
+    }
+    description
+      "STAMP session state.";
+  }
+
+  typedef addr-type {
+    type enumeration {
+      enum "ipv4" {
+        value 0;
+        description
+          "IPv4 address.";
+      }
+      enum "ipv6" {
+        value 1;
+        description
+          "IPv6 address.";
+      }
+    }
+    description
+      "Address type.";
+  }
+
+  typedef session-type {
+    type enumeration {
+      enum "dynamic" {
+        value 0;
+        description
+          "Dynamic session.";
+      }
+    }
+    description
+      "Session type.";
+  }
+
+  typedef session-start-type {
+    type enumeration {
+      enum "continual" {
+        value 1;
+        description
+          "Session start type is continual.";
+      }
+    }
+    description
+      "Session start type.";
+  }
+
+  typedef ctrl-auth-mode {
+    type enumeration {
+      enum "unauthenticated" {
+        value 0;
+        description
+          "Controller authentication mode is unauthenticated.";
+      }
+    }
+    description
+      "Controller authentication mode.";
+  }
+
+  typedef inactive-reason {
+    type enumeration {
+      enum "not-startup" {
+        value 1;
+        description
+          "The inactive reason is not startup.";
+      }
+      enum "absence-resource" {
+        value 2;
+        description
+          "The inactive reason is absence of resource.";
+      }
+      enum "board-fault" {
+        value 3;
+        description
+          "The inactive reason is board fault.";
+      }
+    }
+    description
+      "The inactive reason.";
+  }
+
+  typedef error-info {
+    type enumeration {
+      enum "OK" {
+        value 0;
+        description
+          "OK.";
+      }
+      enum "board-selection-failed" {
+        value 1;
+        description
+          "Board selection failed.";
+      }
+      enum "ip-unavailable-or-protocol-down" {
+        value 2;
+        description
+          "The IP address was unavailable or the protocol was down.";
+      }
+      enum "sessionid-allocation-failed" {
+        value 3;
+        description
+          "Session ID allocation failed.";
+      }
+      enum "conflicting-sessions-existed" {
+        value 4;
+        description
+          "Conflicting sessions existed.";
+      }
+      enum "others" {
+        value 5;
+        description
+          "Others.";
+      }
+      enum "statistic-disable" {
+        value 6;
+        description
+          "Auto STAMP statistic disable.";
+      }
+    }
+    description
+      "The STAMP session ID state.";
+  }
+
+  typedef protocol {
+    type enumeration {
+      enum "isis" {
+        value 137;
+        description
+          "IS-IS routing protocol.";
+      }
+    }
+    description
+      "Protocol enabling automatic stamp measurement.";
+  }
+
+  grouping twoway-delay-result {
+    description
+      "Twoway delay result.";
+    container twoway-delay-result {
+      config false;
+      description
+        "Statistics of the result of two way delay.";
+      leaf average-delay {
+        type uint32;
+        units "us";
+        description
+          "The average delay.";
+      }
+      leaf maximum-delay {
+        type uint32;
+        units "us";
+        description
+          "The maximum delay.";
+      }
+      leaf minimum-delay {
+        type uint32;
+        units "us";
+        description
+          "The minimum delay.";
+      }
+      leaf average-jitter {
+        type uint32;
+        units "us";
+        description
+          "The average jitter.";
+      }
+      leaf maximum-jitter {
+        type uint32;
+        units "us";
+        description
+          "The maximum jitter.";
+      }
+      leaf minimum-jitter {
+        type uint32;
+        units "us";
+        description
+          "The minimum jitter.";
+      }
+      leaf average-tx-jitter {
+        type uint32;
+        units "us";
+        description
+          "The average TX jitter.";
+      }
+      leaf maximum-tx-jitter {
+        type uint32;
+        units "us";
+        description
+          "The maximum TX jitter.";
+      }
+      leaf minimum-tx-jitter {
+        type uint32;
+        units "us";
+        description
+          "The minimum TX jitter.";
+      }
+      leaf average-rx-jitter {
+        type uint32;
+        units "us";
+        description
+          "The average RX jitter.";
+      }
+      leaf maximum-rx-jitter {
+        type uint32;
+        units "us";
+        description
+          "The maximum RX jitter.";
+      }
+      leaf minimum-rx-jitter {
+        type uint32;
+        units "us";
+        description
+          "The minimum RX jitter.";
+      }
+      container twoway-delay-datas {
+        description
+          "List of two way delay data.";
+        list twoway-delay-data {
+          key "index";
+          description
+            "Statistics of data of two-way delay measurement.";
+          leaf index {
+            type uint32;
+            description
+              "Data index of two-way delay measurement.";
+          }
+          leaf delay {
+            type uint32;
+            units "us";
+            description
+              "Two-way delay results.";
+          }
+          leaf jitter {
+            type uint32;
+            units "us";
+            description
+              "Two-way jitter results.";
+          }
+          leaf tx-jitter {
+            type uint32;
+            units "us";
+            description
+              "Two-way TX jitter results.";
+          }
+          leaf rx-jitter {
+            type uint32;
+            units "us";
+            description
+              "Two-way RX jitter results.";
+          }
+        }
+      }
+    }
+  }
+
+  grouping twoway-loss-result {
+      description
+        "Twoway loss result.";
+      container twoway-loss-result {
+        config false;
+        description
+          "Statistics of the result of two way loss.";
+        leaf average-loss {
+          type uint32;
+          description
+            "The average loss.";
+        }
+        leaf maximum-loss {
+          type uint32;
+          description
+            "The maximum loss.";
+        }
+        leaf minimum-loss {
+          type uint32;
+          description
+            "The minimum loss.";
+        }
+        leaf average-loss-ratio {
+          type string {
+            length "1..9";
+          }
+          description
+            "The average loss ratio.";
+        }
+        leaf maximum-loss-ratio {
+          type string {
+            length "1..9";
+          }
+          description
+            "The maximum loss ratio.";
+        }
+        leaf minimum-loss-ratio {
+          type string {
+            length "1..9";
+          }
+          description
+            "The minimum loss ratio.";
+        }
+        leaf average-rx-error {
+          type uint32;
+          description
+            "The average RX error.";
+        }
+        leaf maximum-rx-error {
+          type uint32;
+          description
+            "The maximum RX error.";
+        }
+        leaf minium-rx-error {
+          type uint32;
+          description
+            "The minimum RX error.";
+        }
+        leaf average-rx-error-ratio {
+          type string {
+            length "1..9";
+          }
+          description
+            "The average RX error ratio.";
+        }
+        leaf maximum-rx-error-ratio {
+          type string {
+            length "1..9";
+          }
+          description
+            "The maximum RX error ratio.";
+        }
+        leaf minimum-rx-error-ratio {
+          type string {
+            length "1..9";
+          }
+          description
+            "The minimum RX error ratio.";
+        }
+        container twoway-loss-datas {
+          description
+            "List of two way loss data.";
+          list twoway-loss-data {
+            key "index";
+            description
+              "Statistics of data of two-way loss measurement.";
+            leaf index {
+              type uint32;
+              description
+                "Data index of two-way loss measurement.";
+            }
+            leaf loss {
+              type uint32;
+              description
+                "Two-way loss results.";
+            }
+            leaf loss-ratio {
+              type string {
+                length "1..9";
+              }
+              description
+                "Two-way loss ratio results.";
+            }
+            leaf error {
+              type uint32;
+              description
+                "Two-way error results.";
+            }
+            leaf error-ratio {
+              type string {
+                length "1..9";
+              }
+              description
+                "Two-way error ratio results.";
+            }
+          }
+        }
+      }
+  }
+
+  container stamp {
+    presence "STAMP Enable.";
+    description
+      "Configure the STAMP.";
+    leaf qos-car-disable {
+      type empty;
+      description
+        "Enable/disable the CAR compatibility.";
+    }
+    leaf dialing-src-udp-port {
+      type uint16 {
+        range "863|1025..65535";
+      }
+      description
+        "The sender port of STAMP dialing session.";
+    }
+    container auto-measurements {
+      description
+        "List of configure STAMP automatic measurement on the interface.";
+      list auto-measurement {
+        key "ip-family auto-protocol";
+        description
+          "Configure STAMP automatic measurement on the interface.";
+        leaf ip-family {
+          type addr-type;
+          description
+            "The IP address type of STAMP auto-measure session.";
+        }
+        leaf auto-protocol {
+          type protocol;
+          description
+            "The protocol that created the dynamic stamp session.";
+        }
+        leaf src-udp-port {
+          type uint16 {
+            range "862..863|1025..65535";
+          }
+          default "50862";
+          description
+            "The sender port of STAMP auto-measure session.";
+        }
+        leaf dest-udp-port {
+          type uint16 {
+            range "862..863|1025..65535";
+          }
+          default "862";
+          description
+            "The reflector port of STAMP auto-measure session.";
+        }
+        leaf dscp {
+          type uint8 {
+            range "0..63";
+          }
+          default "0";
+          description
+            "The DSCP value of STAMP auto-measure session.";
+        }
+        leaf time-out {
+          type uint8 {
+            range "1..10";
+          }
+          units "s";
+          default "5";
+          description
+            "The timeout of STAMP auto-measure session.";
+        }
+        leaf period {
+          type period-type;
+          units "ms";
+          default "100ms";
+          description
+            "The period of STAMP auto-measure session.";
+        }
+        leaf ptp-compatible-enable {
+          type boolean;
+          default "false";
+          description
+            "Enable/disable the PTP compatibility of STAMP auto-measure session.";
+        }
+      }
+    }
+  }
+
+  rpc reset-ip-statistics {
+    description
+      "Reset the STAMP statistics.";
+    input {
+      leaf if-name {
+        type leafref {
+          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        description
+          "The Interface of STAMP session.";
+      }
+      leaf addr-type {
+        type addr-type;
+        description
+          "The IP address type of STAMP session.";
+      }
+      leaf nexthop-ip {
+        type inet:ip-address-no-zone;
+        description
+          "The nexthop IP address of STAMP session.";
+      }
+      leaf reflector-port {
+        type uint16 {
+          range "862..863|1025..65535";
+        }
+        description
+        "The reflector port of STAMP session.";
+      }
+    }
+  }
+
+  rpc reset-link-statistics {
+    description
+      "Reset the STAMP statistics.";
+    input {
+      leaf if-name {
+        type leafref {
+          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        description
+          "The Interface of STAMP session.";
+      }
+      leaf addr-type {
+        type addr-type;
+        description
+          "The IP address type of STAMP session.";
+      }
+    }
+  }
+
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface" {
+    description
+      "The STAMP configuration in interface.";
+    container stamps {
+      when "/stamp:stamp";
+      status obsolete;
+      description
+        "List of Configure STAMP on the interface.";
+      list stamp {
+        must "not(../../ethernet:ethernet/ethernet:main-interface/ethernet:l2-attribute)";
+        key "addr-type";
+        status obsolete;
+        description
+            "Configure STAMP on the interface.";
+        leaf addr-type {
+          type addr-type;
+          status obsolete;
+          description
+          "The IP address type of configuration in interface.";
+        }
+        leaf period {
+          type period-type;
+          units "ms";
+          default "1000ms";
+          status obsolete;
+          description
+            "The period of STAMP session.";
+        }
+        leaf timeout {
+          type uint16 {
+            range "1..10";
+          }
+          units "s";
+          default "5";
+          status obsolete;
+          description
+            "The timeout of STAMP session.";
+        }
+        leaf reflector-port {
+          type uint16 {
+            range "862..863|1025..65535";
+          }
+          default "862";
+          status obsolete;
+            description
+              "The reflector port of STAMP session.";
+        }
+        leaf dscp-value {
+          type uint32 {
+            range "0..63";
+          }
+          default "0";
+          status obsolete;
+          description
+            "The DSCP value of STAMP session.";
+        }
+        leaf nexthop-ip {
+          type inet:ip-address-no-zone;
+          must "(contains(../nexthop-ip,':') and ../addr-type = 'ipv6') or (not(contains(../nexthop-ip,':'))and ../addr-type = 'ipv4')";
+          status obsolete;
+          description
+            "The nexthop IP address of STAMP session.";
+        }
+        leaf ptp-compatible-enable {
+          type boolean;
+          default "false";
+          status obsolete;
+          description
+            "Enable/disable the PTP compatibility.";
+        }
+	      container state{
+          config false;
+          status obsolete;
+          description
+            "Statistics of STAMP session state.";
+          leaf sender-session {
+            type uint32;
+            status obsolete;
+            description
+              "The session ID of STAMP sender session.";
+          }
+          leaf reflector-session {
+            type uint32;
+            status obsolete;
+            description
+              "The session ID of STAMP reflector session.";
+          }
+
+          leaf sender-errorinfo {
+            type error-info;
+            status obsolete;
+            description
+              "The error info of STAMP sender session.";
+          }
+          leaf reflector-errorinfo {
+            type error-info;
+            status obsolete;
+            description
+              "The error info of STAMP reflector session.";
+          }
+          leaf sender-port {
+            type uint16 {
+              range "49152..65535";
+            }
+            default "50862";
+            status obsolete;
+            description
+              "The sender port of STAMP session.";
+          }
+        }
+        container sender-sessions{
+          config false;
+          status obsolete;
+          description
+            "Statistics of STAMP sender session.";
+          leaf session-id {
+            type uint32;
+            status obsolete;
+            description
+              "The session ID of STAMP sender session.";
+          }
+          leaf session-type {
+            type session-type;
+            status obsolete;
+            description
+              "The session type of STAMP sender session.";
+          }
+          leaf session-state {
+            type session-state;
+            status obsolete;
+            description
+              "The session state of STAMP sender session.";
+          }
+          leaf session-start-type {
+            type session-start-type;
+            status obsolete;
+            description
+              "The session start type of STAMP sender session.";
+          }
+          leaf inactive-reason {
+            type inactive-reason;
+            status obsolete;
+            description
+              "The inactive reason of STAMP sender session.";
+          }
+          leaf sender-ip-addr {
+            type inet:ip-address-no-zone;
+            status obsolete;
+            description
+              "The sender IP address of STAMP sender session.";
+          }
+          leaf reflector-ip-addr {
+            type inet:ip-address-no-zone;
+            status obsolete;
+            description
+              "The reflector IP address of STAMP sender session.";
+          }
+          leaf sender-port {
+            type uint16 {
+              range "49152..65535";
+            }
+            default "50862";
+            status obsolete;
+            description
+              "The sender port of STAMP sender session.";
+          }
+          leaf reflector-port {
+            type uint16 {
+              range "862..863|1025..65535";
+            }
+            default "862";
+            status obsolete;
+            description
+              "The reflector port of STAMP sender session.";
+          }
+          leaf auth-mode {
+            type ctrl-auth-mode;
+            status obsolete;
+            description
+              "The authentication mode of STAMP sender session.";
+          }
+          leaf dscp-value {
+            type uint8 {
+              range "0..63";
+            }
+            default "0";
+            status obsolete;
+            description
+              "The DSCP value of STAMP sender session.";
+          }
+          leaf vrf-name {
+            type leafref {
+              path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+            }
+            status obsolete;
+            description
+              "The VRF name of STAMP sender session.";
+          }
+          leaf last-start-time {
+            type yang:date-and-time;
+            status obsolete;
+            description
+              "The last start time of STAMP sender session.";
+          }
+          leaf last-stop-time {
+            type yang:date-and-time;
+            status obsolete;
+            description
+              "The last stop time of STAMP sender session.";
+          }
+          leaf period {
+            type period-type;
+            units "ms";
+            default "1000ms";
+            status obsolete;
+            description
+              "The period of STAMP sender session.";
+          }
+          leaf timeout {
+            type uint8 {
+              range "1..10";
+            }
+            units "s";
+            default "5";
+            status obsolete;
+            description
+              "The timeout of STAMP sender session.";
+          }
+        }
+        container responder-sessions{
+          config false;
+          status obsolete;
+          description
+            "Statistics of STAMP responder session.";
+          leaf session-id {
+            type uint32;
+            status obsolete;
+            description
+              "The session ID of STAMP responder session.";
+          }
+          leaf session-type {
+            type session-type;
+            status obsolete;
+            description
+              "The session type of STAMP responder session.";
+          }
+          leaf session-state {
+            type session-state;
+            status obsolete;
+            description
+              "The session state of STAMP responder session.";
+          }
+          leaf local-ip {
+            type inet:ip-address-no-zone;
+            status obsolete;
+            description
+              "The local IP address of STAMP responder session.";
+          }
+          leaf remote-ip {
+            type inet:ip-address-no-zone;
+            status obsolete;
+            description
+              "The remote IP address of STAMP responder session.";
+          }
+          leaf local-port {
+            type uint16 {
+              range "862..863|1025..65535";
+            }
+            default "862";
+            status obsolete;
+            description
+              "Local UDP port, This UDP port cannot used by other protocol.";
+          }
+          leaf remote-port {
+            type uint16;
+            status obsolete;
+            description
+              "Remote UDP Port, This UDP Port cannot used by other protocol.";
+          }
+          leaf vrf-name {
+            type leafref {
+              path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+            }
+            status obsolete;
+            description
+              "The VRF name of STAMP responder session.";
+          }
+        }
+        container twoway-delay-result {
+          config false;
+          status obsolete;
+          description
+            "Statistics of the result of two way delay.";
+          leaf average-delay {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The average delay.";
+          }
+          leaf maximum-delay {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The maximum delay.";
+          }
+          leaf minimum-delay {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The minimum delay.";
+          }
+          leaf average-jitter {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The average jitter.";
+          }
+          leaf maximum-jitter {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The maximum jitter.";
+          }
+          leaf minimum-jitter {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The minimum jitter.";
+          }
+          leaf average-tx-jitter {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The average TX jitter.";
+          }
+          leaf maximum-tx-jitter {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The maximum TX jitter.";
+          }
+          leaf minimum-tx-jitter {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The minimum TX jitter.";
+          }
+          leaf average-rx-jitter {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The average RX jitter.";
+          }
+          leaf maximum-rx-jitter {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The maximum RX jitter.";
+          }
+          leaf minimum-rx-jitter {
+            type uint32;
+            units "us";
+            status obsolete;
+            description
+              "The minimum RX jitter.";
+          }
+          container twoway-delay-datas {
+            status obsolete;
+            description
+              "List of two way delay data.";
+            list twoway-delay-data {
+              key "index";
+              status obsolete;
+              description
+                "Statistics of data of two-way delay measurement.";
+              leaf index {
+                type uint32;
+                status obsolete;
+                description
+                  "Data index of two-way delay measurement.";
+              }
+              leaf delay {
+                type uint32;
+                units "us";
+                status obsolete;
+                description
+                  "Two-way delay results.";
+              }
+              leaf jitter {
+                type uint32;
+                units "us";
+                status obsolete;
+                description
+                  "Two-way jitter results.";
+              }
+              leaf tx-jitter {
+                type uint32;
+                units "us";
+                status obsolete;
+                description
+                  "Two-way TX jitter results.";
+              }
+              leaf rx-jitter {
+                type uint32;
+                units "us";
+                status obsolete;
+                description
+                  "Two-way RX jitter results.";
+              }
+            }
+          }
+        }
+        container twoway-loss-result {
+          config false;
+          status obsolete;
+          description
+            "Statistics of the result of two way loss.";
+          leaf average-loss {
+            type uint32;
+            status obsolete;
+            description
+              "The average loss.";
+          }
+          leaf maximum-loss {
+            type uint32;
+            status obsolete;
+            description
+              "The maximum loss.";
+          }
+          leaf minimum-loss {
+            type uint32;
+            status obsolete;
+            description
+              "The minimum loss.";
+          }
+          leaf average-loss-ratio {
+            type string {
+              length "1..9";
+            }
+            status obsolete;
+            description
+              "The average loss ratio.";
+          }
+          leaf maximum-loss-ratio {
+            type string {
+              length "1..9";
+            }
+            status obsolete;
+            description
+              "The maximum loss ratio.";
+          }
+          leaf minimum-loss-ratio {
+            type string {
+              length "1..9";
+            }
+            status obsolete;
+            description
+              "The minimum loss ratio.";
+          }
+          leaf average-rx-error {
+            type uint32;
+            status obsolete;
+            description
+              "The average RX error.";
+          }
+          leaf maximum-rx-error {
+            type uint32;
+            status obsolete;
+            description
+              "The maximum RX error.";
+          }
+          leaf minium-rx-error {
+            type uint32;
+            status obsolete;
+            description
+              "The minimum RX error.";
+          }
+          leaf average-rx-error-ratio {
+            type string {
+              length "1..9";
+            }
+            status obsolete;
+            description
+              "The average RX error ratio.";
+          }
+          leaf maximum-rx-error-ratio {
+            type string {
+              length "1..9";
+            }
+            status obsolete;
+            description
+              "The maximum RX error ratio.";
+          }
+          leaf minimum-rx-error-ratio {
+            type string {
+              length "1..9";
+            }
+            status obsolete;
+            description
+              "The minimum RX error ratio.";
+          }
+          container twoway-loss-datas {
+            status obsolete;
+            description
+              "List of two way loss data.";
+            list twoway-loss-data {
+              key "index";
+              status obsolete;
+              description
+                "Statistics of data of two-way loss measurement.";
+              leaf index {
+                type uint32;
+                status obsolete;
+                description
+                  "Data index of two-way loss measurement.";
+              }
+              leaf loss {
+                type uint32;
+                status obsolete;
+                description
+                  "Two-way loss results.";
+              }
+              leaf loss-ratio {
+                type string {
+                  length "1..9";
+                }
+                status obsolete;
+                description
+                  "Two-way loss ratio results.";
+              }
+              leaf error {
+                type uint32;
+                status obsolete;
+                description
+                  "Two-way error results.";
+              }
+              leaf error-ratio {
+                type string {
+                  length "1..9";
+                }
+                status obsolete;
+                description
+                  "Two-way error ratio results.";
+              }
+            }
+          }
+        }
+      }
+    }
+    container stamp-multi {
+      description
+        "Configure STAMP Session.";
+      container ip-stamps {
+        when "/stamp:stamp";
+        description
+          "List of Configure IP STAMP on the interface.";
+        list ip-stamp {
+          must "not(../../../ethernet:ethernet/ethernet:main-interface/ethernet:l2-attribute) and (../../../ifm:l2-mode-enable='false')";
+          key "addr-type reflector-port nexthop-ip";
+          description
+              "Configure STAMP on the interface.";
+          leaf addr-type {
+            type addr-type;
+            description
+            "The IP address type of configuration in interface.";
+          }
+          leaf reflector-port {
+            type uint16 {
+              range "862..863|1025..65535";
+            }
+            description
+            "The reflector port of STAMP session.";
+          }
+          leaf nexthop-ip {
+            type inet:ip-address-no-zone;
+            must "(contains(../nexthop-ip,':') and ../addr-type = 'ipv6') or (not(contains(../nexthop-ip,':'))and ../addr-type = 'ipv4')";
+            description
+              "The nexthop IP address of STAMP session.";
+          }
+          leaf send-port {
+            type uint16 {
+              range "862..863|1025..65535";
+            }
+            default "50862";
+            description
+              "The sender port of STAMP session.";
+          }
+          leaf period {
+            type period-type;
+            units "ms";
+            default "1000ms";
+            description
+              "The period of STAMP session.";
+          }
+          leaf timeout {
+            type uint16 {
+              range "1..10";
+            }
+            units "s";
+            default "5";
+            description
+              "The timeout of STAMP session.";
+          }
+          leaf dscp-value {
+            type uint32 {
+              range "0..63";
+            }
+            default "0";
+            description
+              "The DSCP value of STAMP session.";
+          }
+          leaf ptp-compatible-enable {
+            type boolean;
+            default "false";
+            description
+              "Enable/disable the PTP compatibility.";
+          }
+          leaf report-enable {
+            type boolean;
+            default "true";
+            description
+              "Enable/disable STAMP session statistics are reported to the interface.";
+          }
+          container state{
+            config false;
+            description
+              "Statistics of STAMP session state.";
+            leaf sender-session {
+              type uint32;
+              description
+                "The session ID of STAMP sender session.";
+            }
+            leaf reflector-session {
+              type uint32;
+              description
+                "The session ID of STAMP reflector session.";
+            }
+
+            leaf sender-errorinfo {
+              type error-info;
+              description
+                "The error info of STAMP sender session.";
+            }
+            leaf reflector-errorinfo {
+              type error-info;
+              description
+                "The error info of STAMP reflector session.";
+            }
+          }
+          container sender-sessions{
+            config false;
+            description
+              "Statistics of STAMP sender session.";
+            leaf session-id {
+              type uint32;
+              description
+                "The session ID of STAMP sender session.";
+            }
+            leaf session-type {
+              type session-type;
+              description
+                "The session type of STAMP sender session.";
+            }
+            leaf session-state {
+              type session-state;
+              description
+                "The session state of STAMP sender session.";
+            }
+            leaf session-start-type {
+              type session-start-type;
+              description
+                "The session start type of STAMP sender session.";
+            }
+            leaf inactive-reason {
+              type inactive-reason;
+              description
+                "The inactive reason of STAMP sender session.";
+            }
+            leaf sender-ip-addr {
+              type inet:ip-address-no-zone;
+              description
+                "The sender IP address of STAMP sender session.";
+            }
+            leaf auth-mode {
+              type ctrl-auth-mode;
+              description
+                "The authentication mode of STAMP sender session.";
+            }
+            leaf dscp-value {
+              type uint8 {
+                range "0..63";
+              }
+              default "0";
+              description
+                "The DSCP value of STAMP sender session.";
+            }
+            leaf vrf-name {
+              type leafref {
+                path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+              }
+              description
+                "The VRF name of STAMP sender session.";
+            }
+            leaf last-start-time {
+              type yang:date-and-time;
+              description
+                "The last start time of STAMP sender session.";
+            }
+            leaf last-stop-time {
+              type yang:date-and-time;
+              description
+                "The last stop time of STAMP sender session.";
+            }
+            leaf period {
+              type period-type;
+              units "ms";
+              default "1000ms";
+              description
+                "The period of STAMP sender session.";
+            }
+            leaf timeout {
+              type uint8 {
+                range "1..10";
+              }
+              units "s";
+              default "5";
+              description
+                "The timeout of STAMP sender session.";
+            }
+          }
+          container responder-sessions{
+            config false;
+            description
+              "Statistics of STAMP responder session.";
+            leaf session-id {
+              type uint32;
+              description
+                "The session ID of STAMP responder session.";
+            }
+            leaf session-type {
+              type session-type;
+              description
+                "The session type of STAMP responder session.";
+            }
+            leaf session-state {
+              type session-state;
+              description
+                "The session state of STAMP responder session.";
+            }
+            leaf local-ip {
+              type inet:ip-address-no-zone;
+              description
+                "The local IP address of STAMP responder session.";
+            }
+            leaf remote-ip {
+              type inet:ip-address-no-zone;
+              description
+                "The remote IP address of STAMP responder session.";
+            }
+            leaf local-port {
+              type uint16 {
+                range "862..863|1025..65535";
+              }
+              default "862";
+              description
+                "Local UDP port, This UDP port cannot used by other protocol.";
+            }
+            leaf remote-port {
+              type uint16;
+              description
+                "Remote UDP Port, This UDP Port cannot used by other protocol.";
+            }
+            leaf vrf-name {
+              type leafref {
+                path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+              }
+              description
+                "The VRF name of STAMP responder session.";
+            }
+          }
+          uses twoway-delay-result;
+          uses twoway-loss-result;
+        }
+      }
+      container link-stamps {
+        when "/stamp:stamp";
+        description
+          "List of Configure Link STAMP on the interface.";
+        list link-stamp {
+          must "not(../../../ethernet:ethernet/ethernet:main-interface/ethernet:l2-attribute) and (../../../ifm:l2-mode-enable='false')";
+          key "addr-type";
+          description
+              "Configure STAMP on the interface.";
+          leaf addr-type {
+            type addr-type;
+            description
+            "The IP address type of configuration in interface.";
+          }
+          leaf period {
+            type period-type;
+            units "ms";
+            default "1000ms";
+            description
+              "The period of STAMP session.";
+          }
+          leaf timeout {
+            type uint16 {
+              range "1..10";
+            }
+            units "s";
+            default "5";
+            description
+              "The timeout of STAMP session.";
+          }
+          leaf send-port {
+            type uint16 {
+              range "862..863|1025..65535";
+            }
+            default "50862";
+            description
+              "The sender port of STAMP session.";
+          }          
+          leaf reflector-port {
+            type uint16 {
+              range "862..863|1025..65535";
+            }
+            default "862";
+              description
+                "The reflector port of STAMP session.";
+          }
+          leaf dscp-value {
+            type uint32 {
+              range "0..63";
+            }
+            default "0";
+            description
+              "The DSCP value of STAMP session.";
+          }
+          leaf ptp-compatible-enable {
+            type boolean;
+            default "false";
+            description
+              "Enable/disable the PTP compatibility.";
+          }
+          leaf report-enable {
+            type boolean;
+            default "true";
+            description
+              "Enable/disable STAMP session statistics are reported to the interface.";
+          }
+          container state{
+            config false;
+            description
+              "Statistics of STAMP session state.";
+            leaf sender-session {
+              type uint32;
+              description
+                "The session ID of STAMP sender session.";
+            }
+            leaf reflector-session {
+              type uint32;
+              description
+                "The session ID of STAMP reflector session.";
+            }
+
+            leaf sender-errorinfo {
+              type error-info;
+              description
+                "The error info of STAMP sender session.";
+            }
+            leaf reflector-errorinfo {
+              type error-info;
+              description
+                "The error info of STAMP reflector session.";
+            }
+          }
+          container sender-sessions{
+            config false;
+            description
+              "Statistics of STAMP sender session.";
+            leaf session-id {
+              type uint32;
+              description
+                "The session ID of STAMP sender session.";
+            }
+            leaf session-type {
+              type session-type;
+              description
+                "The session type of STAMP sender session.";
+            }
+            leaf session-state {
+              type session-state;
+              description
+                "The session state of STAMP sender session.";
+            }
+            leaf session-start-type {
+              type session-start-type;
+              description
+                "The session start type of STAMP sender session.";
+            }
+            leaf inactive-reason {
+              type inactive-reason;
+              description
+                "The inactive reason of STAMP sender session.";
+            }
+            leaf sender-ip-addr {
+              type inet:ip-address-no-zone;
+              description
+                "The sender IP address of STAMP sender session.";
+            }
+            leaf reflector-ip-addr {
+              type inet:ip-address-no-zone;
+              description
+                "The reflector IP address of STAMP sender session.";
+            }
+            leaf sender-port {
+              type uint16 {
+                range "49152..65535";
+              }
+              default "50862";
+              description
+                "The sender port of STAMP sender session.";
+            }
+            leaf reflector-port {
+              type uint16 {
+                range "862..863|1025..65535";
+              }
+              default "862";
+              description
+                "The reflector port of STAMP sender session.";
+            }
+            leaf auth-mode {
+              type ctrl-auth-mode;
+              description
+                "The authentication mode of STAMP sender session.";
+            }
+            leaf dscp-value {
+              type uint8 {
+                range "0..63";
+              }
+              default "0";
+              description
+                "The DSCP value of STAMP sender session.";
+            }
+            leaf vrf-name {
+              type leafref {
+                path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+              }
+              description
+                "The VRF name of STAMP sender session.";
+            }
+            leaf last-start-time {
+              type yang:date-and-time;
+              description
+                "The last start time of STAMP sender session.";
+            }
+            leaf last-stop-time {
+              type yang:date-and-time;
+              description
+                "The last stop time of STAMP sender session.";
+            }
+            leaf period {
+              type period-type;
+              units "ms";
+              default "1000ms";
+              description
+                "The period of STAMP sender session.";
+            }
+            leaf timeout {
+              type uint8 {
+                range "1..10";
+              }
+              units "s";
+              default "5";
+              description
+                "The timeout of STAMP sender session.";
+            }
+          }
+          container responder-sessions{
+            config false;
+            description
+              "Statistics of STAMP responder session.";
+            leaf session-id {
+              type uint32;
+              description
+                "The session ID of STAMP responder session.";
+            }
+            leaf session-type {
+              type session-type;
+              description
+                "The session type of STAMP responder session.";
+            }
+            leaf session-state {
+              type session-state;
+              description
+                "The session state of STAMP responder session.";
+            }
+            leaf local-ip {
+              type inet:ip-address-no-zone;
+              description
+                "The local IP address of STAMP responder session.";
+            }
+            leaf remote-ip {
+              type inet:ip-address-no-zone;
+              description
+                "The remote IP address of STAMP responder session.";
+            }
+            leaf local-port {
+              type uint16 {
+                range "862..863|1025..65535";
+              }
+              default "862";
+              description
+                "Local UDP port, This UDP port cannot used by other protocol.";
+            }
+            leaf remote-port {
+              type uint16;
+              description
+                "Remote UDP Port, This UDP Port cannot used by other protocol.";
+            }
+            leaf vrf-name {
+              type leafref {
+                path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+              }
+              description
+                "The VRF name of STAMP responder session.";
+            }
+          }
+          uses twoway-delay-result;
+          uses twoway-loss-result;
+        }
+      }
+      container auto-stamp {
+        description
+          "Configure auto stamp configuration.";
+        leaf enable-auto-measurement {
+          type boolean;
+          default "true";
+          description
+            "Enable/disable auto measurement compatibility.";
+        }
+      }
+      container auto-instances {
+        when "/stamp:stamp";
+        config false;
+        description
+          "Operational data of query auto STAMP on the interface.";
+        container senders {
+          config false;
+          description
+            "List of query auto STAMP sender on the interface.";
+          list sender {
+            key "addr-type protocol";
+            config false;
+            description
+                "Operational data of auto STAMP sender on the interface.";
+            leaf addr-type {
+              type addr-type;
+              description
+              "The IP address type of configuration in interface.";
+            }
+            leaf protocol {
+              type protocol;
+              description
+                "The protocol that created the dynamic stamp session.";
+            }
+            leaf sender-ip {
+              type inet:ip-address-no-zone;
+              description
+                "The sender IP address of auto STAMP session.";
+            }
+            leaf reflector-ip {
+              type inet:ip-address-no-zone;
+              description
+                "The reflector IP address of auto STAMP session.";
+            }
+            leaf sender-port {
+              type uint16 {
+                range "862..863|1025..65535";
+              }
+              default "50862";
+              description
+              "The sender port of auto STAMP session.";
+            }
+            leaf reflector-port {
+              type uint16 {
+                range "862..863|1025..65535";
+              }
+              default "862";
+              description
+                "The reflector port of auto STAMP session.";
+            }
+            leaf period {
+              type period-type;
+              units "ms";
+              default "1000ms";
+              description
+                "The period of auto STAMP session.";
+            }
+            leaf timeout {
+              type uint16 {
+                range "1..10";
+              }
+              units "s";
+              default "5";
+              description
+                "The timeout of auto STAMP session.";
+            }
+            leaf dscp-value {
+              type uint32 {
+                range "0..63";
+              }
+              default "0";
+              description
+                "The DSCP value of auto STAMP session.";
+            }
+            leaf ptp-compatible-enable {
+              type boolean;
+              default "false";
+              description
+                "Enable/disable the PTP compatibility.";
+            }
+            leaf running-state {
+              type error-info;
+              description
+                "Running status of auto STAMP.";
+            }
+            container sender-sessions{
+              config false;
+              description
+                "Statistics of auto STAMP sender session.";
+              leaf session-id {
+                type uint32;
+                description
+                  "The session ID of STAMP sender session.";
+              }
+              leaf session-type {
+                type session-type;
+                description
+                  "The session type of auto STAMP sender session.";
+              }
+              leaf session-state {
+                type session-state;
+                description
+                  "The session state of auto STAMP sender session.";
+              }
+              leaf session-start-type {
+                type session-start-type;
+                description
+                  "The session start type of auto STAMP sender session.";
+              }
+              leaf inactive-reason {
+                type inactive-reason;
+                description
+                  "The inactive reason of auto STAMP sender session.";
+              }
+              leaf sender-ip-addr {
+                type inet:ip-address-no-zone;
+                description
+                  "The sender IP address of auto STAMP sender session.";
+              }
+              leaf auth-mode {
+                type ctrl-auth-mode;
+                description
+                  "The authentication mode of auto STAMP sender session.";
+              }
+              leaf dscp-value {
+                type uint8 {
+                  range "0..63";
+                }
+                default "0";
+                description
+                  "The DSCP value of auto STAMP sender session.";
+              }
+              leaf vrf-name {
+                type leafref {
+                  path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+                }
+                description
+                  "The VRF name of auto STAMP sender session.";
+              }
+              leaf last-start-time {
+                type yang:date-and-time;
+                description
+                  "The last start time of auto STAMP sender session.";
+              }
+              leaf last-stop-time {
+                type yang:date-and-time;
+                description
+                  "The last stop time of auto STAMP sender session.";
+              }
+              leaf period {
+                type period-type;
+                units "ms";
+                default "1000ms";
+                description
+                  "The period of auto STAMP sender session.";
+              }
+              leaf timeout {
+                type uint8 {
+                  range "1..10";
+                }
+                units "s";
+                default "5";
+                description
+                  "The timeout of auto STAMP sender session.";
+              }
+            }
+            uses twoway-delay-result;
+            uses twoway-loss-result;
+          }
+        }
+        container responders {
+          config false;
+          description
+            "List of query auto STAMP responder on the interface.";
+          list responder {
+            key "addr-type protocol";
+            config false;
+            description
+                "Operational data of auto STAMP responder on the interface.";
+            leaf addr-type {
+              type addr-type;
+              description
+              "The IP address type of configuration in interface.";
+            }
+            leaf protocol {
+              type protocol;
+              description
+                "The protocol that created the dynamic stamp session.";
+            }
+            leaf local-ip {
+              type inet:ip-address-no-zone;
+              description
+                "The local IP address of auto STAMP session.";
+            }
+            leaf remote-ip {
+              type inet:ip-address-no-zone;
+              description
+                "The remote IP address of auto STAMP session.";
+            }
+            leaf local-port {
+              type uint16 {
+                range "862..863|1025..65535";
+              }
+              default "862";
+              description
+              "The local port of auto STAMP session.";
+            }
+            leaf remote-port {
+              type uint16 {
+                range "862..863|1025..65535";
+              }
+              default "50862";
+              description
+                "The remote port of auto STAMP session.";
+            }
+            leaf period {
+              type period-type;
+              units "ms";
+              default "1000ms";
+              description
+                "The period of auto STAMP session.";
+            }
+            leaf timeout {
+              type uint16 {
+                range "1..10";
+              }
+              units "s";
+              default "5";
+              description
+                "The timeout of auto STAMP session.";
+            }
+            leaf dscp-value {
+              type uint32 {
+                range "0..63";
+              }
+              default "0";
+              description
+                "The DSCP value of auto STAMP session.";
+            }
+            leaf ptp-compatible-enable {
+              type boolean;
+              default "false";
+              description
+                "Enable/disable the PTP compatibility.";
+            }
+            leaf running-state {
+              type error-info;
+              description
+                "Running status of auto STAMP.";
+            }
+            container responder-sessions{
+              config false;
+              description
+                "Statistics of auto STAMP responder session.";
+              leaf session-id {
+                type uint32;
+                description
+                  "The session ID of auto STAMP responder session.";
+              }
+              leaf session-type {
+                type session-type;
+                description
+                  "The session type of auto STAMP responder session.";
+              }
+              leaf session-state {
+                type session-state;
+                description
+                  "The session state of auto STAMP responder session.";
+              }
+              leaf local-ip {
+                type inet:ip-address-no-zone;
+                description
+                  "The local IP address of auto STAMP responder session.";
+              }
+              leaf remote-ip {
+                type inet:ip-address-no-zone;
+                description
+                  "The remote IP address of auto STAMP responder session.";
+              }
+              leaf local-port {
+                type uint16 {
+                  range "862..863|1025..65535";
+                }
+                default "862";
+                description
+                  "Local UDP port, This UDP port cannot used by other protocol.";
+              }
+              leaf remote-port {
+                type uint16;
+                description
+                  "Remote UDP Port, This UDP Port cannot used by other protocol.";
+              }
+              leaf vrf-name {
+                type leafref {
+                  path "/ni:network-instance/ni:instances/ni:instance/ni:name";
+                }
+                description
+                  "The VRF name of auto STAMP responder session.";
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+  

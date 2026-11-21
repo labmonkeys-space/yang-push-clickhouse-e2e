@@ -1,0 +1,64 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ethernet-ext-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ethernet-ext-deviations-NE8000-F1A";
+  prefix ethernet-ext-devs-NE8000-F1A;
+
+  import huawei-ethernet-ext {
+    prefix ethernet-ext;
+  }
+
+  import huawei-ethernet {
+    prefix ethernet;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  import huawei-l2vpn {
+    prefix l2vpn;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-ethernet-ext module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/ethernet-ext:reset-unknown-protocol-statistics" {
+    deviate not-supported;
+  }
+  deviation "/ethernet-ext:reset-global-unknown-protocol-statistics" {
+    deviate not-supported;
+  }
+  deviation "/ethernet:ethernet/ethernet-ext:link-groups-info" {
+    deviate not-supported;
+  }
+  deviation "/ethernet:ethernet/ethernet-ext:global-unknown-protocol" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/ethernet:ethernet/ethernet:l3-sub-interface/ethernet:flow-type/ethernet:dot1q-termination/ethernet:dot1q-termination/ethernet-ext:termination-mode-enable/ethernet-ext:single-mode-enable" {
+    deviate add {
+      must "../single-mode-enable='false' or (/l2vpn:l2vpn/l2vpn:instances/l2vpn:instance/l2vpn:vpls[l2vpn:mac-learn-style='qualify']/l2vpn:acs/l2vpn:ac[l2vpn:interface-name=current()/../../../../../ifm:name])";
+    }
+  }
+
+}
+  

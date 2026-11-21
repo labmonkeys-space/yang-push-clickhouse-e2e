@@ -1,0 +1,89 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-mpls-ldp-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-mpls-ldp-deviations-NE8000-F1A";
+  prefix mpls-ldp-devs-NE8000-F1A;
+
+  import huawei-mpls-ldp {
+    prefix mpls-ldp;
+  }
+  import huawei-mpls {
+    prefix mpls;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-mpls-ldp module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef ldp-route-type-deviations {
+    type enumeration {
+      enum igp {
+        value 1;
+        description
+          "IP route.";
+      }
+      enum egp {
+        value 2;
+        description
+          "EGP route.";
+      }
+      enum rlfa {
+        value 5;
+        description
+          "RLFA route.";
+      }
+      enum unknown {
+        value 0;
+        description
+          "Unknown route type.";
+      }
+    }
+    description
+      "LDP Route Type.";
+  }
+
+  deviation "/mpls:mpls/mpls-ldp:ldp/mpls-ldp:global/mpls-ldp:ldp-over-te" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/mpls:mpls/mpls-ldp:ldp/mpls-ldp:instance/mpls-ldp:auth-peer-groups/mpls-ldp:auth-peer-group/mpls-ldp:authen-mode" {
+    deviate replace {
+      type enumeration {
+        enum md5 {
+          value 1;
+          description
+            "Specifies mode for cipher or plain MD5 password.";
+        }
+        enum keychain {
+          value 2;
+          description
+            "Specifies mode for keychain password.";
+        }
+      }
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/mpls:mpls/mpls-ldp:ldp/mpls-ldp:instance/mpls-ldp:fecs/mpls-ldp:fec/mpls-ldp:route-type" {
+    deviate replace {
+      type mpls-ldp-devs-NE8000-F1A:ldp-route-type-deviations;
+    }
+  }
+}
+
+  

@@ -1,0 +1,71 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-aaa-vaccess {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-aaa-vaccess";
+  prefix aaa-vaccess;
+  import huawei-vaccess {
+    prefix vaccess;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-vaccess-master {
+    prefix vaccess-master;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+    Bantian, Longgang
+    Shenzhen 518129
+    People's Republic of China
+    Website: http://www.huawei.com
+    Email: support@huawei.com";
+  description
+    "Configure ap function for virtural access.";
+  revision 2025-08-08 {
+    description
+      "Add support of vaccess 4.0.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-07-15 {
+    description
+      "Init revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "aaa";
+  grouping aaa-ap-infos {
+    description
+      "Configure ap.";
+    container ap-user {
+      description
+        "Configure ap user.";
+      container user-security-policy {
+        description
+          "Configure ap user security policy.";
+        leaf security-policy {
+          type boolean;
+          default "true";
+          description
+            "Enable/disable the ap user security policy function.";
+        }
+      }
+    }
+  }
+  augment "/vaccess:vaccess/vaccess-master:master/vaccess-master:aps/vaccess-master:ap" {
+    description
+      "Configure ap function for virtural access to module vaccess 3.0.";
+    uses aaa-ap-infos;
+  }
+  augment "/vaccess:vaccess/vaccess-master:flexe-master/vaccess-master:aps/vaccess-master:ap" {
+    description
+      "Configure ap function for virtural access to module vaccess 4.0.";
+    uses aaa-ap-infos;
+  }
+}
+
+  

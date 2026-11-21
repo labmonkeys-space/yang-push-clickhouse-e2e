@@ -1,0 +1,96 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-dsvpn-nhrp-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-dsvpn-nhrp-deviations-NE8000-F1A";
+  prefix dsvpn-nhrp-devs-NE8000-F1A;
+
+  import huawei-dsvpn-nhrp {
+    prefix dsvpn-nhrp;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-gre {
+    prefix gre;
+  }
+  import huawei-tunnel-management {
+    prefix tnlm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-dsvpn-nhrp module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef hash-mode-deviations {
+    type enumeration {
+      enum sha2-256 {
+        value 3;
+        description
+          "SHA2-256.";
+      }
+      enum sha2-384 {
+        value 4;
+        description
+          "SHA2-384.";
+      }
+      enum sha2-512 {
+        value 5;
+        description
+          "SHA2-512.";
+      }
+    }
+    description
+      "Authentication algorithm.";
+  }
+
+  deviation "/dsvpn-nhrp:dsvpn-nhrp/dsvpn-nhrp:entrys/dsvpn-nhrp:entry/dsvpn-nhrp:sys-name" {
+    deviate not-supported;
+  }
+  deviation "/dsvpn-nhrp:dsvpn-nhrp/dsvpn-nhrp:entrys/dsvpn-nhrp:entry/dsvpn-nhrp:sys-esn" {
+    deviate not-supported;
+  }
+  deviation "/dsvpn-nhrp:dsvpn-nhrp/dsvpn-nhrp:entrys/dsvpn-nhrp:entry/dsvpn-nhrp:peers/dsvpn-nhrp:peer/dsvpn-nhrp:sys-name" {
+    deviate not-supported;
+  }
+  deviation "/dsvpn-nhrp:dsvpn-nhrp/dsvpn-nhrp:entrys/dsvpn-nhrp:entry/dsvpn-nhrp:peers/dsvpn-nhrp:peer/dsvpn-nhrp:sys-esn" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/tnlm:tunnel-protocol/tnlm:type/gre:p2mp-gre/gre:mgre-tunnel/dsvpn-nhrp:dsvpn-nhrp/dsvpn-nhrp:identity-enable" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/tnlm:tunnel-protocol/tnlm:type/gre:p2mp-gre/gre:mgre-tunnel/dsvpn-nhrp:dsvpn-nhrp/dsvpn-nhrp:identity-name" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/tnlm:tunnel-protocol/tnlm:type/gre:p2mp-gre/gre:mgre-tunnel/dsvpn-nhrp:dsvpn-nhrp/dsvpn-nhrp:if-state-related" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/tnlm:tunnel-protocol/tnlm:type/gre:p2mp-gre/gre:mgre-tunnel/dsvpn-nhrp:dsvpn-nhrp/dsvpn-nhrp:authentication/dsvpn-nhrp:algorithm" {
+    deviate replace {
+      type dsvpn-nhrp-devs-NE8000-F1A:hash-mode-deviations;
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/tnlm:tunnel-protocol/tnlm:type/gre:p2mp-gre/gre:mgre-tunnel/dsvpn-nhrp:dsvpn-nhrp/dsvpn-nhrp:entry-hold-time" {
+    deviate replace {
+      type uint16 {
+        range "300..31845";
+      }
+    }
+  }
+}
+
+  

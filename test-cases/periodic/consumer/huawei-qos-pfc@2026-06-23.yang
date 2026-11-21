@@ -1,0 +1,642 @@
+/*
+Copyright (C) 2025-2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+
+module huawei-qos-pfc {
+  namespace "urn:huawei:yang:huawei-qos-pfc";
+  prefix qos-pfc;
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-devm {
+    prefix devm;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "QoS PFC.";
+  revision 2026-06-23 {
+    description
+      "Modified pfc threshold value ranges.";
+    reference
+      "Huawei private.";
+  }
+  revision 2026-04-09 {
+    description
+      "1.Add new typedef.
+       2.Add new container rpfc-statistics-infos.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-09-09 {
+    description
+      "Add new case manual-mode for spfc-templates.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-04-25 {
+    description
+      "Add new container.";
+    reference
+      "Huawei private.";
+  }
+  revision 2025-02-08 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  ext:task-name "qos";
+
+  typedef service-class-type {
+    type enumeration {
+      enum "be" {
+        value 0; 
+        description
+          "BE service class.";
+      }
+      enum "af1" {
+        value 1; 
+        description
+          "AF1 service class.";
+      }
+      enum "af2" {
+        value 2; 
+        description
+          "AF2 service class.";
+      }
+      enum "af3" {
+        value 3; 
+        description
+          "AF3 service class.";
+      }
+      enum "af4" {
+        value 4; 
+        description
+          "AF4 service class.";
+      }
+      enum "ef" {
+        value 5; 
+        description
+          "EF service class.";
+      }
+    }
+    description
+      "Service class.";
+  }
+
+  typedef pfc-service-class-type {
+    type enumeration {
+      enum "be" {
+        value 0; 
+        description
+          "BE service class.";
+      }
+      enum "af1" {
+        value 1; 
+        description
+          "AF1 service class.";
+      }
+      enum "af2" {
+        value 2; 
+        description
+          "AF2 service class.";
+      }
+      enum "af3" {
+        value 3; 
+        description
+          "AF3 service class.";
+      }
+      enum "af4" {
+        value 4; 
+        description
+          "AF4 service class.";
+      }
+      enum "ef" {
+        value 5; 
+        description
+          "EF service class.";
+      }
+    }
+    description
+      "Service class.";
+  }
+
+  typedef switch-type {
+    type enumeration {
+      enum "enable" {
+        value 1; 
+        description
+          "Enable.";
+      }
+    }
+    description
+      "Enable.";
+  }
+
+  typedef pfc-template-type {
+    type enumeration {
+      enum "rpfc" {
+        value 1;
+        description
+          "Rpfc-mode.";
+      }
+    }
+    description
+      "Rpfc-mode.";
+  }
+
+  grouping rpfc-statistics-type {
+    description
+    "Rpfc statistics information.";
+    leaf transmit-packet {
+      type uint64;
+      units "packet";
+      description "Number of transmitted packets.";
+    }
+    leaf transmit-pps {
+      type uint64;
+      units "pps";
+      description "Rate of the packets transmitted during the latest 300 seconds.";
+    }
+    leaf transmit-packet-time {
+      type yang:date-and-time;
+      description "Last time when packets were transmitted.";
+    }
+  }
+  container qos-pfc {
+    description
+      "QoS PFC.";
+    container pfc-templates {
+      description
+        "List of QoS PFC.";
+      list pfc-template {
+        key "name";
+        description
+          "Configure QoS PFC.";
+        leaf name {
+          type string {
+            length "1..31";
+          }
+          description
+            "QoS PFC name.";
+        }
+        leaf mode {
+          type pfc-template-type;
+          description
+            "QoS PFC mode.";
+          ext:operation-exclude create|update|delete {
+            description "After the QoS PFC template is created, the node cannot be modified.";
+          }
+        }
+        container queues {
+          description
+            "List of configure queue.";
+          list queue {
+            key "service-class";
+            description
+              "Configure queue.";
+            leaf service-class {
+              type pfc-service-class-type;
+              description
+                "Class of service.";
+            }
+            choice config-type {
+              description
+                "Specify config type.";
+              case buffer-mode {
+                description
+                  "Specify config type choice as buffer mode.";
+                choice xoff-config-type {
+                  description
+                    "Specify xoff config type.";
+                  case units-kbyte {
+                    description
+                      "Specify xoff value units kbyte.";
+                    leaf xoff-kbyte-value {
+                      type uint32 {
+                        range "1..4193280";
+                      }
+                      units "kB";
+                      description
+                        "PFC backpressure threshold.";
+                    }
+                  }
+                  case units-mbyte {
+                    description
+                      "Specify xoff value units mbyte.";
+                    leaf xoff-mbyte-value {
+                      type uint32 {
+                        range "1..4095";
+                      }
+                      units "MB";
+                      description
+                        "PFC backpressure threshold.";
+                    }
+                  }
+                }
+                choice xon-offset-config-type {
+                  description
+                    "Specify xon offset config type.";
+                  case units-kbyte {
+                    description
+                      "Specify xon offset value units kbyte.";
+                    leaf xon-offset-kbyte-value {
+                      type uint32 {
+                        range "1..15360";
+                      }
+                      units "kB";
+                      description
+                        "PFC backpressure stop threshold.";
+                    }
+                  }
+                  case units-mbyte {
+                    description
+                      "Specify xon offset value units mbyte.";
+                    leaf xon-offset-mbyte-value {
+                      type uint32 {
+                        range "1..15";
+                      }
+                      units "MB";
+                      description
+                        "PFC backpressure stop threshold.";
+                    }
+                  }
+                }
+                leaf hdrm-value {
+                  type uint32 {
+                    range "0..65535";
+                  }
+                  units "kB";
+                  description
+                    "PFC headroom threshold.";
+                }
+              }
+              case distance-mode {
+                description
+                  "Specify config type choice as distance mode.";
+                leaf distance {
+                  type uint32 {
+                    range "1..512";
+                  }
+                  mandatory true;
+                  description
+                    "Specify the distance between devices, in kilometers.";
+                }
+                leaf bandwidth {
+                  type uint32 {
+                    range "1..4294967294";
+                  }
+                  units "Mbit/s";
+                  description
+                    "Specify value of service bandwidth.";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    container interface-statisticss {
+      config false;
+      description
+        "List of PFC interface statistics.";
+      list interface-statistics {
+        key "interface-name service-class";
+        description
+          "Operational data of PFC interface statistics.";
+        leaf interface-name {
+          type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+          }
+          description
+            "Interface name.";
+        }
+        leaf service-class {
+          type pfc-service-class-type;
+          description
+            "Class of service.";
+        }
+        leaf xon-offset-value {
+          type uint32;
+          units "kB";
+          description
+            "PFC backpressure stop threshold.";
+        }
+        leaf xoff-value {
+          type uint32;
+          units "kB";
+          description
+            "PFC backpressure threshold.";
+        }
+        leaf hdrm-value {
+          type uint32;
+          units "kB";
+          description
+            "PFC headroom threshold.";
+        }
+        leaf received-frame {
+          type uint64;
+          description
+            "Number of PFC frames received.";
+        }
+        leaf transmitted-frame {
+          type uint64;
+          description
+            "Number of PFC frames sent.";
+        }
+      }
+    }
+    container rpfc-statistics-infos {
+      config false;
+      description "List of RPFC interface statistics.";
+      list rpfc-statistics-info {
+        key "interface-name";
+        description "Operational data of RPFC interface statistics.";
+        leaf interface-name {
+        type leafref {
+            path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+          }
+          description "Interface name.";
+        }
+        uses rpfc-statistics-type;
+        container details {
+          description
+            "List of RPFC interface statistics details.";
+          list detail {
+            key "dest-ip";
+            description
+              "Operational data of RPFC interface statistics detail.";
+            leaf dest-ip {
+              type inet:ipv4-address-no-zone;
+              description
+                "Destination IP.";
+            }
+            uses rpfc-statistics-type;
+          }
+        }
+      }
+    }
+    container spfc-templates {
+      description
+        "List of QoS SPFC.";
+      list spfc-template {
+        key "name";
+        description
+          "Configure QoS SPFC.";
+        leaf name {
+          type string {
+            length "1..31";
+          }
+          description
+            "QoS SPFC name.";
+        }
+        leaf mode {
+          type pfc-template-type;
+          description
+            "Rpfc mode.";
+          ext:operation-exclude create|update|delete {
+            description "After the QoS SPFC template is created, the node cannot be modified.";
+          }
+        }
+        container queues {
+          description
+            "List of configure queue.";
+          list queue {
+            key "service-class";
+            max-elements "2";
+            description
+              "Configure queue.";
+            leaf service-class {
+              type service-class-type;
+              description
+                "Class of service.";
+            }
+            choice config-type {
+              mandatory true;
+              description
+                "Specify config type.";
+              case auto-mode {
+                description
+                  "Specify config type choice case as auto mode.";
+                leaf auto {
+                  type switch-type;
+                  mandatory true;
+                  description
+                    "Enable automatic parameter adjustment.";
+                }
+              }
+              case value-mode {
+                description
+                  "Specify config type choice case as value mode.";
+                leaf depth {
+                  type uint32 {
+                    range "1024..524288";
+                  }
+                  units "kB";
+                  mandatory true;
+                  description
+                    "Queue depth.";
+                }
+                leaf xon-threshold {
+                  type uint8 {
+                    range "40..49";
+                  }
+                  default "48";
+                  description
+                    "SPFC backpressure stop threshold.";
+                }
+                leaf xoff-threshold {
+                  type uint8 {
+                    range "51..60";
+                  }
+                  must "not(../xon-threshold) or ../xoff-threshold>../xon-threshold";
+                  default "51";
+                  description
+                    "SPFC backpressure threshold.";
+                }
+                leaf pause-time {
+                  type uint8 {
+                    range "4..10";
+                  }
+                  units "ms";
+                  default "4";
+                  description
+                    "Pause time.";
+                }
+              }
+              case manual-mode {
+                description
+                  "Specify config type choice case as manual mode.";
+                leaf depth-value {
+                  type uint32 {
+                    range "100..16777215";
+                  }
+                  units "kB";
+                  mandatory true;
+                  description
+                    "Queue depth.";
+                }
+                leaf xon-threshold-value {
+                  ext:dynamic-default;
+                  type uint32 {
+                    range "1..16777213";
+                  }
+                  units "kB";
+                  must "../depth-value>../xon-threshold-value and (not(../xoff-threshold-value) or ../xoff-threshold-value>../xon-threshold-value)";
+                  description
+                    "SPFC backpressure stop threshold.";
+                }
+                leaf xoff-threshold-value {
+                  ext:dynamic-default;
+                  type uint32 {
+                    range "2..16777214";
+                  }
+                  units "kB";
+                  must "../depth-value>../xoff-threshold-value and (not(../xon-threshold-value) or ../xoff-threshold-value>../xon-threshold-value)";
+                  description
+                    "SPFC backpressure threshold.";
+                }
+              }
+            }
+            choice rpfc-pfc-config-type {
+              when "../../mode='rpfc'";
+              description
+                "Specify rpfc config type.";
+              case pfc-auto-mode {
+                description
+                  "Specify config type choice case as auto mode.";
+                leaf pfc-auto {
+                  type switch-type;
+                  mandatory true;
+                  description
+                    "Enable automatic parameter adjustment.";
+                }
+              }
+              case pfc-manual-mode {
+                description
+                  "Specify config type choice case as manual mode.";
+                leaf pfc-xon-threshold-value {
+                  type uint32 {
+                    range "3..16777214";
+                  }
+                  units "kB";
+                  must "not(../xoff-threshold-value) or ../pfc-xon-threshold-value>../xoff-threshold-value and (not(../pfc-xoff-threshold-value) or ../pfc-xoff-threshold-value>../pfc-xon-threshold-value)";
+                  description
+                    "PFC backpressure stop threshold.";
+                }
+                leaf pfc-xoff-threshold-value {
+                  type uint32 {
+                    range "4..16777214";
+                  }
+                  units "kB";
+                  must "not(../pfc-xon-threshold-value) or ../pfc-xoff-threshold-value>../pfc-xon-threshold-value";
+                  description
+                    "PFC backpressure threshold.";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  rpc reset-interface-statistics {
+    description
+      "To clear PFC interface statistics.";
+    ext:node-ref "/qos-pfc:qos-pfc/qos-pfc:interface-statisticss/qos-pfc:interface-statistics";
+    input {
+      leaf interface-name {
+        type leafref {
+          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        description
+          "Interface name.";
+      }
+    }
+  }
+  rpc reset-rpfc-statistics-info {
+    description
+      "To clear RPFC statistics.";
+    ext:node-ref "/qos-pfc:qos-pfc/qos-pfc:rpfc-statistics-infos/qos-pfc:rpfc-statistics-info";
+    input {
+      leaf interface-name {
+        type leafref {
+          path "/ifm:ifm/ifm:interfaces/ifm:interface/ifm:name";
+        }
+        description
+          "Interface name.";
+      }
+    }
+  }
+  augment "/ifm:ifm/ifm:interfaces/ifm:interface" {
+    description
+      "Adds QoS PFC configuration to interface model.";
+    container qos-pfc {
+      description
+        "Configure Qos PFC apply.";
+      container template-apply {
+        description
+          "Configure Qos PFC application.";
+        leaf name {
+          type leafref {
+            path "/qos-pfc:qos-pfc/qos-pfc:pfc-templates/qos-pfc:pfc-template/qos-pfc:name";
+          }
+          description
+            "Specify PFC profile name.";
+        }
+      }
+    }
+  }
+  augment "/devm:devm/devm:lpu-boards/devm:lpu-board" {
+    description
+      "Adds QoS PFC configuration to device lpu-board model.";
+    container pfc {
+      description
+        "Configure PFC application.";
+      container buffer-mode-inbound {
+        description
+          "Configure buffer mode inbound large.";
+        leaf enable {
+          type switch-type;
+          description
+            "Buffer mode inbound large.";
+        }
+      }
+      container buffer-mode-inbound-chips {
+        description
+          "List of configure buffer mode inbound large.";
+        list buffer-mode-inbound-chip {
+          key "chip-id";
+          description
+            "Configure buffer mode inbound large.";
+          leaf chip-id {
+            type uint32 {
+              range "0..7";
+            }
+            description
+              "Chip ID.";
+          }
+        }
+      }
+    }
+  }
+}
+
+  

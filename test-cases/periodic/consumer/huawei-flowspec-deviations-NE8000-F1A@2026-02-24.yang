@@ -1,0 +1,96 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-flowspec-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-flowspec-deviations-NE8000-F1A";
+  prefix flowspec-devs-NE8000-F1A;
+
+  import huawei-flowspec {
+    prefix flowspec;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-flowspec module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef match-community-type-deviations {
+    type enumeration {
+      enum destination {
+        value 199;
+        description
+          "Specify a community rule for the destination IP.";
+      }
+    }
+    description
+      "Match community type.";
+  }
+
+  deviation "/flowspec:flowspec/flowspec:interface-groups" {
+    deviate not-supported;
+  }
+  deviation "/flowspec:flowspec/flowspec:ipv4-family/flowspec:interface-group-statisticss" {
+    deviate not-supported;
+  }
+  deviation "/flowspec:flowspec/flowspec:ipv6-family/flowspec:interface-group-statisticss" {
+    deviate not-supported;
+  }
+  deviation "/flowspec:reset-flowspec-statistics/flowspec:input/flowspec:group-id" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/flowspec:flowspec/flowspec:flow-routes/flowspec:flow-route/flowspec:condition/flowspec:interface-group" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/flowspec:flowspec/flowspec:flow-routes/flowspec:flow-route/flowspec:action/flowspec:remark-slice-id" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/flowspec:flowspec/flowspec:flow-routes/flowspec:flow-route/flowspec:action/flowspec:application-awareness" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/flowspec:flowspec/flowspec:flow-routes/flowspec:flow-route/flowspec:interface-groups" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/flowspec:flowspec/flowspec:flow-routes/flowspec:flow-route/flowspec:condition/flowspec:communitys/flowspec:community/flowspec:type" {
+    deviate replace {
+      type flowspec-devs-NE8000-F1A:match-community-type-deviations;
+    }
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/flowspec:flowspec/flowspec:flow-routes/flowspec:flow-route/flowspec:action" {
+    deviate add {
+      must 'count(./redirect-multi-ips/redirect-multi-ip)+count(./redirect-multi-ip-colors/redirect-multi-ip-color)<=8';
+    }
+    deviate add {
+      must 'count(./redirect-multi-ipv6s/redirect-multi-ipv6)+count(./redirect-multi-ipv6-colors/redirect-multi-ipv6-color)<=8';
+    }
+  }
+  ext:deviation-ext "/flowspec:reset-flowspec-statistics" {
+    ext:deviate-ext "delete" {
+      ext:node-ref "/flowspec:flowspec/flowspec:ipv4-family/flowspec:interface-group-statisticss/flowspec:interface-group-statistics";
+    }
+    ext:deviate-ext "delete" {
+      ext:node-ref "/flowspec:flowspec/flowspec:ipv6-family/flowspec:interface-group-statisticss/flowspec:interface-group-statistics";
+    }
+  }
+}
+
+  

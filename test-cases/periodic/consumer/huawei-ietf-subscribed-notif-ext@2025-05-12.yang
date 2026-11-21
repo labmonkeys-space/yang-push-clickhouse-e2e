@@ -1,0 +1,116 @@
+/*
+Copyright (C) 2021-2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+
+module huawei-ietf-subscribed-notif-ext {
+  yang-version 1.1;
+  namespace "urn:huawei:yang:huawei-ietf-subscribed-notif-ext";
+  prefix sn-ext;
+
+  import ietf-subscribed-notifications {
+    prefix sn;
+  }
+  import huawei-extension {
+    prefix ext;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "Extension of Subscription to YANG Notifications that were used privately for Huawei device.";
+
+  revision 2025-05-12 {
+    description
+      "Add several identity to extend subscription-terminated-reason.";
+    reference
+      "Huawei private.";
+  }
+  revision 2023-05-30 {
+      description
+        "Add leaf node distribute for augment subscription.";
+      reference
+      "Huawei private.";
+  }
+  revision 2021-07-12 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";  
+  }
+
+  ext:task-name "netconf";
+  identity trigger-type-unavailable {
+    base sn:subscription-terminated-reason;
+    description
+      "Update-trigger does not exist.";
+  }
+  identity encoding-unavailable {
+    base sn:subscription-terminated-reason;
+    description
+      "Encoding does not exist.";
+  }
+  identity distributed-not-configured {
+    base sn:subscription-terminated-reason;
+    description
+      "Distributed is not enable.";
+  }
+  identity transport-unavailable {
+    base sn:subscription-terminated-reason;
+    description
+      "Transport does not exist.";
+  }
+  identity receiver-unavailable {
+    base sn:subscription-terminated-reason;
+    description
+      "Receiver does not exist.";
+  }
+
+  augment "/sn:establish-subscription/sn:input" {
+    description
+      "Adds the 'collect-depth' parameter to
+      the input of the Subscription to YANG Notifications 'establish-subscription' operation.";
+    leaf collect-depth {
+      type uint32;
+      description
+        "Specifies the sub-tree depth of xpath to sample. The initial xpath collect depth is 1.
+        Based on the current xpath, the collect depth increases by 1 for each additional layer of xpath depth.";
+    }
+  }
+
+  augment "/sn:modify-subscription/sn:input" {
+    description
+      "Adds the 'collect-depth' parameter to
+      the input of the Subscription to YANG Notifications 'modify-subscription' operation.";
+    leaf collect-depth {
+      type uint32;
+      description
+        "Specifies the sub-tree depth of xpath to sample. The initial xpath collect depth is 1.
+        Based on the current xpath, the collect depth increases by 1 for each additional layer of xpath depth.";
+    }
+  }
+
+    augment "/sn:subscriptions/sn:subscription" {
+    description
+      "Adds the 'collect-depth' parameter to
+      the subscriptions of the Subscription to YANG Notifications 'get' operation.";
+    leaf collect-depth {
+      type uint32;
+      description
+        "Specifies the sub-tree depth of xpath to sample. The initial xpath collect depth is 1.
+        Based on the current xpath, the collect depth increases by 1 for each additional layer of xpath depth.";
+    }
+    leaf distribute {
+      type empty;
+      description
+        "The presence of this leaf indicates that distribute is enabled for current subscription.";
+    }
+  }
+}
+
+  

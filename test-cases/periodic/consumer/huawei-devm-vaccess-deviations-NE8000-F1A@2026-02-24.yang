@@ -1,0 +1,42 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-devm-vaccess-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-devm-vaccess-deviations-NE8000-F1A";
+  prefix devm-vaccess-devs-NE8000-F1A;
+
+  import huawei-devm-vaccess {
+    prefix devm-vaccess;
+  }
+  import huawei-vaccess {
+    prefix vaccess;
+  }
+  import huawei-vaccess-master {
+    prefix vaccess-master;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-devm-vaccess module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/vaccess:vaccess/vaccess-master:flexe-master/vaccess-master:aps/vaccess-master:ap/devm-vaccess:devm" {
+    deviate not-supported;
+  }
+}
+
+  

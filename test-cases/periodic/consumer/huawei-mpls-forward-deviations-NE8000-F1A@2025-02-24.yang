@@ -1,0 +1,72 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-mpls-forward-deviations-NE8000-F1A {
+  yang-version 1;
+  namespace "urn:huawei:yang:huawei-mpls-forward-deviations-NE8000-F1A";
+  prefix mpls-forward-devs-NE8000-F1A;
+
+  import huawei-mpls-forward {
+    prefix mpls-forward;
+  }
+  import huawei-l3vpn {
+    prefix l3vpn;
+  }
+  import huawei-loadbalance {
+    prefix loadbalance;
+  }
+  import huawei-mpls {
+    prefix mpls;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-mpls-forward module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/loadbalance:loadbalance/mpls-forward:mpls-hashpacket" {
+    deviate not-supported;
+  }
+  deviation "/loadbalance:loadbalance/mpls-forward:mpls-intfmtu" {
+    deviate not-supported;
+  }
+  deviation "/loadbalance:loadbalance/loadbalance:load-balance-ecmp-profile/mpls-forward:mpls-hash" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/mpls-forward:mpls-forward" {
+    deviate not-supported;
+  }
+  deviation "/ni:network-instance/ni:instances/ni:instance/l3vpn:afs/l3vpn:af/mpls-forward:vrfpipe/mpls-forward:exp-value" {
+    deviate not-supported;
+  }
+  deviation "/mpls:mpls/mpls-forward:ldp-separate" {
+    deviate not-supported;
+  }
+  deviation "/mpls:mpls/mpls-forward:disp-convergence-mode" {
+    deviate not-supported;
+  }
+  deviation "/mpls:mpls/mpls-forward:p2mp-energy-saving" {
+    deviate not-supported;
+  }
+  deviation "/mpls:mpls/mpls:common/mpls-forward:mpls-forward" {
+    deviate not-supported;
+  }
+}
+
+  

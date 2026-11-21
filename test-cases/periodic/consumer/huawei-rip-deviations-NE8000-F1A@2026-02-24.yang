@@ -1,0 +1,82 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-rip-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-rip-deviations-NE8000-F1A";
+  prefix rip-devs-NE8000-F1A;
+
+  import huawei-rip {
+    prefix rip;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-rip module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef rip-proto-type-deviations {
+    type enumeration {
+      enum direct {
+        value 1;
+        description
+          "Import direct routes.";
+      }
+      enum ospfv2 {
+        value 2;
+        description
+          "Import OSPFv2 routes.";
+      }
+      enum isis {
+        value 3;
+        description
+          "Import ISIS routes.";
+      }
+      enum static {
+        value 4;
+        description
+          "Import static routes.";
+      }
+      enum rip {
+        value 5;
+        description
+          "Import RIP routes.";
+      }
+      enum bgp {
+        value 6;
+        description
+          "Import BGP routes.";
+      }
+      enum none {
+        value 9;
+        description
+          "No protocol type is specified.";
+      }
+    }
+    description
+      "RIP protocol type.";
+  }
+
+  deviation "/ni:network-instance/ni:instances/ni:instance/rip:rip/rip:processs/rip:process/rip:filter-exports/rip:filter-export/rip:protocol" {
+    deviate replace {
+      type rip-devs-NE8000-F1A:rip-proto-type-deviations;
+    }
+  }
+}
+
+  

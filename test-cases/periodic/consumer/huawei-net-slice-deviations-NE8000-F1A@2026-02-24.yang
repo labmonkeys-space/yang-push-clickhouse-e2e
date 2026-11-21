@@ -1,0 +1,122 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-net-slice-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-net-slice-deviations-NE8000-F1A";
+  prefix net-slice-devs-NE8000-F1A;
+
+  import huawei-net-slice {
+    prefix net-slice;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-if-ip {
+    prefix if-ip;
+  }
+  import huawei-ip {
+    prefix ip;
+  }
+  import huawei-network-instance {
+    prefix ni;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-net-slice module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef slice-capability-type-deviations {
+    type enumeration {
+      enum flex-phy-port {
+        value 0;
+        description
+          "Flex phy port type.";
+      }
+      enum flexe-port {
+        value 1;
+        description
+          "FlexE port type.";
+      }
+      enum channel-phy-port {
+        value 2;
+        description
+          "Channel phy port type.";
+      }
+      enum channelized-phy-port {
+        value 3;
+        description
+          "Channelized phy port type.";
+      }
+    }
+    description
+      "Net slice capability type.";
+  }
+
+  deviation "/net-slice:net-slice/net-slice:global/net-slice:vlan-encapsulate-enable" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice/net-slice:mode/net-slice:flex-channel-mode/net-slice:end-mode" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice/net-slice:mode/net-slice:spfc-mode/net-slice:spfc/net-slice:rpfc-interfaces" {
+    deviate not-supported;
+  }
+  deviation "/net-slice:net-slice/net-slice:instances/net-slice:instance/net-slice:instance-type" {
+    deviate add {
+      must "(../instance-type='normal') or (../instance-type='private-network' and (count(/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice[net-slice:slice-id=current()/../id]/net-slice:flex-channel)=0)) or (../instance-type='private-line' and (count(/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice[net-slice:slice-id=current()/../id]/net-slice:data-plane)=0)) or (../instance-type='spfc' and (count(/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice[net-slice:slice-id=current()/../id]) = count(/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice[net-slice:slice-id=current()/../id]/net-slice:spfc-enable)))";
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:slice-capabilitys/net-slice:slice-capability/net-slice:capability" {
+    deviate replace {
+      type net-slice-devs-NE8000-F1A:slice-capability-type-deviations;
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slice-binding/net-slice:slice-id" {
+    deviate delete {
+      must '../../ip:ipv6';
+    }
+    deviate add {
+      must '../../ip:ipv6 or /ni:network-instance/ni:instances/ni:instance/if-ip:ipv6-ifs/if-ip:ipv6-if[if-ip:name=current()/../../ifm:name]';
+    }
+    deviate add {
+      must 'not(../../net-slice:net-slices/net-slice:net-slice[net-slice:slice-id=current()]/net-slice:spfc-enable)';
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice/net-slice:mode/net-slice:data-plane-mode/net-slice:data-plane" {
+    deviate delete {
+      must '../../../ip:ipv6';
+    }
+    deviate add {
+      must '(../../../ip:ipv6 or /ni:network-instance/ni:instances/ni:instance/if-ip:ipv6-ifs/if-ip:ipv6-if[if-ip:name=current()/../../../ifm:name])';
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice/net-slice:mode/net-slice:flex-channel-mode/net-slice:flex-channel" {
+    deviate delete {
+      must '../../../ip:ipv6';
+    }
+    deviate add {
+      must '(../../../ip:ipv6 or /ni:network-instance/ni:instances/ni:instance/if-ip:ipv6-ifs/if-ip:ipv6-if[if-ip:name=current()/../../../ifm:name])';
+    }
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/net-slice:net-slices/net-slice:net-slice/net-slice:mode/net-slice:spfc-mode/net-slice:spfc/net-slice:pfc-interfaces/net-slice:pfc-interface" {
+    deviate replace {
+      max-elements 8;
+    }
+  }
+}
+
+  

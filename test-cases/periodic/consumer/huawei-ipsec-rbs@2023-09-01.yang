@@ -1,0 +1,146 @@
+/*
+Copyright (C) 2023 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+
+module huawei-ipsec-rbs {
+  namespace urn:huawei:yang:huawei-ipsec-rbs;
+  prefix ipsec-rbs;
+  import huawei-extension {
+    prefix ext;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-rbs {
+    prefix rbs;
+  }
+  import huawei-vrrp {
+    prefix vrrp;
+  }
+
+  import huawei-ip {
+    prefix ip;
+  }
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "IPsec rbs protect function.";
+  revision 2023-09-01 {
+    description
+      "Delete the unused augment container redundancy-attribute.";
+    reference
+      "";
+  }
+
+  revision 2023-08-18 {
+    description
+      "Add Conditions under the redundancy-attribute.";
+    reference
+      "";
+  }
+
+  revision 2023-08-17 {
+    description
+      "Add list vrrp-track to the container vrrp-tracks.";
+    reference
+      "";
+  }
+
+  revision 2023-08-08 {
+    description
+      "Change the path value of the leafref node.";
+    reference
+      "";
+  }
+  revision 2023-04-14 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+  
+  container ipsec-rbs {
+	description "The container of IPsec rbs protect.";
+	container instances{
+	  description "List of IPsec instances.";
+      list instance {
+        key "id";
+        description "Configure the IPsec instance.";
+		
+        leaf id {
+             type uint16 {
+             range "1..128";
+			 }
+             description "IPsec instance id.";
+        }
+
+		leaf rbp-name {
+            when "/rbs:rbs/rbs:profiles/rbs:profile/rbs:service-types/rbs:service-type[rbs:type = 'ipsec']";
+			type leafref {
+				path "/rbs:rbs/rbs:profiles/rbs:profile/rbs:name";
+			}
+			description "Remote backup profile name.";
+        }
+		 
+        container forward-port {
+			description "Configure IPsec port for forward backup data.";
+			leaf port-start {
+				type uint16 {
+					range "1025..65280";
+				}
+				description "The low limit of port number.";
+         	} 
+			leaf port-end {
+				type uint16 {
+					range "1280..65535";
+				}
+                must "../port-end - ../port-start = 255";
+				description "The high limit of port number.";
+        	}
+		 }
+	   }
+	}
+   }
+	
+    augment "/ifm:ifm/ifm:interfaces/ifm:interface/ip:ipv4/vrrp:vrrp/vrrp:groups/vrrp:group" {
+    description
+      "Configure IPsec on interface.";
+    container ipsec {
+      description
+        "Configure IPsec on interface.";
+      container vrrp-tracks {
+        description
+          "List of vrrp-track.";
+        list vrrp-track {
+          key "instance-id";
+          description
+            "Configure IPsec VRRP.";
+          leaf instance-id {
+            type leafref {
+              path "/ipsec-rbs:ipsec-rbs/ipsec-rbs:instances/ipsec-rbs:instance/ipsec-rbs:id";
+            }
+            description
+              "Configure track IPsec instance.";
+          }
+          leaf priority-reduces {
+            type uint8 {
+              range "1..255";
+            }
+            default "10";
+            description
+              "Value by which the priority reduces when the VRRP backup group tracks the IPsec instance.";
+          }
+        }
+      }
+    }
+  }
+  ext:task-name "ipsec";
+}
+  

@@ -1,0 +1,77 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-qos-pfc-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-qos-pfc-deviations-NE8000-F1A";
+  prefix qos-pfc-devs-NE8000-F1A;
+
+  import huawei-qos-pfc {
+    prefix qos-pfc;
+  }
+
+  import huawei-ifm {
+    prefix ifm;
+  }
+
+  import huawei-devm {
+    prefix devm;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+
+  description
+    "This module defines deviation statements for huawei-qos-pfc module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference
+      "Huawei private.";
+  }
+
+  deviation "/qos-pfc:qos-pfc/qos-pfc:pfc-templates/qos-pfc:pfc-template/qos-pfc:mode" {
+    deviate not-supported;
+  }
+  deviation "/qos-pfc:qos-pfc/qos-pfc:pfc-templates/qos-pfc:pfc-template/qos-pfc:queues/qos-pfc:queue/qos-pfc:config-type" {
+    deviate not-supported;
+  }
+  deviation "/qos-pfc:qos-pfc/qos-pfc:interface-statisticss" {
+    deviate not-supported;
+  }
+  deviation "/qos-pfc:qos-pfc/qos-pfc:rpfc-statistics-infos" {
+    deviate not-supported;
+  }
+  deviation "/qos-pfc:qos-pfc/qos-pfc:spfc-templates/qos-pfc:spfc-template/qos-pfc:queues/qos-pfc:queue/qos-pfc:config-type/qos-pfc:value-mode" {
+    deviate not-supported;
+  }
+  deviation "/qos-pfc:reset-interface-statistics" {
+    deviate not-supported;
+  }
+  deviation "/qos-pfc:reset-rpfc-statistics-info" {
+    deviate not-supported;
+  }
+  deviation "/ifm:ifm/ifm:interfaces/ifm:interface/qos-pfc:qos-pfc" {
+    deviate not-supported;
+  }
+  deviation "/devm:devm/devm:lpu-boards/devm:lpu-board/qos-pfc:pfc" {
+    deviate not-supported;
+  }
+  deviation "/qos-pfc:qos-pfc/qos-pfc:spfc-templates/qos-pfc:spfc-template/qos-pfc:mode" {
+    deviate not-supported;
+  }
+  deviation "/qos-pfc:qos-pfc/qos-pfc:spfc-templates/qos-pfc:spfc-template/qos-pfc:queues/qos-pfc:queue/qos-pfc:rpfc-pfc-config-type" {
+    deviate not-supported;
+  }
+
+}
+
+  

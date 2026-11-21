@@ -1,0 +1,119 @@
+/*
+Copyright (C) 2026 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-bd-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-bd-deviations-NE8000-F1A";
+  prefix bd-devs-NE8000-F1A;
+
+  import huawei-bd {
+    prefix bd;
+  }
+  import huawei-ifm {
+    prefix ifm;
+  }
+  import huawei-ethernet {
+    prefix ethernet;
+  }
+  import huawei-ip {
+    prefix ip;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-bd module.";
+
+  revision 2026-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef mac-learn-style-deviations {
+    type enumeration {
+      enum unqualify {
+        value 0;
+        description
+          "The MAC address learning style is unqualify.";
+      }
+      enum qualify {
+        value 1;
+        description
+          "The MAC address learning style is qualify.";
+      }
+    }
+    description
+      "MAC address learning style.";
+  }
+
+  deviation "/bd:bd/bd:instances/bd:instance/bd:encapsulation" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:profile-id" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:bind-vlan" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:service-points/bd:service-point/bd:statistics" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:statistics/bd:inbound-pps" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:statistics/bd:inbound-bps" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:statistics/bd:inbound-bpdus" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:statistics/bd:outbound-bpdus" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:statistics/bd:outbound-pps" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:statistics/bd:outbound-bps" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:profiles" {
+    deviate not-supported;
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:mac-learn-style" {
+    deviate delete {
+      must "not (../mac-learn-style = 'qualify') or not (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()/../bd:service-points/bd:service-point/bd:interface-name]/ethernet:ethernet/ethernet:l2-sub-interface/ethernet:flow-action/ethernet:action-type = 'swap-map')";
+    }
+    deviate delete {
+      must "not (../mac-learn-style = 'qualify-qinq') or (not (../bd:service-points/bd:service-point/bd:interface-name) or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()/../bd:service-points/bd:service-point/bd:interface-name]/ethernet:ethernet/ethernet:l2-sub-interface/ethernet:qinqs) and ((/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()/../bd:service-points/bd:service-point/bd:interface-name]/ethernet:ethernet/ethernet:l2-sub-interface/ethernet:flow-action/ethernet:action-type = 'map-1-to-1') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()/../bd:service-points/bd:service-point/bd:interface-name]/ethernet:ethernet/ethernet:l2-sub-interface/ethernet:flow-action/ethernet:action-type = 'map-2-to-2') or not (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()/../bd:service-points/bd:service-point/bd:interface-name]/ethernet:ethernet/ethernet:l2-sub-interface/ethernet:flow-action)))";
+    }
+    deviate replace {
+      type bd-devs-NE8000-F1A:mac-learn-style-deviations;
+    }
+  }
+  deviation "/bd:bd/bd:instances/bd:instance/bd:service-points/bd:service-point/bd:interface-name" {
+    deviate delete {
+      must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:l2-mode-enable = 'true'";
+    }
+    deviate add {
+      must "(/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name=current()]/ifm:l2-mode-enable = 'true') or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()]/ethernet:ethernet/ethernet:l3-sub-interface/ethernet:vlan-type-dot1q) or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()]/ethernet:ethernet/ethernet:l3-sub-interface/ethernet:dot1q-termination/ethernet:dot1q-vlans/ethernet:dot1q-vlans) or (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()]/ethernet:ethernet/ethernet:l3-sub-interface/ethernet:qinq-termination/ethernet:qinq-vids/ethernet:qinq-vid)";
+    }
+    deviate add {
+      must "/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()]/ifm:vrf-name = '_public_'";
+    }
+    deviate add {
+      must 'not ((/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()]/ip:ipv4/ip:addresses/ip:address) and (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()]/ip:ipv4/ip:unnumbered-address/ip:unnumbered-if-name) and (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()]/ip:ipv6/ip:addresses/ip:address))';
+    }
+    deviate add {
+      must 'not (/ifm:ifm/ifm:interfaces/ifm:interface[ifm:name = current()]/ethernet:ethernet/ethernet:l3-sub-interface/ethernet:vlan-groups/ethernet:vlan-group)';
+    }
+  }
+}
+
+  

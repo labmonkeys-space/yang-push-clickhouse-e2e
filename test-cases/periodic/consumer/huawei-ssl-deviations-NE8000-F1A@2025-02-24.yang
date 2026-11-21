@@ -1,0 +1,267 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ssl-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ssl-deviations-NE8000-F1A";
+  prefix ssl-devs-NE8000-F1A;
+
+  import huawei-ssl {
+    prefix ssl;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for huawei-ssl module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  typedef ssl-version-deviations {
+    type enumeration {
+      enum tls1.1 {
+        value 3;
+        description
+          "SSL version tls1.1.";
+      }
+      enum tls1.2 {
+        value 4;
+        description
+          "SSL version tls1.2.";
+      }
+      enum tls1.3 {
+        value 5;
+        description
+          "SSL version tls1.3.";
+      }
+    }
+    description
+      "SSL version type list.";
+  }
+
+  typedef ssl-cipher-type-deviations {
+    type enumeration {
+      enum rsa-with-aes-256-sha {
+        value 1;
+        description
+          "RSA-WITH-AES-256-SHA cipher suite.";
+      }
+      enum rsa-with-aes-128-sha {
+        value 2;
+        description
+          "RSA-WITH-AES-128-SHA cipher suite.";
+      }
+      enum dhe-rsa-with-aes-256-sha {
+        value 3;
+        description
+          "DHE-RSA-WITH-AES-256-SHA cipher suite.";
+      }
+      enum dhe-dss-with-aes-256-sha {
+        value 4;
+        description
+          "DHE-DSS-WITH-AES-256-SHA cipher suite.";
+      }
+      enum dhe-rsa-with-aes-128-sha {
+        value 5;
+        description
+          "DHE-RSA-WITH-AES-128-SHA cipher suite.";
+      }
+      enum dhe-dss-with-aes-128-sha {
+        value 6;
+        description
+          "DHE-DSS-WITH-AES-128-SHA cipher suite.";
+      }
+      enum rsa-aes-128-cbc-sha {
+        value 7;
+        description
+          "RSA-AES-128-CBC-SHA cipher suite.";
+      }
+      enum rsa-aes-256-cbc-sha {
+        value 8;
+        description
+          "RSA-AES-256-CBC-SHA cipher suite.";
+      }
+      enum rsa-aes-128-cbc-sha256 {
+        value 9;
+        description
+          "RSA-AES-128-CBC-SHA256 cipher suite.";
+      }
+      enum rsa-aes-256-cbc-sha256 {
+        value 10;
+        description
+          "RSA-AES-256-CBC-SHA256 cipher suite.";
+      }
+      enum dhe-dss-aes-128-cbc-sha {
+        value 11;
+        description
+          "DHE-DSS-AES-128-CBC-SHA cipher suite.";
+      }
+      enum dhe-rsa-aes-128-cbc-sha {
+        value 12;
+        description
+          "DHE-RSA-AES-128-CBC-SHA cipher suite.";
+      }
+      enum dhe-dss-aes-256-cbc-sha {
+        value 13;
+        description
+          "DHE-DSS-AES-256-CBC-SHA cipher suite.";
+      }
+      enum dhe-rsa-aes-256-cbc-sha {
+        value 14;
+        description
+          "DHE-RSA-AES-256-CBC-SHA cipher suite.";
+      }
+      enum dhe-dss-aes-128-cbc-sha256 {
+        value 15;
+        description
+          "DHE-DSS-AES-128-CBC-SHA256 cipher suite.";
+      }
+      enum dhe-rsa-aes-128-cbc-sha256 {
+        value 16;
+        description
+          "DHE-RSA-AES-128-CBC-SHA256 cipher suite.";
+      }
+      enum dhe-dss-aes-256-cbc-sha256 {
+        value 17;
+        description
+          "DHE-DSS-AES-256-CBC-SHA256 cipher suite.";
+      }
+      enum dhe-rsa-aes-256-cbc-sha256 {
+        value 18;
+        description
+          "DHE-RSA-AES-256-CBC-SHA256 cipher suite.";
+      }
+      enum rsa-with-aes-128-gcm-sha256 {
+        value 19;
+        description
+          "RSA-WITH-AES-128-GCM-SHA256 cipher suite.";
+      }
+      enum rsa-with-aes-256-gcm-sha384 {
+        value 20;
+        description
+          "RSA-WITH-AES-256-GCM-SHA384 cipher suite.";
+      }
+      enum dhe-rsa-with-aes-128-gcm-sha256 {
+        value 21;
+        description
+          "DHE-RSA-WITH-AES-128-GCM-SHA256 cipher suite.";
+      }
+      enum dhe-rsa-with-aes-256-gcm-sha384 {
+        value 22;
+        description
+          "DHE-RSA-WITH-AES-256-GCM-SHA384 cipher suite.";
+      }
+      enum dhe-dss-with-aes-128-gcm-sha256 {
+        value 23;
+        description
+          "DHE-DSS-WITH-AES-128-GCM-SHA256 cipher suite.";
+      }
+      enum dhe-dss-with-aes-256-gcm-sha384 {
+        value 24;
+        description
+          "DHE-DSS-WITH-AES-256-GCM-SHA384 cipher suite.";
+      }
+      enum ecdhe-rsa-with-aes-128-gcm-sha256 {
+        value 25;
+        description
+          "ECDHE-RSA-WITH-AES-128-GCM-SHA256 cipher suite.";
+      }
+      enum ecdhe-rsa-with-aes-256-gcm-sha384 {
+        value 26;
+        description
+          "ECDHE-RSA-WITH-AES-256-GCM-SHA384 cipher suite.";
+      }
+      enum aes-128-gcm-sha256 {
+        value 27;
+        description
+          "AES-128-GCM-SHA256 cipher suite.";
+      }
+      enum aes-256-gcm-sha384 {
+        value 28;
+        description
+          "AES_256_GCM_SHA384 cipher suite.";
+      }
+      enum chacha20-poly1305-sha256 {
+        value 29;
+        description
+          "CHACHA20_POLY1305_SHA256 cipher suite.";
+      }
+      enum aes-128-ccm-sha256 {
+        value 30;
+        description
+          "AES_128_CCM_SHA256 cipher suite.";
+      }
+      enum ecdhe-ecdsa-with-aes-128-gcm-sha256 {
+        value 32;
+        description
+          "ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 cipher suite.";
+      }
+      enum ecdhe-ecdsa-with-aes-256-gcm-sha384 {
+        value 33;
+        description
+          "ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suite.";
+      }
+      enum sm4-gcm-sm3 {
+        value 34;
+        description
+          "TLS_SM4_GCM_SM3 cipher suite.";
+      }
+      enum sm4-ccm-sm3 {
+        value 35;
+        description
+          "TLS_SM4_CCM_SM3 cipher suite.";
+      }
+    }
+    description
+      "Enumeration of ssl cipher type.";
+  }
+
+  deviation "/ssl:ssl/ssl:ssl-policys/ssl:ssl-policy/ssl:cert-loads/ssl:cert-load/ssl:is-cert-file-encrypted" {
+    deviate not-supported;
+  }
+  deviation "/ssl:ssl/ssl:ssl-policys/ssl:ssl-policy/ssl:mini-version" {
+    deviate replace {
+      type ssl-devs-NE8000-F1A:ssl-version-deviations;
+    }
+  }
+  deviation "/ssl:ssl/ssl:ssl-policys/ssl:ssl-policy/ssl:ecdh-group/ssl:nist" {
+    deviate replace {
+      default "true";
+    }
+  }
+  deviation "/ssl:ssl/ssl:ssl-policys/ssl:ssl-policy/ssl:signature-alg/ssl:ecdsa-secp256r1-sha256" {
+    deviate replace {
+      default "true";
+    }
+  }
+  deviation "/ssl:ssl/ssl:ssl-policys/ssl:ssl-policy/ssl:signature-alg/ssl:ecdsa-secp384r1-sha384" {
+    deviate replace {
+      default "true";
+    }
+  }
+  deviation "/ssl:ssl/ssl:ssl-policys/ssl:ssl-policy/ssl:signature-alg/ssl:ecdsa-secp521r1-sha512" {
+    deviate replace {
+      default "true";
+    }
+  }
+  deviation "/ssl:ssl/ssl:ssl-cipher-suites/ssl:ssl-cipher-suite/ssl:ssl-ciphers" {
+    deviate replace {
+      type ssl-devs-NE8000-F1A:ssl-cipher-type-deviations;
+    }
+  }
+  deviation "/ssl:ssl/ssl:tlcp-policys/ssl:tlcp-policy/ssl:qkd-mode" {
+    deviate not-supported;
+  }
+}
+
+  

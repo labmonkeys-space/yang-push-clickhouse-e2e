@@ -1,0 +1,35 @@
+/*
+Copyright (C) 2025 Huawei Technologies Co., Ltd. All rights reserved.
+*/
+module huawei-ietf-tls-common-deviations-NE8000-F1A {
+  namespace "urn:huawei:yang:huawei-ietf-tls-common-deviations-NE8000-F1A";
+  prefix tlscmn-devs-NE8000-F1A;
+
+  import ietf-tls-common {
+    prefix tlscmn;
+  }
+
+  organization
+    "Huawei Technologies Co., Ltd.";
+  contact
+    "Huawei Industrial Base
+     Bantian, Longgang
+     Shenzhen 518129
+     People's Republic of China
+     Website: http://www.huawei.com
+     Email: support@huawei.com";
+  description
+    "This module defines deviation statements for ietf-tls-common module.";
+
+  revision 2025-02-24 {
+    description
+      "Initial revision.";
+    reference "Huawei private.";
+  }
+
+  deviation "/tlscmn:generate-public-key" {
+    deviate not-supported;
+  }
+}
+
+  
