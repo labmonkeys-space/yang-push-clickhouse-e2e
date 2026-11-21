@@ -31,7 +31,7 @@ The IETF 127 capture has two on-change edits with a value: an interface entry (s
 ```
 
 - **The target is a notification.** `alarm-notification` is a YANG `notification` in ietf-alarms, not a data node. Subscription 19 is a datastore subscription to the operational datastore with this path as its filter, so the edit carries a notification as datastore content.
-- **The identity has no module.** `alarm-type-id` is an identityref with base `ietf-alarms:alarm-type-id`. A value without a prefix is looked up in ietf-alarms, which does not define `LLDP_REMTABLECHANGE`. The module that does is not published.
+- **The identity has no module.** `alarm-type-id` is an identityref with base `ietf-alarms:alarm-type-id`. A value without a prefix is looked up in ietf-alarms, which does not define `LLDP_REMTABLECHANGE`. The library also lists `huawei-ietf-alarms-deviations-NE8000-F1A` (revision 2025-02-24) for ietf-alarms. A deviation could change the type of `alarm-type-id`, but that module is not published (see Limits).
 
 ### Library and files
 
@@ -40,7 +40,7 @@ The IETF 127 capture has two on-change edits with a value: an interface entry (s
 | `edit-interface.json`, `edit-alarm.json` | target and value of each edit |
 | `captured-interface-push-change-update.json`, `captured-alarm-push-change-update.json` | the whole messages, hostnames replaced by `router-a` and `router-b` |
 | `library-2338653103.json` | the router's YANG library, cut to the modules the two values need |
-| `yang/` | the IETF modules and the Huawei interface deviation, at the revisions the library lists |
+| `yang/` | the modules the two values need, at the revisions the library lists |
 | `validate.py` | runs the checks below |
 | `extract-library.py` | cuts the library from the router's reply |
 
@@ -78,7 +78,7 @@ How `validate.py` checks:
 
 - **Strict and parse-only.** Names, types and identities are checked. Mandatory nodes and leafrefs are not. That is close to the draft's anydata-candidate option.
 - **One module set.** The router builds its operational schema from `config-module` and `state-module`. libyang reads only the first module set of a library, as `ly_ctx_new_ylpath` in `context.h` documents, so `validate.py` merges the two before loading.
-- **Unpublished deviations left out.** The library lists `huawei-ietf-alarms-deviations-NE8000-F1A` for ietf-alarms. The router does not publish it, so `validate.py` leaves it out and prints its name. A deviation changes nodes of ietf-alarms. It cannot turn the notification into data or define the missing identity.
+- **Missing deviation left out.** The library lists `huawei-ietf-alarms-deviations-NE8000-F1A` for ietf-alarms, and no copy of it was found (see Limits). `validate.py` leaves it out and prints its name. A deviation cannot turn the notification into data, so check C does not depend on it. It could change the type of `alarm-type-id`, so check D does.
 
 ## Actual result
 
@@ -99,7 +99,7 @@ The [mxyns/libyang `feature/anydata-schema-anchor`](https://github.com/mxyns/lib
 
 ```text
 Library: library-2338653103.json (iana-if-type implemented)
-Not published, left out: huawei-ietf-alarms-deviations-NE8000-F1A
+Not found, left out: huawei-ietf-alarms-deviations-NE8000-F1A
 
 Interface edit, subscription 11
    target: /ietf-interfaces:interfaces/interface[name=100GE0/1/2]
@@ -129,7 +129,8 @@ G  in the RFC 8040 encoding of RFC 8072                            fail  (predic
 
 Result: the interface value is valid as sent. It fails only when read from the schema root.
         The alarm value cannot pass: its target is a notification, not data,
-        and its alarm-type-id names an identity the library does not define.
+        and its alarm-type-id names an identity ietf-alarms does not define,
+        unless the missing deviation changes the type of alarm-type-id.
         An XPath lookup of the target works only with a quoted key, which
         neither the router's form nor the RFC 8040 encoding has.
 ```
@@ -140,5 +141,6 @@ Exit code 0 means every check matched its prediction.
 ## Limits
 
 - **Parse-only.** Leafrefs and mandatory nodes are not checked. Full validation of the interface value fails on `higher-layer-if`, which points to `100GE0/1/2.23`, an interface that is not part of this one-entry value.
-- **Unpublished modules.** The router does not publish its module files. `yang/` holds the IETF modules at the listed revisions and the Huawei interface deviation. The alarm deviation and the module that defines `LLDP_REMTABLECHANGE` are missing.
+- **Where the modules come from.** `ietf-interfaces`, `ietf-yang-types` and `huawei-ietf-interfaces-deviations-NE8000-F1A@2026-02-24` are byte-identical to the files the router served to NetCalyx, in the receiver cache `127/Hackathon/mb-alive-test-result/netcalyx/netcalyx-yangpush-receiver/alive-netcalyx-receiver-cache-content.tar.gz` in the capture repository. Huawei's own [YANG repository](https://github.com/Huawei/yang) has the interface deviation only at revision 2021-05-07. No receiver cache has `iana-if-type` or `ietf-alarms`, because neither is named in `module-version` or imported: `iana-if-type@2017-01-19` is the IANA module at the revision the library lists, as nl6 ships it, and `ietf-alarms@2019-09-11` comes from [YangModels](https://github.com/YangModels/yang).
+- **Missing alarm modules.** `huawei-ietf-alarms-deviations-NE8000-F1A` is not in the capture repository, its receiver and consumer caches of IETF 126 and 127, or Huawei's YANG repository (checked 21 November 2026). The module that defines `LLDP_REMTABLECHANGE` is unknown. Check D can only be settled with them.
 - **Third edit not tested.** Subscription 17 sends an LLDP `delete` edit, which has no value to validate.

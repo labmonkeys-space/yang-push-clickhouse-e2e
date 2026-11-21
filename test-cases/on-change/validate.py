@@ -85,9 +85,10 @@ def one_module_set(library: str) -> tuple[str, list[str]]:
        set ("only the first module-set is processed and loaded into the
        context", ly_ctx_new_ylpath in context.h), so the two are merged.
        A module implemented in any set stays implemented.
-    2. Deviation modules without a file in yang/ are left out, because the
-       router does not publish its module files. They are returned so the
-       output can name them.
+    2. Deviation modules without a file in yang/ are left out. The library
+       lists huawei-ietf-alarms-deviations-NE8000-F1A, but it is in none of
+       the receiver caches of the capture repository and not in Huawei's
+       YANG repository. They are returned so the output can name them.
     """
     with open(library, encoding="utf-8") as f:
         lib = json.load(f)
@@ -167,7 +168,7 @@ def main() -> int:
     library, skipped = one_module_set(LIBRARY)
     print(f"Library: {LIBRARY} (iana-if-type implemented)")
     if skipped:
-        print(f"Not published, left out: {', '.join(skipped)}")
+        print(f"Not found, left out: {', '.join(skipped)}")
 
     unexpected = 0
     with libyang.Context("yang", yanglib_path=library, yanglib_fmt="json") as ctx:
@@ -208,7 +209,8 @@ def main() -> int:
     else:
         print("Result: the interface value is valid as sent. It fails only when read from the schema root.")
         print("        The alarm value cannot pass: its target is a notification, not data,")
-        print("        and its alarm-type-id names an identity the library does not define.")
+        print("        and its alarm-type-id names an identity ietf-alarms does not define,")
+        print("        unless the missing deviation changes the type of alarm-type-id.")
         print("        An XPath lookup of the target works only with a quoted key, which")
         print("        neither the router's form nor the RFC 8040 encoding has.")
     return 1 if unexpected else 0
