@@ -111,7 +111,10 @@ def validate(ctx: libyang.Context, value: str, check: dict) -> tuple[str, str]:
     parent = ctx.create_data_path(check["anchor"]) if check["anchor"] else None
     tree = None
     try:
-        tree = ctx.parse_data("json", libyang.IOType.MEMORY, value, parent=parent, parse_only=True, strict=True)
+        # parse-only checks names, types and identities; full also checks
+        # leafrefs and mandatory nodes, as validation of the whole tree would.
+        parse_only = check["mode"] == "parse-only"
+        tree = ctx.parse_data("json", libyang.IOType.MEMORY, value, parent=parent, parse_only=parse_only, strict=True)
         return "pass", ""
     except libyang.LibyangError as e:
         return "fail", str(e).split(": ", 1)[-1]
@@ -192,6 +195,8 @@ def main() -> int:
         print("Result: the interface value is valid as sent with the fixed library, read from")
         print("        the target's parent. It fails when read from the schema root, and with")
         print("        the advertised library, which lists iana-if-type as import-only.")
+        print("        Full validation fails on higher-layer-if, which points to an")
+        print("        interface outside this one-entry value.")
         print("        The alarm value cannot pass: its target is a notification, not data,")
         print("        and its alarm-type-id names an identity ietf-alarms does not define,")
         print("        unless the missing deviation changes the type of alarm-type-id.")
